@@ -16,7 +16,7 @@ const OurMission: React.FC = () => {
                 Helping Dogs Find Loving Homes
               </h2>
               <p className='max-w-[600px] text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed'>
-                PawsHome Shelter is dedicated to rescuing, rehabilitating, and
+                Prapti Foundation is dedicated to rescuing, rehabilitating, and
                 rehoming dogs in need. We believe every dog deserves a loving
                 home and work tirelessly to make perfect matches.
               </p>
@@ -24,14 +24,6 @@ const OurMission: React.FC = () => {
                 <Link to='/about'>
                   <Button className='bg-orange-500 hover:bg-orange-600'>
                     About Us
-                  </Button>
-                </Link>
-                <Link to='/donate'>
-                  <Button
-                    variant='outline'
-                    className='border-orange-500 text-orange-500 hover:bg-orange-50'
-                  >
-                    Donate Now
                   </Button>
                 </Link>
               </div>

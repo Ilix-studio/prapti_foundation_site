@@ -3,6 +3,9 @@ import { Header } from "./mainComponents/Header";
 import { HeroSection } from "./mainComponents/HeroSection";
 import { EmergencyCall } from "./mainComponents/ReportAbout/EmergencyCall";
 import OurMission from "./mainComponents/OurMission";
+import LatestBlogPosts from "./mainComponents/BlogPosts/LatestBlogPosts";
+import DonateUs from "./mainComponents/DonateUs";
+import Footer from "./mainComponents/Footer";
 
 const Home: React.FC = () => {
   return (
@@ -10,8 +13,10 @@ const Home: React.FC = () => {
       <Header />
       <HeroSection />
       <EmergencyCall />
-      {/* <BlogsPage /> */}
+      <LatestBlogPosts />
       <OurMission />
+      <DonateUs />
+      <Footer />
     </main>
   );
 };
