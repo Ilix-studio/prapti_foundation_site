@@ -1,3 +1,5 @@
+import myDog from "./../assets/C.jpeg";
+
 export interface Dog {
   id: string;
   name: string;
@@ -29,7 +31,7 @@ export const dogs: Dog[] = [
     temperament: ["Friendly", "Energetic", "Playful"],
     description:
       "Buddy is a cheerful and energetic dog who loves to play. He was rescued from the streets of Golaghat and has been with us for 6 months. Buddy gets along well with other dogs and would thrive in an active home with a yard where he can run and play.",
-    image: "/placeholder.svg?height=400&width=400&text=Buddy",
+    image: myDog,
     adoptionStatus: "Available",
     goodWith: {
       children: true,
@@ -49,7 +51,7 @@ export const dogs: Dog[] = [
     temperament: ["Gentle", "Affectionate", "Shy"],
     description:
       "Luna is a sweet and gentle dog who loves cuddles. She was found abandoned near a local market. Initially shy, she warms up quickly once she trusts you. Luna would do best in a quiet home with patient owners who can help build her confidence.",
-    image: "/placeholder.svg?height=400&width=400&text=Luna",
+    image: myDog,
     adoptionStatus: "Available",
     goodWith: {
       children: true,
@@ -69,7 +71,7 @@ export const dogs: Dog[] = [
     temperament: ["Loyal", "Intelligent", "Protective"],
     description:
       "Rocky is a loyal and intelligent dog who forms strong bonds with his humans. He was surrendered by his previous owner who could no longer care for him. Rocky has good obedience training and would make an excellent companion for an experienced dog owner.",
-    image: "/placeholder.svg?height=400&width=400&text=Rocky",
+    image: myDog,
     adoptionStatus: "Pending",
     goodWith: {
       children: true,
@@ -89,7 +91,7 @@ export const dogs: Dog[] = [
     temperament: ["Playful", "Curious", "Adaptable"],
     description:
       "Daisy is a playful puppy full of curiosity and joy. She was part of a litter rescued from a construction site. Daisy is learning basic commands and is very food-motivated, making her easy to train. She would thrive in a home with people who have time to provide training and socialization.",
-    image: "/placeholder.svg?height=400&width=400&text=Daisy",
+    image: myDog,
     adoptionStatus: "Available",
     goodWith: {
       children: true,
@@ -109,7 +111,7 @@ export const dogs: Dog[] = [
     temperament: ["Calm", "Loyal", "Intelligent"],
     description:
       "Max is a dignified and calm dog with a loyal heart. He was rescued after being found tied to a tree in a forest. Despite his difficult past, Max is gentle and trusting. He would do best in a home with a structured routine and an owner who appreciates his intelligence.",
-    image: "/placeholder.svg?height=400&width=400&text=Max",
+    image: myDog,
     adoptionStatus: "Available",
     goodWith: {
       children: true,
@@ -129,7 +131,7 @@ export const dogs: Dog[] = [
     temperament: ["Energetic", "Smart", "Loving"],
     description:
       "Bella is an energetic and smart dog who loves to learn new tricks. She was rescued during a local flood. Bella forms strong bonds with her humans and is always eager to please. She would thrive in an active home where she can get plenty of exercise and mental stimulation.",
-    image: "/placeholder.svg?height=400&width=400&text=Bella",
+    image: myDog,
     adoptionStatus: "Adopted",
     goodWith: {
       children: true,
@@ -149,7 +151,7 @@ export const dogs: Dog[] = [
     temperament: ["Playful", "Social", "Curious"],
     description:
       "Charlie is a playful and social young dog who enjoys the company of both humans and other dogs. He was rescued from a busy highway. Charlie is quick to learn and eager to please. He would do well in a family that can provide him with plenty of play time and socialization.",
-    image: "/placeholder.svg?height=400&width=400&text=Charlie",
+    image: myDog,
     adoptionStatus: "Available",
     goodWith: {
       children: true,
@@ -169,7 +171,7 @@ export const dogs: Dog[] = [
     temperament: ["Gentle", "Patient", "Loving"],
     description:
       "Lucy is a gentle and patient dog with a loving heart. She was surrendered when her family moved abroad. Lucy has lived with children and is exceptionally patient and gentle. She would make a wonderful family dog or companion for someone looking for a calm and affectionate friend.",
-    image: "/placeholder.svg?height=400&width=400&text=Lucy",
+    image: myDog,
     adoptionStatus: "Available",
     goodWith: {
       children: true,
@@ -189,7 +191,7 @@ export const dogs: Dog[] = [
     temperament: ["Energetic", "Playful", "Curious"],
     description:
       "Cooper is an energetic puppy with a playful spirit. He was found wandering in a local park. Cooper is in the process of learning basic commands and is showing great progress. He would do best in a home with people who have time and patience for a young, energetic dog.",
-    image: "/placeholder.svg?height=400&width=400&text=Cooper",
+    image: myDog,
     adoptionStatus: "Available",
     goodWith: {
       children: true,
@@ -209,7 +211,7 @@ export const dogs: Dog[] = [
     temperament: ["Calm", "Independent", "Loyal"],
     description:
       "Sadie is a calm and independent dog who forms strong bonds with her humans. She was rescued from a neglectful situation. Sadie enjoys quiet walks and lounging in the sun. She would thrive in a peaceful home with a predictable routine and gentle owners.",
-    image: "/placeholder.svg?height=400&width=400&text=Sadie",
+    image: myDog,
     adoptionStatus: "Available",
     goodWith: {
       children: false,
@@ -229,7 +231,7 @@ export const dogs: Dog[] = [
     temperament: ["Friendly", "Outgoing", "Playful"],
     description:
       "Oliver is a friendly and outgoing dog who loves to be around people. He was surrendered when his owner fell ill. Oliver enjoys playing fetch and going for long walks. He would do well in an active family that can give him plenty of exercise and attention.",
-    image: "/placeholder.svg?height=400&width=400&text=Oliver",
+    image: myDog,
     adoptionStatus: "Available",
     goodWith: {
       children: true,
@@ -249,7 +251,7 @@ export const dogs: Dog[] = [
     temperament: ["Sweet", "Playful", "Adaptable"],
     description:
       "Molly is a sweet puppy with a playful personality. She was found with her siblings near a local temple. Molly is learning basic commands and is very food-motivated. She would thrive in a home with people who have time for training and socialization.",
-    image: "/placeholder.svg?height=400&width=400&text=Molly",
+    image: myDog,
     adoptionStatus: "Available",
     goodWith: {
       children: true,

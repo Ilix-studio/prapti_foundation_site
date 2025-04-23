@@ -1,7 +1,6 @@
 import { useParams, Link } from "react-router-dom";
 import {
   Calendar,
-  User,
   ArrowLeft,
   Facebook,
   Twitter,
@@ -25,8 +24,8 @@ const BlogPostPage: React.FC = () => {
     <div className='flex flex-col min-h-screen'>
       <Header />
       <main className='flex-1'>
-        <article className='container max-w-4xl px-4 py-12 md:py-20'>
-          <div className='flex items-center gap-2 mb-8'>
+        <article className='container max-w-4xl px-4 py-4 md:py-15'>
+          <div className='flex items-center gap-1 mb-5'>
             <Link
               to='/blog'
               className='inline-flex items-center text-sm font-medium text-orange-500 hover:underline'
@@ -45,10 +44,6 @@ const BlogPostPage: React.FC = () => {
                 <Calendar className='mr-1 h-3 w-3' />
                 {post.date}
               </div>
-              <div className='flex items-center text-sm text-gray-500'>
-                <User className='mr-1 h-3 w-3' />
-                {post.author}
-              </div>
             </div>
 
             <h1 className='text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl'>
@@ -59,75 +54,31 @@ const BlogPostPage: React.FC = () => {
               <img
                 src={post.image || "/placeholder.svg"}
                 alt={post.title}
-                className='aspect-video object-cover w-full'
+                className='aspect-video w-full transition-transform group-hover:scale-105'
               />
             </div>
 
             <div className='prose prose-gray max-w-none'>
               <p>
-                {post.excerpt} Lorem ipsum dolor sit amet, consectetur
-                adipiscing elit. Sed euismod, nisl vel ultricies lacinia, nisl
-                nisl aliquam nisl, eget aliquam nisl nisl sit amet nisl. Sed
-                euismod, nisl vel ultricies lacinia, nisl nisl aliquam nisl,
-                eget aliquam nisl nisl sit amet nisl.
+                {post.excerpt} Even the smallest act of kindness can transform a
+                dog's life. When we rescued Max, a neglected Labrador, he was
+                fearful and malnourished.
               </p>
 
               <h2>The Beginning</h2>
               <p>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed
-                euismod, nisl vel ultricies lacinia, nisl nisl aliquam nisl,
-                eget aliquam nisl nisl sit amet nisl. Sed euismod, nisl vel
-                ultricies lacinia, nisl nisl aliquam nisl, eget aliquam nisl
-                nisl sit amet nisl.
+                Through patience, proper care, and love, we witnessed his
+                remarkable transformation. Today, Max thrives with his forever
+                family, his eyes now bright with trust and joy. His story
+                reminds us that compassion creates ripples of positive
+                change—not just for animals, but for the humans who connect with
+                them.
               </p>
               <p>
-                Sed euismod, nisl vel ultricies lacinia, nisl nisl aliquam nisl,
-                eget aliquam nisl nisl sit amet nisl. Sed euismod, nisl vel
-                ultricies lacinia, nisl nisl aliquam nisl, eget aliquam nisl
-                nisl sit amet nisl.
-              </p>
-
-              <h2>The Journey</h2>
-              <p>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed
-                euismod, nisl vel ultricies lacinia, nisl nisl aliquam nisl,
-                eget aliquam nisl nisl sit amet nisl. Sed euismod, nisl vel
-                ultricies lacinia, nisl nisl aliquam nisl, eget aliquam nisl
-                nisl sit amet nisl.
-              </p>
-              <ul>
-                <li>First step in the journey</li>
-                <li>Challenges we faced</li>
-                <li>Breakthroughs and progress</li>
-                <li>Support from our community</li>
-              </ul>
-
-              <h2>The Happy Ending</h2>
-              <p>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed
-                euismod, nisl vel ultricies lacinia, nisl nisl aliquam nisl,
-                eget aliquam nisl nisl sit amet nisl. Sed euismod, nisl vel
-                ultricies lacinia, nisl nisl aliquam nisl, eget aliquam nisl
-                nisl sit amet nisl.
-              </p>
-              <blockquote>
-                "The moment we saw the transformation in this dog's eyes, we
-                knew all our hard work had been worth it." - Shelter Volunteer
-              </blockquote>
-              <p>
-                Sed euismod, nisl vel ultricies lacinia, nisl nisl aliquam nisl,
-                eget aliquam nisl nisl sit amet nisl. Sed euismod, nisl vel
-                ultricies lacinia, nisl nisl aliquam nisl, eget aliquam nisl
-                nisl sit amet nisl.
-              </p>
-
-              <h2>How You Can Help</h2>
-              <p>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed
-                euismod, nisl vel ultricies lacinia, nisl nisl aliquam nisl,
-                eget aliquam nisl nisl sit amet nisl. Sed euismod, nisl vel
-                ultricies lacinia, nisl nisl aliquam nisl, eget aliquam nisl
-                nisl sit amet nisl.
+                At Prapti Foundation, we see these miracles daily. Each
+                donation, volunteer hour, or shared post helps another dog find
+                hope. Together, we're building a kinder world, one wagging tail
+                at a time.
               </p>
             </div>
           </div>
@@ -135,19 +86,6 @@ const BlogPostPage: React.FC = () => {
           <Separator className='my-8' />
 
           <div className='flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4'>
-            <div className='flex items-center gap-3'>
-              <div className='overflow-hidden rounded-full border-2 border-orange-500 w-12 h-12'>
-                <img
-                  src='/placeholder.svg?height=48&width=48'
-                  alt={post.author}
-                  className='object-cover'
-                />
-              </div>
-              <div>
-                <p className='font-medium'>{post.author}</p>
-                <p className='text-sm text-gray-500'>Staff Writer</p>
-              </div>
-            </div>
             <div className='flex items-center gap-2'>
               <span className='text-sm text-gray-500'>Share:</span>
               <Button variant='ghost' size='icon' className='h-8 w-8'>

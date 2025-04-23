@@ -1,9 +1,11 @@
+import Hemangini from "./../assets/B.jpeg";
+import myDog from "./../assets/C.jpeg";
+import indianDog from "./../assets/D.jpg";
 export interface BlogPost {
   id: string;
   title: string;
   excerpt: string;
   date: string;
-  author: string;
   category: string;
   image: string;
 }
@@ -17,15 +19,14 @@ export interface PopularPost {
 
 export const blogPosts: BlogPost[] = [
   {
-    id: "A-Little=Kindness",
+    id: "A-Little-Kindness",
     title:
       "A Little Kindness Can Change Their World: The Impact of Helping Dogs in Need",
     excerpt:
       "Follow the inspiring story of Max, a Labrador who was rescued from a neglectful situation and found his perfect family.",
     date: "June 15, 2023",
-    author: "Sarah Johnson",
     category: "Adoption Stories",
-    image: "/placeholder.svg?height=450&width=800&text=Max's+Story",
+    image: Hemangini,
   },
   {
     id: "5-essential-tips-for-new-dog-owners",
@@ -33,9 +34,9 @@ export const blogPosts: BlogPost[] = [
     excerpt:
       "Bringing a new dog home? Here are five crucial tips to help you and your furry friend adjust to your new life together.",
     date: "May 28, 2023",
-    author: "Dr. Mike Rodriguez",
+
     category: "Dog Care",
-    image: "/placeholder.svg?height=450&width=800&text=New+Dog+Tips",
+    image: myDog,
   },
   {
     id: "understanding-dog-body-language",
@@ -44,9 +45,9 @@ export const blogPosts: BlogPost[] = [
     excerpt:
       "Learn to decode your dog's body language and understand what they're communicating to become a better pet parent.",
     date: "May 10, 2023",
-    author: "Emily Chen",
+
     category: "Training Tips",
-    image: "/placeholder.svg?height=450&width=800&text=Dog+Body+Language",
+    image: indianDog,
   },
   {
     id: "how-to-prepare-your-home-for-a-new-dog",
@@ -54,9 +55,9 @@ export const blogPosts: BlogPost[] = [
     excerpt:
       "Essential steps to take before bringing your new furry friend home to ensure a smooth transition for everyone.",
     date: "April 22, 2023",
-    author: "Lisa Thompson",
+
     category: "Adoption Tips",
-    image: "/placeholder.svg?height=450&width=800&text=Home+Preparation",
+    image: myDog,
   },
   {
     id: "summer-safety-tips-for-dogs",
@@ -64,9 +65,9 @@ export const blogPosts: BlogPost[] = [
     excerpt:
       "Keep your dog safe and comfortable during the hot summer months with these essential tips.",
     date: "June 5, 2023",
-    author: "Dr. James Wilson",
+
     category: "Health & Wellness",
-    image: "/placeholder.svg?height=450&width=800&text=Summer+Safety",
+    image: indianDog,
   },
   {
     id: "benefits-of-adopting-senior-dogs",
@@ -74,9 +75,9 @@ export const blogPosts: BlogPost[] = [
     excerpt:
       "Discover why senior dogs make amazing companions and why you might want to consider adopting an older dog.",
     date: "March 18, 2023",
-    author: "Maria Garcia",
+
     category: "Adoption Stories",
-    image: "/placeholder.svg?height=450&width=800&text=Senior+Dogs",
+    image: myDog,
   },
 ];
 
@@ -85,19 +86,19 @@ export const popularPosts: PopularPost[] = [
     id: "how-to-prepare-your-home-for-a-new-dog",
     title: "How to Prepare Your Home for a New Dog",
     date: "April 22, 2023",
-    image: "/placeholder.svg?height=64&width=64",
+    image: myDog,
   },
   {
     id: "summer-safety-tips-for-dogs",
     title: "Summer Safety Tips for Dogs",
     date: "June 5, 2023",
-    image: "/placeholder.svg?height=64&width=64",
+    image: myDog,
   },
   {
     id: "benefits-of-adopting-senior-dogs",
     title: "The Unexpected Benefits of Adopting Senior Dogs",
     date: "March 18, 2023",
-    image: "/placeholder.svg?height=64&width=64",
+    image: myDog,
   },
 ];
 
@@ -106,19 +107,19 @@ export const relatedPosts: PopularPost[] = [
     id: "how-to-prepare-your-home-for-a-new-dog",
     title: "How to Prepare Your Home for a New Dog",
     date: "April 22, 2023",
-    image: "/placeholder.svg?height=225&width=400",
+    image: myDog,
   },
   {
     id: "summer-safety-tips-for-dogs",
     title: "Summer Safety Tips for Dogs",
     date: "June 5, 2023",
-    image: "/placeholder.svg?height=225&width=400",
+    image: myDog,
   },
   {
     id: "benefits-of-adopting-senior-dogs",
     title: "The Unexpected Benefits of Adopting Senior Dogs",
     date: "March 18, 2023",
-    image: "/placeholder.svg?height=225&width=400",
+    image: myDog,
   },
 ];
 
