@@ -185,14 +185,14 @@ const Footer = () => {
               © {currentYear} Prapti Foundation. All rights reserved.
             </p>
             <p className='text-xs text-gray-500 mt-2 sm:mt-0'>
-              Designed by{" "}
+              Made with 🧡 by{" "}
               <Link
                 to='https://ilix-hazarika.vercel.app/'
                 target='_blank'
                 rel='noopener noreferrer'
-                className='text-orange-500 hover:underline'
+                className='text-orange-600 hover:underline text-bold'
               >
-                ilix-studio
+                Ilix-Studio
               </Link>
             </p>
           </div>

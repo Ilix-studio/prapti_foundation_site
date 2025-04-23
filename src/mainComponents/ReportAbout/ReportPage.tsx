@@ -11,10 +11,11 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
-import { Checkbox } from "@/components/ui/checkbox";
 
-export default function ReportPage() {
+import { Checkbox } from "@/components/ui/checkbox";
+import Footer from "../Footer";
+
+const ReportPage: React.FC = () => {
   return (
     <div className='flex flex-col min-h-screen'>
       <Header />
@@ -131,25 +132,8 @@ export default function ReportPage() {
           </div>
         </section>
       </main>
-      <footer className='flex flex-col gap-2 sm:flex-row py-6 w-full border-t px-4 md:px-6'>
-        <p className='text-xs text-gray-500'>
-          © 2023 PawsHome Shelter. All rights reserved.
-        </p>
-        <nav className='sm:ml-auto flex gap-4 sm:gap-6'>
-          <Link className='text-xs hover:underline underline-offset-4' to='#'>
-            Terms of Service
-          </Link>
-          <Link className='text-xs hover:underline underline-offset-4' to='#'>
-            Privacy
-          </Link>
-          <Link
-            className='text-xs hover:underline underline-offset-4'
-            to='/contact'
-          >
-            Contact
-          </Link>
-        </nav>
-      </footer>
+      <Footer />
     </div>
   );
-}
+};
+export default ReportPage;

@@ -30,7 +30,7 @@ export function Header() {
         <div className='hidden md:flex md:items-center md:gap-4'>
           <nav className='flex items-center gap-6'>
             <Link
-              to='/about-us'
+              to='/about'
               className='text-sm font-medium hover:text-primary transition-colors'
             >
               About us
@@ -75,7 +75,7 @@ export function Header() {
         >
           <nav className='flex flex-col p-4 space-y-4 border-t bg-background'>
             <Link
-              to='/about-us'
+              to='/about'
               className='text-sm font-medium hover:text-primary transition-colors'
               onClick={() => setIsOpen(false)}
             >

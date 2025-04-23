@@ -125,7 +125,7 @@ const AdoptionForm: React.FC = () => {
         <section className='relative py-12 md:py-16 bg-orange-200'>
           <div className='container px-4 md:px-6 text-center'>
             <motion.h1
-              className='text-3xl md:text-4xl font-bold text-white mb-4'
+              className='text-3xl md:text-4xl font-bold text-black mb-4'
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
@@ -133,7 +133,7 @@ const AdoptionForm: React.FC = () => {
               Adopt a Dog
             </motion.h1>
             <motion.p
-              className='max-w-2xl mx-auto text-white/90 text-lg'
+              className='max-w-2xl mx-auto text-black/90 text-lg'
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.1 }}

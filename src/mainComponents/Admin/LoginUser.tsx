@@ -1,8 +1,9 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { AlertCircle, Eye, EyeOff, LogIn } from "lucide-react";
+import { AlertCircle, Eye, EyeOff, LogIn, ArrowLeft } from "lucide-react";
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 
 const LoginUser: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -112,6 +113,16 @@ const LoginUser: React.FC = () => {
               )}
             </Button>
           </form>
+
+          <div className='pt-4 text-center'>
+            <Link
+              to='/'
+              className='inline-flex items-center text-sm font-medium text-orange-500 hover:underline'
+            >
+              <ArrowLeft className='mr-1 h-4 w-4' />
+              Back to Homepage
+            </Link>
+          </div>
         </div>
       </div>
     </div>

@@ -10,6 +10,11 @@ import AdminDashboard from "./mainComponents/Admin/AdminDashboard";
 import AddBlogPost from "./mainComponents/BlogPosts/AddBlogForm";
 import AdoptionForm from "./mainComponents/Adopt/AdoptionForm";
 import AdoptionSuccess from "./mainComponents/Adopt/AdoptionSucess";
+import ReportPage from "./mainComponents/ReportAbout/ReportPage";
+import AboutUs from "./mainComponents/AboutUs";
+import OurDogs from "./mainComponents/OurDogs/OurDogs";
+import DogDetails from "./mainComponents/OurDogs/DogDetails";
+import SupportUs from "./mainComponents/SupportUs";
 
 function App() {
   return (
@@ -29,6 +34,17 @@ function App() {
       {/*  Adopt Routes */}
       <Route path='/adopt' element={<AdoptionForm />} />
       <Route path='/adoption-success' element={<AdoptionSuccess />} />
+
+      {/*  Report  Routes */}
+      <Route path='/report' element={<ReportPage />} />
+
+      {/*  About us  Routes */}
+      <Route path='/about' element={<AboutUs />} />
+      <Route path='/support' element={<SupportUs />} />
+
+      {/*  Our  Dogs  Routes */}
+      <Route path='/our-dogs' element={<OurDogs />} />
+      <Route path='/dog-details/:id' element={<DogDetails />} />
 
       <Route path='*' element={<NotFound />} />
     </Routes>
