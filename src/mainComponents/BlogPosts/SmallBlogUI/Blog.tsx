@@ -16,18 +16,19 @@ const BlogPage: React.FC = () => {
       <Header />
       <section className='w-full py-12 md:py-24 lg:py-32 bg-amber-50'>
         <div className='container px-4 md:px-6'>
-          <div className='flex flex-col items-center justify-center space-y-4 text-center'>
-            <div className='space-y-2'>
+          <div className='flex flex-col md:flex-row items-center justify-between space-y-4 md:space-y-0 text-center md:text-left'>
+            <div className='space-y-2 max-w-[700px]'>
               <h1 className='text-3xl font-bold tracking-tighter sm:text-5xl'>
                 Our Blog
               </h1>
-              <p className='max-w-[900px] text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed'>
+              <p className='text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed'>
                 Stories, tips, and updates from our shelter community.
               </p>
             </div>
-            {/* Add Blog Post button for admins */}
+
+            {/* Add Blog Post button for admins - right on desktop, bottom on mobile */}
             {/* {isAdmin && ( */}
-            <div className='pt-4'>
+            <div className='pt-4 md:pt-0 w-full md:w-auto flex justify-center md:justify-end'>
               <Link to='/blog/new'>
                 <Button className='bg-orange-500 hover:bg-orange-600'>
                   <PlusCircle className='mr-2 h-4 w-4' />

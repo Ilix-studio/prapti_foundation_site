@@ -8,11 +8,14 @@ import NotFound from "./mainComponents/NotFound";
 import LoginUser from "./mainComponents/Admin/LoginUser";
 import AdminDashboard from "./mainComponents/Admin/AdminDashboard";
 import AddBlogPost from "./mainComponents/BlogPosts/AddBlogForm";
+import AdoptionForm from "./mainComponents/Adopt/AdoptionForm";
+import AdoptionSuccess from "./mainComponents/Adopt/AdoptionSucess";
 
 function App() {
   return (
     <Routes>
       <Route path='/' element={<Home />} />
+      {/* Blog Routes */}
       <Route path='/blog' element={<BlogPage />} />
       <Route path='/blog/:id' element={<BlogPostPage />} />
       <Route path='/blog/new' element={<AddBlogForm />} />
@@ -22,6 +25,10 @@ function App() {
       <Route path='/admin/dashboard' element={<AdminDashboard />} />
       <Route path='/admin/blog/new' element={<AddBlogPost />} />
       <Route path='/admin/blog/edit/:id' element={<AddBlogPost />} />
+
+      {/*  Adopt Routes */}
+      <Route path='/adopt' element={<AdoptionForm />} />
+      <Route path='/adoption-success' element={<AdoptionSuccess />} />
 
       <Route path='*' element={<NotFound />} />
     </Routes>

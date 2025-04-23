@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
+import HeroSectionBgImg from "./../assets/A.jpg";
 
 export function HeroSection() {
   return (
@@ -10,7 +11,7 @@ export function HeroSection() {
       {/* Hero image container with overlay */}
       <div className='absolute inset-0 z-0'>
         <img
-          src='/src/assets/A.jpg'
+          src={HeroSectionBgImg}
           alt='Dogs at Prapti Foundation shelter'
           className='w-full h-full object-cover object-center'
         />

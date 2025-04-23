@@ -3,13 +3,10 @@ import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-import { useSelector } from "react-redux";
 import { getLatestPosts } from "../../mockdata/BlogData";
-import { selectIsAdmin } from "../../redux-store/slices/authSlice";
 
 const LatestBlogPosts: React.FC = () => {
   const latestPosts = getLatestPosts();
-  const isAdmin = useSelector(selectIsAdmin);
 
   return (
     <section className='w-full py-12 md:py-24 lg:py-32 bg-amber-50'>
@@ -22,17 +19,6 @@ const LatestBlogPosts: React.FC = () => {
             <p className='max-w-[900px] text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed'>
               Stories, tips, and updates from our shelter community.
             </p>
-
-            {/* Add Blog Post button for admins */}
-            {isAdmin && (
-              <div className='mt-4'>
-                <Link to='/admin/blog/new'>
-                  <Button className='bg-orange-500 hover:bg-orange-600'>
-                    Add New Blog Post
-                  </Button>
-                </Link>
-              </div>
-            )}
           </div>
         </div>
         <div className='grid gap-8 md:grid-cols-3'>
