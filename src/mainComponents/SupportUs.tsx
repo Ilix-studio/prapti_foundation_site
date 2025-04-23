@@ -860,18 +860,6 @@ const SupportUs: React.FC = () => {
               Join our community of supporters and help us continue our mission
               to rescue and care for dogs in need.
             </p>
-            <div className='flex flex-col sm:flex-row gap-4 justify-center pt-4'>
-              <Button className='bg-orange-500 hover:bg-orange-600 min-w-40'>
-                <Heart className='mr-2 h-4 w-4' />
-                Donate Now
-              </Button>
-              <Button
-                variant='outline'
-                className='border-white text-white hover:bg-white/10 min-w-40'
-              >
-                Contact Us
-              </Button>
-            </div>
           </div>
         </div>
       </section>

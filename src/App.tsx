@@ -15,6 +15,7 @@ import AboutUs from "./mainComponents/AboutUs";
 import OurDogs from "./mainComponents/OurDogs/OurDogs";
 import DogDetails from "./mainComponents/OurDogs/DogDetails";
 import SupportUs from "./mainComponents/SupportUs";
+import VolunteerPage from "./mainComponents/Volunter";
 
 function App() {
   return (
@@ -45,6 +46,8 @@ function App() {
       {/*  Our  Dogs  Routes */}
       <Route path='/our-dogs' element={<OurDogs />} />
       <Route path='/dog-details/:id' element={<DogDetails />} />
+
+      <Route path='/volunteer' element={<VolunteerPage />} />
 
       <Route path='*' element={<NotFound />} />
     </Routes>

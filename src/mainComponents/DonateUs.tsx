@@ -20,7 +20,7 @@ const DonateUs: React.FC = () => {
             </div>
             <div className='w-full max-w-sm space-y-2'>
               <div className='flex justify-center gap-4'>
-                <Link to='/donate'>
+                <Link to='/support'>
                   <Button className='bg-orange-500 hover:bg-orange-600'>
                     Donate Now
                     <Heart className='ml-2 h-4 w-4' />

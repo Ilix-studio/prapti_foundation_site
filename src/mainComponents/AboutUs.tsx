@@ -377,7 +377,7 @@ const AboutUs: React.FC = () => {
                   Become a Volunteer
                 </Button>
               </Link>
-              <Link to='/donate'>
+              <Link to='/support'>
                 <Button
                   variant='outline'
                   className='border-orange-500 text-orange-500 hover:bg-orange-50 min-w-40'

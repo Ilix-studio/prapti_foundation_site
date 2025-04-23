@@ -8,36 +8,12 @@ import {
   MapPin,
   PawPrint,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
 
   return (
     <footer className='bg-gray-50 dark:bg-gray-900 border-t'>
-      {/* Newsletter Section */}
-      <div className='container mx-auto px-4 py-8 border-b'>
-        <div className='flex flex-col md:flex-row items-center justify-between gap-6'>
-          <div className='max-w-md'>
-            <h3 className='text-lg font-semibold mb-2'>Join our newsletter</h3>
-            <p className='text-sm text-gray-600 dark:text-gray-400'>
-              Stay updated with our latest news, adoption stories, and events.
-            </p>
-          </div>
-          <div className='w-full md:w-auto max-w-md flex flex-col sm:flex-row gap-2'>
-            <Input
-              type='email'
-              placeholder='Your email address'
-              className='w-full focus:border-orange-500'
-            />
-            <Button className='bg-orange-500 hover:bg-orange-600 whitespace-nowrap'>
-              Subscribe
-            </Button>
-          </div>
-        </div>
-      </div>
-
       {/* Main Footer Content */}
       <div className='container mx-auto px-4 py-10'>
         <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8'>
@@ -81,7 +57,7 @@ const Footer = () => {
             <h3 className='text-md font-semibold mb-4'>Quick Links</h3>
             <nav className='flex flex-col space-y-2'>
               <Link
-                to='/about-us'
+                to='/about'
                 className='text-sm text-gray-600 dark:text-gray-400 hover:text-orange-500 transition-colors'
               >
                 About Us
@@ -93,7 +69,7 @@ const Footer = () => {
                 Our Dogs
               </Link>
               <Link
-                to='/blogs'
+                to='/blog'
                 className='text-sm text-gray-600 dark:text-gray-400 hover:text-orange-500 transition-colors'
               >
                 Blog
@@ -118,7 +94,7 @@ const Footer = () => {
             <h3 className='text-md font-semibold mb-4'>Support Us</h3>
             <nav className='flex flex-col space-y-2'>
               <Link
-                to='/donate'
+                to='/support'
                 className='text-sm text-gray-600 dark:text-gray-400 hover:text-orange-500 transition-colors'
               >
                 Make a Donation
