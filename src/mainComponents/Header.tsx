@@ -89,7 +89,7 @@ export function Header() {
               Our Dogs
             </Link>
             <Link
-              to='/blogs'
+              to='/blog'
               className='text-sm font-medium hover:text-primary transition-colors'
               onClick={() => setIsOpen(false)}
             >
