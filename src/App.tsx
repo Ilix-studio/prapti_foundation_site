@@ -9,7 +9,7 @@ import LoginUser from "./mainComponents/Admin/LoginUser";
 import AdminDashboard from "./mainComponents/Admin/AdminDashboard";
 import AddBlogPost from "./mainComponents/BlogPosts/AddBlogForm";
 import AdoptionForm from "./mainComponents/Adopt/AdoptionForm";
-import AdoptionSuccess from "./mainComponents/Adopt/AdoptionSucess";
+
 import ReportPage from "./mainComponents/ReportAbout/ReportPage";
 import AboutUs from "./mainComponents/AboutUs";
 import OurDogs from "./mainComponents/OurDogs/OurDogs";
@@ -34,7 +34,6 @@ function App() {
 
       {/*  Adopt Routes */}
       <Route path='/adopt' element={<AdoptionForm />} />
-      <Route path='/adoption-success' element={<AdoptionSuccess />} />
 
       {/*  Report  Routes */}
       <Route path='/report' element={<ReportPage />} />

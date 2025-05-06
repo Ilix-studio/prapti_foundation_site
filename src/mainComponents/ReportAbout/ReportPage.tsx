@@ -2,18 +2,13 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
 import { Header } from "../Header";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-
-import { Checkbox } from "@/components/ui/checkbox";
 import Footer from "../Footer";
+import { AlertTriangle, Phone, MessageCircle } from "lucide-react";
 
 const ReportPage: React.FC = () => {
   return (
@@ -35,99 +30,81 @@ const ReportPage: React.FC = () => {
 
             <Card className='max-w-3xl mx-auto'>
               <CardHeader>
-                <CardTitle>Report Form</CardTitle>
+                <CardTitle>Contact Our Rescue Team</CardTitle>
                 <CardDescription>
-                  Please provide as much detail as possible about the dog and
-                  its situation. All reports are confidential.
+                  Please contact us immediately if you see a dog in distress.
+                  Our team is available 24/7 to respond to emergency situations.
                 </CardDescription>
               </CardHeader>
-              <CardContent>
-                <form className='space-y-6'>
-                  <div className='space-y-2'>
-                    <Label htmlFor='location'>Location</Label>
-                    <Input
-                      id='location'
-                      placeholder='Where is the dog located? Please be as specific as possible.'
-                    />
-                  </div>
-
-                  <div className='space-y-2'>
-                    <Label htmlFor='description'>Description of the dog</Label>
-                    <Textarea
-                      id='description'
-                      placeholder='Breed (if known), color, size, distinctive features, etc.'
-                      className='min-h-[80px]'
-                    />
-                  </div>
-
-                  <div className='space-y-2'>
-                    <Label htmlFor='condition'>Condition of the dog</Label>
-                    <Textarea
-                      id='condition'
-                      placeholder="Describe the dog's condition and any injuries or signs of abuse you've observed."
-                      className='min-h-[100px]'
-                    />
-                  </div>
-
-                  <div className='space-y-2'>
-                    <Label htmlFor='situation'>Situation details</Label>
-                    <Textarea
-                      id='situation'
-                      placeholder='Explain the circumstances. Is the dog a stray? Is it currently in danger? How long has it been in this condition?'
-                      className='min-h-[100px]'
-                    />
-                  </div>
-
-                  <div className='space-y-2'>
-                    <Label htmlFor='photo'>Upload photos (if available)</Label>
-                    <Input id='photo' type='file' multiple accept='image/*' />
-                    <p className='text-xs text-gray-500'>
-                      Photos can help us identify the dog and assess its
-                      condition.
-                    </p>
-                  </div>
-
-                  <div className='space-y-2'>
-                    <Label>Your contact information</Label>
-                    <p className='text-sm text-gray-500 mb-2'>
-                      This information is optional but helpful if we need
-                      additional details.
-                    </p>
-                    <div className='grid grid-cols-1 gap-4 sm:grid-cols-2'>
-                      <Input placeholder='Your name (optional)' />
-                      <Input type='email' placeholder='Your email (optional)' />
-                      <Input
-                        type='tel'
-                        placeholder='Your phone number (optional)'
-                        className='sm:col-span-2'
-                      />
+              <CardContent className='space-y-6'>
+                <div className='bg-amber-50 p-6 rounded-lg border border-amber-200'>
+                  <div className='flex flex-col md:flex-row items-center gap-4 text-center md:text-left'>
+                    <div className='bg-amber-100 p-3 rounded-full'>
+                      <AlertTriangle className='h-8 w-8 text-amber-600' />
+                    </div>
+                    <div>
+                      <h3 className='text-lg font-medium mb-1'>
+                        Emergency Response
+                      </h3>
+                      <p className='text-gray-600'>
+                        For urgent situations where a dog's life is in immediate
+                        danger, please call our emergency hotline.
+                      </p>
                     </div>
                   </div>
+                </div>
 
-                  <div className='space-y-2'>
-                    <Label>Is this an emergency?</Label>
-                    <div className='flex items-center space-x-2'>
-                      <Checkbox id='emergency' />
-                      <label
-                        htmlFor='emergency'
-                        className='text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70'
-                      >
-                        Yes, this dog needs immediate help
-                      </label>
+                <div className='grid md:grid-cols-2 gap-6'>
+                  <div className='bg-white p-6 rounded-lg border shadow-sm text-center'>
+                    <div className='inline-flex items-center justify-center w-12 h-12 rounded-full bg-orange-100 text-orange-500 mb-4'>
+                      <Phone className='h-6 w-6' />
                     </div>
-                    <p className='text-sm text-red-500'>
-                      For emergencies, please also call our rescue hotline at
-                      (555) 911-DOGS
+                    <h3 className='text-xl font-semibold'>Call Our Hotline</h3>
+                    <p className='text-gray-500 mb-4'>
+                      Our rescue team is available 24/7 for emergency situations
                     </p>
+                    <a href='tel:+915551234567'>
+                      <Button className='bg-orange-500 hover:bg-orange-600 w-full'>
+                        +91 555-123-4567
+                      </Button>
+                    </a>
                   </div>
-                </form>
+
+                  <div className='bg-white p-6 rounded-lg border shadow-sm text-center'>
+                    <div className='inline-flex items-center justify-center w-12 h-12 rounded-full bg-green-100 text-green-500 mb-4'>
+                      <MessageCircle className='h-6 w-6' />
+                    </div>
+                    <h3 className='text-xl font-semibold'>WhatsApp Us</h3>
+                    <p className='text-gray-500 mb-4'>
+                      Send details and photos via WhatsApp for quick response
+                    </p>
+                    <a
+                      href='https://wa.me/915551234567'
+                      target='_blank'
+                      rel='noopener noreferrer'
+                    >
+                      <Button className='bg-green-500 hover:bg-green-600 w-full'>
+                        Contact on WhatsApp
+                      </Button>
+                    </a>
+                  </div>
+                </div>
+
+                <div className='bg-blue-50 p-6 rounded-lg border border-blue-200'>
+                  <h3 className='font-medium mb-2'>
+                    What information to provide:
+                  </h3>
+                  <ul className='space-y-2 list-disc pl-5 text-gray-700'>
+                    <li>Precise location of the dog</li>
+                    <li>
+                      Description of the dog (color, breed if known, size)
+                    </li>
+                    <li>Description of injuries or condition</li>
+                    <li>How long the dog has been there (if known)</li>
+                    <li>Photos of the dog (if possible and safe to take)</li>
+                  </ul>
+                </div>
               </CardContent>
-              <CardFooter className='flex justify-between border-t p-6'>
-                <Button variant='outline'>Clear Form</Button>
-                <Button className='bg-orange-500 hover:bg-orange-600'>
-                  Submit Report
-                </Button>
-              </CardFooter>
             </Card>
           </div>
         </section>
