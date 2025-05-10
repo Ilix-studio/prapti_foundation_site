@@ -12,8 +12,7 @@ import AdoptionForm from "./mainComponents/Adopt/AdoptionForm";
 
 import ReportPage from "./mainComponents/ReportAbout/ReportPage";
 import AboutUs from "./mainComponents/AboutUs";
-import OurDogs from "./mainComponents/OurDogs/OurDogs";
-import DogDetails from "./mainComponents/OurDogs/DogDetails";
+
 import SupportUs from "./mainComponents/SupportUs";
 import VolunteerPage from "./mainComponents/Volunter";
 
@@ -41,10 +40,6 @@ function App() {
       {/*  About us  Routes */}
       <Route path='/about' element={<AboutUs />} />
       <Route path='/support' element={<SupportUs />} />
-
-      {/*  Our  Dogs  Routes */}
-      <Route path='/our-dogs' element={<OurDogs />} />
-      <Route path='/dog-details/:id' element={<DogDetails />} />
 
       <Route path='/volunteer' element={<VolunteerPage />} />
 

@@ -35,12 +35,7 @@ export function Header() {
             >
               About us
             </Link>
-            <Link
-              to='/our-dogs'
-              className='text-sm font-medium hover:text-primary transition-colors'
-            >
-              Our Dogs
-            </Link>
+
             <Link
               to='/blog'
               className='text-sm font-medium hover:text-primary transition-colors'
