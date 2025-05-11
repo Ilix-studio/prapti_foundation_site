@@ -1,130 +1,113 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { RootState } from "../store";
+// src/redux-store/services/blogApi.ts
+import { createApi } from "@reduxjs/toolkit/query/react";
+import { baseQuery } from "../../lib/apiConfig";
 
-// Define Blog Post types
 export interface BlogPost {
-  id: string;
+  _id: string;
+  id?: string;
   title: string;
   excerpt: string;
   content: string;
-  date: string;
+  category: string;
+  image: string;
   author: string;
-  category: string;
-  image: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
-export interface CreateBlogPostRequest {
+export interface BlogResponse {
+  success: boolean;
+  count?: number;
+  data: BlogPost[];
+}
+
+export interface BlogPostResponse {
+  success: boolean;
+  data: BlogPost;
+}
+
+export interface CreateBlogRequest {
   title: string;
   excerpt: string;
   content: string;
   category: string;
   image: string;
+  author?: string;
 }
-
-// For now, we'll use a mock API base URL
-// In a real application, this would point to your actual API
-const API_URL = "/api";
 
 export const blogApi = createApi({
   reducerPath: "blogApi",
-  baseQuery: fetchBaseQuery({
-    baseUrl: API_URL,
-    prepareHeaders: (headers, { getState }) => {
-      // Get the token from the auth state
-      const token = (getState() as RootState).auth.token;
-
-      // If we have a token, add it to the headers
-      if (token) {
-        headers.set("authorization", `Bearer ${token}`);
-      }
-
-      return headers;
-    },
-  }),
+  baseQuery,
   tagTypes: ["BlogPost"],
   endpoints: (builder) => ({
     // Get all blog posts
     getBlogPosts: builder.query<BlogPost[], void>({
-      // In a real app, this would be a real API endpoint
-      // For this example, we'll mock it with a function that returns data from our mock data
-      queryFn: () => {
-        // This is where you would normally fetch from an API
-        // We're just returning mock data for now
-        const mockData = require("../../mockdata/BlogData").blogPosts;
-        return { data: mockData };
-      },
-      providesTags: ["BlogPost"],
+      query: () => "/blogs",
+      transformResponse: (response: BlogResponse) => response.data,
+      providesTags: (result) =>
+        result
+          ? [
+              ...result.map(({ _id }) => ({
+                type: "BlogPost" as const,
+                id: _id,
+              })),
+              { type: "BlogPost", id: "LIST" },
+            ]
+          : [{ type: "BlogPost", id: "LIST" }],
     }),
 
     // Get a single blog post by ID
-    getBlogPost: builder.query<BlogPost, string>({
-      queryFn: (id) => {
-        const mockData = require("../../mockdata/BlogData").blogPosts;
-        const post = mockData.find((post: BlogPost) => post.id === id);
-        return post
-          ? { data: post }
-          : { error: { status: 404, data: "Post not found" } };
-      },
-      providesTags: (_result, _error, id) => [{ type: "BlogPost", id }],
+    getBlogPostById: builder.query<BlogPost, string>({
+      query: (id) => `/blogs/${id}`,
+      transformResponse: (response: BlogPostResponse) => response.data,
+      providesTags: (_, __, id) => [{ type: "BlogPost", id }],
     }),
 
     // Create a new blog post
-    createBlogPost: builder.mutation<BlogPost, CreateBlogPostRequest>({
-      queryFn: (newPost) => {
-        // In a real app, this would be a POST request to your API
-        // For this demo, we'll just return a mock response
-
-        // Generate a unique ID
-        const id = Date.now().toString();
-
-        // Create the new post with current date and author name from auth state
-        const post: BlogPost = {
-          id,
-          ...newPost,
-          date: new Date().toLocaleDateString("en-US", {
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-          }),
-          author: "Admin User", // In a real app, get this from auth state
-        };
-
-        // In a real app, this would be saved to your database
-        // For now, we'll just return the new post
-        return { data: post };
-      },
-      invalidatesTags: ["BlogPost"],
+    createBlogPost: builder.mutation<BlogPost, CreateBlogRequest>({
+      query: (blogPost) => ({
+        url: "/blogs/create",
+        method: "POST",
+        body: blogPost,
+      }),
+      transformResponse: (response: BlogPostResponse) => response.data,
+      invalidatesTags: [{ type: "BlogPost", id: "LIST" }],
     }),
 
-    // Update an existing blog post
+    // Update a blog post
     updateBlogPost: builder.mutation<
       BlogPost,
-      Partial<BlogPost> & { id: string }
+      { id: string; data: Partial<CreateBlogRequest> }
     >({
-      queryFn: (updateData) => {
-        // In a real app, this would be a PUT/PATCH request to your API
-        // For this demo, we'll just return a mock response
-        return { data: updateData as BlogPost };
-      },
-      invalidatesTags: (_result, _error, { id }) => [{ type: "BlogPost", id }],
+      query: ({ id, data }) => ({
+        url: `/blogs/update/${id}`,
+        method: "PUT",
+        body: data,
+      }),
+      transformResponse: (response: BlogPostResponse) => response.data,
+      invalidatesTags: (_, __, { id }) => [
+        { type: "BlogPost", id },
+        { type: "BlogPost", id: "LIST" },
+      ],
     }),
 
     // Delete a blog post
     deleteBlogPost: builder.mutation<void, string>({
-      queryFn: () => {
-        // In a real app, this would be a DELETE request to your API
-        // For this demo, we'll just return a success response
-        return { data: undefined };
-      },
-      invalidatesTags: (_result, _error, id) => [{ type: "BlogPost", id }],
+      query: (id) => ({
+        url: `/blogs/delete/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: (_, __, id) => [
+        { type: "BlogPost", id },
+        { type: "BlogPost", id: "LIST" },
+      ],
     }),
   }),
 });
 
-// Export the auto-generated hooks
 export const {
   useGetBlogPostsQuery,
-  useGetBlogPostQuery,
+  useGetBlogPostByIdQuery,
   useCreateBlogPostMutation,
   useUpdateBlogPostMutation,
   useDeleteBlogPostMutation,

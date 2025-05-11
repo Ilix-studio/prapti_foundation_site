@@ -3,7 +3,15 @@ import { useSelector, useDispatch } from "react-redux";
 import { Link, Navigate } from "react-router-dom";
 
 import { Button } from "@/components/ui/button";
-import { PawPrint, LogOut, Plus, Edit, Trash2, BookOpen } from "lucide-react";
+import {
+  PawPrint,
+  LogOut,
+  Plus,
+  Edit,
+  Trash2,
+  BookOpen,
+  Home,
+} from "lucide-react";
 import {
   logout,
   selectAuth,
@@ -40,6 +48,16 @@ const AdminDashboard: React.FC = () => {
             <div className='text-sm text-gray-600'>
               Logged in as <span className='font-medium'>{user?.name}</span>
             </div>
+            <Link to='/'>
+              <Button
+                variant='outline'
+                size='sm'
+                className='text-orange-500 border-orange-500 hover:bg-orange-50'
+              >
+                <Home className='h-4 w-4 mr-2' />
+                View Website
+              </Button>
+            </Link>
             <Button
               variant='ghost'
               size='sm'
@@ -109,9 +127,7 @@ const AdminDashboard: React.FC = () => {
                         {post.category}
                       </span>
                     </td>
-                    <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-500'>
-                      {post.date}
-                    </td>
+
                     <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-500'>
                       {post.author}
                     </td>

@@ -1,19 +1,57 @@
+// src/mainComponents/Admin/LoginUser.tsx
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { AlertCircle, Eye, EyeOff, LogIn, ArrowLeft } from "lucide-react";
-import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import { useLoginAdminMutation } from "@/redux-store/services/adminApi";
+import { useSelector } from "react-redux";
+import { selectAuth } from "@/redux-store/slices/authSlice";
 
 const LoginUser: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [showPassword] = useState(false);
-  const [error] = useState("");
-  const [isSubmitting] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
-  const handleSubmit = () => {};
-  const toggleShowPassword = () => {};
+  const navigate = useNavigate();
+  const { isAuthenticated, error } = useSelector(selectAuth);
+
+  // Use the RTK Query mutation hook
+  const [loginAdmin, { isLoading }] = useLoginAdminMutation();
+
+  // Redirect if already authenticated
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate("/admin/dashboard");
+    }
+  }, [isAuthenticated, navigate]);
+
+  const toggleShowPassword = () => {
+    setShowPassword(!showPassword);
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setErrorMessage("");
+
+    if (!email || !password) {
+      setErrorMessage("Please enter both email and password");
+      return;
+    }
+
+    try {
+      const result = await loginAdmin({ email, password }).unwrap();
+      if (!result.success) {
+        setErrorMessage(result.message || "Login failed");
+      }
+    } catch (err: any) {
+      setErrorMessage(err.data?.message || "Login failed. Please try again.");
+    }
+  };
+
   return (
     <div>
       <div className='container max-w-md px-4 py-16'>
@@ -23,10 +61,10 @@ const LoginUser: React.FC = () => {
             <p className='text-gray-500'>Sign in to access the admin area</p>
           </div>
 
-          {error && (
+          {(errorMessage || error) && (
             <div className='p-3 rounded-md bg-red-50 border border-red-200 text-red-600 flex items-center gap-2'>
               <AlertCircle className='h-5 w-5' />
-              <span>{error}</span>
+              <span>{errorMessage || error}</span>
             </div>
           )}
 
@@ -42,7 +80,7 @@ const LoginUser: React.FC = () => {
                 required
               />
               <p className='text-xs text-gray-500'>
-                Demo: Use admin@example.com for admin access
+                Demo: Use praptifoundation@gmail.com for admin access
               </p>
             </div>
 
@@ -72,16 +110,16 @@ const LoginUser: React.FC = () => {
                 </button>
               </div>
               <p className='text-xs text-gray-500'>
-                Demo: Use "password" as the password
+                Demo: Use "admin123" as the password
               </p>
             </div>
 
             <Button
               type='submit'
               className='w-full bg-orange-500 hover:bg-orange-600'
-              disabled={isSubmitting}
+              disabled={isLoading}
             >
-              {isSubmitting ? (
+              {isLoading ? (
                 <span className='flex items-center gap-2'>
                   <svg
                     className='animate-spin -ml-1 mr-2 h-4 w-4 text-white'

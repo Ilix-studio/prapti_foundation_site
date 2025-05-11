@@ -1,17 +1,11 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { RootState } from "../store";
 
-// Define default admin credentials
-const DEFAULT_ADMIN = {
-  email: "admin@prapti.org",
-  password: "admin123",
-};
-
-// Define user type
-interface User {
+// Define user types
+export interface User {
   id: string;
   name: string;
   email: string;
-  role: "admin" | "user";
 }
 
 // Define the authentication state
@@ -23,23 +17,10 @@ export interface AuthState {
   loading: boolean;
 }
 
-// Initialize state from localStorage if available
-const getUserFromStorage = (): User | null => {
-  const user = localStorage.getItem("user");
-  if (user) {
-    return JSON.parse(user);
-  }
-  return null;
-};
-
-const getTokenFromStorage = (): string | null => {
-  return localStorage.getItem("token");
-};
-
 const initialState: AuthState = {
-  user: getUserFromStorage(),
-  token: getTokenFromStorage(),
-  isAuthenticated: !!getTokenFromStorage(),
+  user: null,
+  token: null,
+  isAuthenticated: false,
   error: null,
   loading: false,
 };
@@ -48,54 +29,37 @@ const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    loginStart: (state) => {
-      state.loading = true;
-      state.error = null;
-    },
     loginSuccess: (
       state,
       action: PayloadAction<{ user: User; token: string }>
     ) => {
+      state.isAuthenticated = true;
       state.user = action.payload.user;
       state.token = action.payload.token;
-      state.isAuthenticated = true;
-      state.loading = false;
       state.error = null;
-
-      // Save to localStorage
-      localStorage.setItem("user", JSON.stringify(action.payload.user));
-      localStorage.setItem("token", action.payload.token);
-    },
-    loginFailure: (state, action: PayloadAction<string>) => {
-      state.user = null;
-      state.token = null;
-      state.isAuthenticated = false;
       state.loading = false;
-      state.error = action.payload;
     },
     logout: (state) => {
+      state.isAuthenticated = false;
       state.user = null;
       state.token = null;
-      state.isAuthenticated = false;
-
-      // Clear localStorage
-      localStorage.removeItem("user");
-      localStorage.removeItem("token");
+      state.error = null;
+    },
+    setLoading: (state, action: PayloadAction<boolean>) => {
+      state.loading = action.payload;
+    },
+    setError: (state, action: PayloadAction<string>) => {
+      state.error = action.payload;
+      state.loading = false;
     },
   },
 });
 
-// Export actions
-export const { loginStart, loginSuccess, loginFailure, logout } =
-  authSlice.actions;
+export const { loginSuccess, logout, setLoading, setError } = authSlice.actions;
 
-// Export selector
-export const selectAuth = (state: { auth: AuthState }) => state.auth;
-export const selectIsAdmin = (state: { auth: AuthState }) =>
-  state.auth.isAuthenticated && state.auth.user?.role === "admin";
+// Selectors
+export const selectAuth = (state: RootState) => state.auth;
+export const selectIsAdmin = (state: RootState) =>
+  state.auth.isAuthenticated && state.auth.user !== null;
 
-// Export reducer
 export default authSlice.reducer;
-
-// Export default admin credentials for mock authentication
-export { DEFAULT_ADMIN };
