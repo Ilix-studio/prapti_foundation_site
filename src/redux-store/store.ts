@@ -14,8 +14,10 @@ import {
 import createIdbStorage from "redux-persist-indexeddb-storage";
 
 import authReducer from "./slices/authSlice";
-import { adminAuthApi } from "./services/adminApi";
+
 import { blogApi } from "./services/blogApi";
+import { cloudinaryApi } from "./services/cloudinaryApi";
+import { adminAuthApi } from "./services/adminApi";
 
 // Create IndexedDB storage for redux-persist
 const idbStorage = createIdbStorage("prapti-foundation-db");
@@ -32,6 +34,7 @@ const rootReducer = combineReducers({
   auth: authReducer,
   [adminAuthApi.reducerPath]: adminAuthApi.reducer,
   [blogApi.reducerPath]: blogApi.reducer,
+  [cloudinaryApi.reducerPath]: cloudinaryApi.reducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
@@ -44,7 +47,11 @@ export const store = configureStore({
       serializableCheck: {
         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
       },
-    }).concat(adminAuthApi.middleware, blogApi.middleware),
+    }).concat(
+      adminAuthApi.middleware,
+      blogApi.middleware,
+      cloudinaryApi.middleware
+    ),
 });
 
 // Create persistor for use with PersistGate

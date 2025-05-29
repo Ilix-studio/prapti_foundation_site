@@ -22,6 +22,10 @@ import {
   useUpdateBlogPostMutation,
 } from "@/redux-store/services/blogApi";
 
+import { useDeleteImageMutation } from "@/redux-store/services/cloudinaryApi";
+import cloudinaryService from "@/redux-store/slices/cloudinaryService";
+import ImageUpload from "./ImageUpload";
+
 const AddBlogForm: React.FC = () => {
   const navigate = useNavigate();
   const { id } = useParams<{ id?: string }>();
@@ -33,6 +37,7 @@ const AddBlogForm: React.FC = () => {
     useCreateBlogPostMutation();
   const [updateBlogPost, { isLoading: isUpdating }] =
     useUpdateBlogPostMutation();
+  const [deleteImage] = useDeleteImageMutation();
   const { data: existingPost, isLoading: isFetching } = useGetBlogPostByIdQuery(
     id!,
     {
@@ -44,7 +49,8 @@ const AddBlogForm: React.FC = () => {
   const [excerpt, setExcerpt] = useState("");
   const [content, setContent] = useState("");
   const [category, setCategory] = useState("");
-  const [image, setImage] = useState("/placeholder.svg?height=450&width=800");
+  const [image, setImage] = useState("");
+  const [previousImage, setPreviousImage] = useState("");
   const [error, setError] = useState<string | null>(null);
 
   // If not an admin, redirect to login
@@ -60,6 +66,7 @@ const AddBlogForm: React.FC = () => {
       setContent(existingPost.content);
       setCategory(existingPost.category);
       setImage(existingPost.image);
+      setPreviousImage(existingPost.image);
     }
   }, [isEditMode, existingPost]);
 
@@ -81,6 +88,20 @@ const AddBlogForm: React.FC = () => {
         image,
       };
 
+      // If we're in edit mode and the image has changed, we should delete the old image
+      if (isEditMode && previousImage && image !== previousImage) {
+        try {
+          const publicId = cloudinaryService.extractPublicId(previousImage);
+          if (publicId) {
+            await deleteImage(publicId).unwrap();
+            console.log("Previous image deleted successfully");
+          }
+        } catch (deleteError) {
+          console.error("Failed to delete previous image:", deleteError);
+          // Don't block the post update if image deletion fails
+        }
+      }
+
       if (isEditMode && id) {
         // Update existing blog post
         await updateBlogPost({ id, data: blogData }).unwrap();
@@ -97,6 +118,10 @@ const AddBlogForm: React.FC = () => {
       );
       console.error("Error saving blog post:", err);
     }
+  };
+
+  const handleImageUploaded = (imageUrl: string) => {
+    setImage(imageUrl);
   };
 
   const categories = [
@@ -151,7 +176,6 @@ const AddBlogForm: React.FC = () => {
 
               <div className='space-y-2'>
                 <Label htmlFor='title'>Title</Label>
-
                 <Input
                   id='title'
                   value={title}
@@ -189,20 +213,12 @@ const AddBlogForm: React.FC = () => {
                 />
               </div>
 
-              <div className='space-y-2'>
-                <Label htmlFor='image'>Image URL</Label>
-                <Input
-                  id='image'
-                  value={image}
-                  onChange={(e) => setImage(e.target.value)}
-                  placeholder='Enter image URL'
-                  required
-                />
-                <p className='text-xs text-gray-500'>
-                  For this demo, you can use placeholder images like:
-                  /placeholder.svg?height=450&width=800&text=Your+Text
-                </p>
-              </div>
+              {/* Replace file input with our new ImageUpload component */}
+              <ImageUpload
+                currentImageUrl={image}
+                onImageUploaded={handleImageUploaded}
+                label='Featured Image'
+              />
 
               <div className='space-y-2'>
                 <Label htmlFor='content'>Content</Label>
@@ -237,6 +253,39 @@ const AddBlogForm: React.FC = () => {
               </div>
             </form>
           )}
+
+          {/* Writing Guidelines */}
+          <div className='border-t pt-4 mt-6'>
+            <h4 className='font-semibold text-gray-800 mb-3'>
+              Writing Guidelines:
+            </h4>
+            <ul className='space-y-2 text-xs text-gray-600'>
+              <li>
+                • <strong>Title:</strong> Make it engaging and specific (include
+                pet names when possible)
+              </li>
+              <li>
+                • <strong>Excerpt:</strong> Summarize the main story in 1-2
+                sentences
+              </li>
+              <li>
+                • <strong>Content:</strong> Use subheadings, tell a complete
+                story, include emotional moments
+              </li>
+              <li>
+                • <strong>Length:</strong> Aim for 300-800 words depending on
+                the story
+              </li>
+              <li>
+                • <strong>Images:</strong> Include high-quality photos of the
+                pets mentioned
+              </li>
+              <li>
+                • <strong>Call to Action:</strong> End with how readers can help
+                or get involved
+              </li>
+            </ul>
+          </div>
         </div>
       </main>
     </div>

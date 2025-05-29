@@ -1,7 +1,7 @@
 // src/mainComponents/BlogPosts/SmallBlogUI/Blog.tsx
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import { PlusCircle, Search, Loader2 } from "lucide-react";
+
+import { Search, Loader2, PlusCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -10,10 +10,15 @@ import { Header } from "@/mainComponents/Header";
 import Footer from "@/mainComponents/Footer";
 
 import { useGetBlogPostsQuery } from "@/redux-store/services/blogApi";
+import { selectIsAdmin } from "@/redux-store/slices/authSlice";
+import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const BlogPage: React.FC = () => {
   const { data: blogPosts, isLoading, error } = useGetBlogPostsQuery();
   const [searchTerm, setSearchTerm] = useState("");
+
+  const isAdmin = useSelector(selectIsAdmin);
 
   // Filter posts based on search term
   const filteredPosts = blogPosts
@@ -60,16 +65,16 @@ const BlogPage: React.FC = () => {
               </p>
             </div>
 
-            {/* Add Blog Post button for admins - right on desktop, bottom on mobile */}
-
-            <div className='pt-4 md:pt-0 w-full md:w-auto flex justify-center md:justify-end'>
-              <Link to='/admin/blog/new'>
-                <Button className='bg-orange-500 hover:bg-orange-600'>
-                  <PlusCircle className='mr-2 h-4 w-4' />
-                  Add New Post
-                </Button>
-              </Link>
-            </div>
+            {isAdmin && (
+              <div className='pt-4 md:pt-0 w-full md:w-auto flex justify-center md:justify-end'>
+                <Link to='/admin/blog/new'>
+                  <Button className='bg-orange-500 hover:bg-orange-600'>
+                    <PlusCircle className='mr-2 h-4 w-4' />
+                    Add New Post
+                  </Button>
+                </Link>
+              </div>
+            )}
           </div>
         </div>
       </section>

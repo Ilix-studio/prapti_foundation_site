@@ -1,10 +1,10 @@
 // src/redux-store/services/blogApi.ts
 import { createApi } from "@reduxjs/toolkit/query/react";
-import { baseQuery } from "../../lib/apiConfig";
+import { baseQuery, handleApiError } from "../../lib/apiConfig";
 
+// Define types for blog posts
 export interface BlogPost {
   _id: string;
-  id?: string;
   title: string;
   excerpt: string;
   content: string;
@@ -15,96 +15,82 @@ export interface BlogPost {
   updatedAt: string;
 }
 
-export interface BlogResponse {
-  success: boolean;
-  count?: number;
-  data: BlogPost[];
-}
-
-export interface BlogPostResponse {
-  success: boolean;
-  data: BlogPost;
-}
-
-export interface CreateBlogRequest {
-  title: string;
-  excerpt: string;
-  content: string;
-  category: string;
-  image: string;
-  author?: string;
-}
-
+// Create the blog API service
 export const blogApi = createApi({
   reducerPath: "blogApi",
   baseQuery,
-  tagTypes: ["BlogPost"],
+  tagTypes: ["BlogPosts", "BlogPost"],
   endpoints: (builder) => ({
     // Get all blog posts
     getBlogPosts: builder.query<BlogPost[], void>({
       query: () => "/blogs",
-      transformResponse: (response: BlogResponse) => response.data,
       providesTags: (result) =>
         result
           ? [
               ...result.map(({ _id }) => ({
-                type: "BlogPost" as const,
+                type: "BlogPosts" as const,
                 id: _id,
               })),
-              { type: "BlogPost", id: "LIST" },
+              { type: "BlogPosts", id: "LIST" },
             ]
-          : [{ type: "BlogPost", id: "LIST" }],
+          : [{ type: "BlogPosts", id: "LIST" }],
+      transformErrorResponse: (response) => handleApiError(response),
     }),
 
     // Get a single blog post by ID
     getBlogPostById: builder.query<BlogPost, string>({
       query: (id) => `/blogs/${id}`,
-      transformResponse: (response: BlogPostResponse) => response.data,
       providesTags: (_, __, id) => [{ type: "BlogPost", id }],
+      transformErrorResponse: (response) => handleApiError(response),
     }),
 
     // Create a new blog post
-    createBlogPost: builder.mutation<BlogPost, CreateBlogRequest>({
-      query: (blogPost) => ({
+    createBlogPost: builder.mutation<
+      { success: boolean; message: string; data: BlogPost },
+      Partial<BlogPost>
+    >({
+      query: (data) => ({
         url: "/blogs/create",
         method: "POST",
-        body: blogPost,
+        body: data,
       }),
-      transformResponse: (response: BlogPostResponse) => response.data,
-      invalidatesTags: [{ type: "BlogPost", id: "LIST" }],
+      invalidatesTags: [{ type: "BlogPosts", id: "LIST" }],
+      transformErrorResponse: (response) => handleApiError(response),
     }),
 
-    // Update a blog post
+    // Update an existing blog post
     updateBlogPost: builder.mutation<
-      BlogPost,
-      { id: string; data: Partial<CreateBlogRequest> }
+      { success: boolean; message: string; data: BlogPost },
+      { id: string; data: Partial<BlogPost> }
     >({
       query: ({ id, data }) => ({
         url: `/blogs/update/${id}`,
         method: "PUT",
         body: data,
       }),
-      transformResponse: (response: BlogPostResponse) => response.data,
       invalidatesTags: (_, __, { id }) => [
+        { type: "BlogPosts", id: "LIST" },
         { type: "BlogPost", id },
-        { type: "BlogPost", id: "LIST" },
       ],
+      transformErrorResponse: (response) => handleApiError(response),
     }),
 
     // Delete a blog post
-    deleteBlogPost: builder.mutation<void, string>({
+    deleteBlogPost: builder.mutation<
+      { success: boolean; message: string },
+      string
+    >({
       query: (id) => ({
         url: `/blogs/delete/${id}`,
         method: "DELETE",
       }),
-      invalidatesTags: (_, __, id) => [
-        { type: "BlogPost", id },
-        { type: "BlogPost", id: "LIST" },
-      ],
+      invalidatesTags: [{ type: "BlogPosts", id: "LIST" }],
+      transformErrorResponse: (response) => handleApiError(response),
     }),
   }),
 });
 
+// Export hooks for using the API endpoints
 export const {
   useGetBlogPostsQuery,
   useGetBlogPostByIdQuery,
