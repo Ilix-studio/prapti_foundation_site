@@ -23,7 +23,7 @@ export const blogApi = createApi({
   endpoints: (builder) => ({
     // Get all blog posts
     getBlogPosts: builder.query<BlogPost[], void>({
-      query: () => "/blogs",
+      query: () => "/blogs/getAll",
       providesTags: (result) =>
         result
           ? [
