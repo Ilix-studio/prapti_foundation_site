@@ -43,10 +43,22 @@ export function Header() {
               Blogs
             </Link>
             <Link
-              to='/adopt'
+              to='/gallery'
               className='text-sm font-medium hover:text-primary transition-colors'
             >
-              Adopt
+              Gallery
+            </Link>
+            <Link
+              to='/volunteer'
+              className='text-sm font-medium hover:text-primary transition-colors'
+            >
+              Volunteer
+            </Link>
+            <Link
+              to='/volunteer'
+              className='text-sm font-medium hover:text-primary transition-colors'
+            >
+              Contact
             </Link>
           </nav>
         </div>
@@ -76,13 +88,7 @@ export function Header() {
             >
               About us
             </Link>
-            <Link
-              to='/our-dogs'
-              className='text-sm font-medium hover:text-primary transition-colors'
-              onClick={() => setIsOpen(false)}
-            >
-              Our Dogs
-            </Link>
+
             <Link
               to='/blog'
               className='text-sm font-medium hover:text-primary transition-colors'
@@ -91,11 +97,11 @@ export function Header() {
               Blogs
             </Link>
             <Link
-              to='/adopt'
+              to='/volunteer'
               className='text-sm font-medium hover:text-primary transition-colors'
               onClick={() => setIsOpen(false)}
             >
-              Adopt
+              Join as a Volunteer
             </Link>
             <div className='flex flex-col gap-2 pt-2'>
               <Link to='/adopt' onClick={() => setIsOpen(false)}>

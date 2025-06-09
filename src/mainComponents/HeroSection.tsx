@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import HeroSectionBgImg from "./../assets/A.jpg";
+import HeroSectionBgImg from "./../assets/prapti-main.jpeg";
 
 export function HeroSection() {
   return (
@@ -20,14 +20,14 @@ export function HeroSection() {
 
       <div className='container relative z-10 px-4 md:px-6 py-12 md:py-20'>
         <div className='max-w-3xl space-y-6'>
-          <motion.h1
+          <motion.h2
             className='text-4xl md:text-6xl font-bold text-white'
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
           >
             A Sanctuary for Stray Dogs
-          </motion.h1>
+          </motion.h2>
           <motion.p
             className='text-lg md:text-xl text-white'
             initial={{ opacity: 0, y: 20 }}

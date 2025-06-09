@@ -15,6 +15,8 @@ import AboutUs from "./mainComponents/AboutUs";
 
 import SupportUs from "./mainComponents/SupportUs";
 import VolunteerPage from "./mainComponents/Volunter";
+import GalleryImages from "./mainComponents/Gallery/GalleryImages";
+import GalleryVideos from "./mainComponents/Gallery/GalleryVideos";
 
 function App() {
   return (
@@ -30,6 +32,10 @@ function App() {
       <Route path='/admin/dashboard' element={<AdminDashboard />} />
       <Route path='/admin/blog/new' element={<AddBlogPost />} />
       <Route path='/admin/blog/edit/:id' element={<AddBlogPost />} />
+
+      {/*  Gallery Routes */}
+      <Route path='/g-images' element={<GalleryImages />} />
+      <Route path='/g-videos' element={<GalleryVideos />} />
 
       {/*  Adopt Routes */}
       <Route path='/adopt' element={<AdoptionForm />} />
