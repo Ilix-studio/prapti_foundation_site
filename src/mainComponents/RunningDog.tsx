@@ -12,14 +12,12 @@ const RunningDog: React.FC = () => {
 
   // Initialize audio elements
   useEffect(() => {
-    // Create audio elements for sound files
-    // You can replace these URLs with your own audio files
     barkAudioRef.current = new Audio("/sounds/dog-bark.mp3");
-    runningAudioRef.current = new Audio("/sounds/dog-running.mp3");
+    runningAudioRef.current = new Audio("/sounds/dog-bark.mp3");
 
     // Set audio properties
     if (barkAudioRef.current) {
-      barkAudioRef.current.volume = 0.6;
+      barkAudioRef.current.volume = 0.7;
       barkAudioRef.current.preload = "auto";
     }
 
