@@ -7,6 +7,9 @@ import LatestBlogPosts from "./mainComponents/BlogPosts/LatestBlogPosts";
 import DonateUs from "./mainComponents/DonateUs";
 import Footer from "./mainComponents/Footer";
 
+import RunningDog from "./mainComponents/RunningDog";
+import ContactUs from "./mainComponents/ContactUs";
+
 const Home: React.FC = () => {
   return (
     <main className='min-h-screen flex flex-col'>
@@ -16,6 +19,8 @@ const Home: React.FC = () => {
       <LatestBlogPosts />
       <OurMission />
       <DonateUs />
+      <RunningDog />
+      <ContactUs />
       <Footer />
     </main>
   );

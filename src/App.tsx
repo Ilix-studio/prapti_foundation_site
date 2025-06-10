@@ -17,6 +17,7 @@ import SupportUs from "./mainComponents/SupportUs";
 import VolunteerPage from "./mainComponents/Volunter";
 import GalleryImages from "./mainComponents/Gallery/GalleryImages";
 import GalleryVideos from "./mainComponents/Gallery/GalleryVideos";
+import ContactUs from "./mainComponents/ContactUs";
 
 function App() {
   return (
@@ -48,6 +49,7 @@ function App() {
       <Route path='/support' element={<SupportUs />} />
 
       <Route path='/volunteer' element={<VolunteerPage />} />
+      <Route path='/contact' element={<ContactUs />} />
 
       <Route path='*' element={<NotFound />} />
     </Routes>

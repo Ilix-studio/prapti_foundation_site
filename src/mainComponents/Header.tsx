@@ -55,7 +55,7 @@ export function Header() {
               Volunteer
             </Link>
             <Link
-              to='/volunteer'
+              to='/contact'
               className='text-sm font-medium hover:text-primary transition-colors'
             >
               Contact
