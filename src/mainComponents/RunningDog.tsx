@@ -10,20 +10,28 @@ const RunningDog: React.FC = () => {
   const barkAudioRef = useRef<HTMLAudioElement | null>(null);
   const runningAudioRef = useRef<HTMLAudioElement | null>(null);
 
+  // Ref to store the running timeout so we can clear it
+  const runningTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
   // Initialize audio elements
   useEffect(() => {
+    // Create bark audio element
     barkAudioRef.current = new Audio("/sounds/dog-bark.mp3");
 
-    // Set audio properties
+    // Create running audio element (you can use a running/panting sound)
+    runningAudioRef.current = new Audio();
+
+    // Set audio properties for bark sound
     if (barkAudioRef.current) {
       barkAudioRef.current.volume = 0.7;
       barkAudioRef.current.preload = "auto";
     }
 
+    // Set audio properties for running sound
     if (runningAudioRef.current) {
       runningAudioRef.current.volume = 0.4;
       runningAudioRef.current.preload = "auto";
-      runningAudioRef.current.loop = true; // Loop running sound
+      runningAudioRef.current.loop = true; // Loop running sound while running
     }
 
     // Cleanup function
@@ -35,6 +43,9 @@ const RunningDog: React.FC = () => {
       if (runningAudioRef.current) {
         runningAudioRef.current.pause();
         runningAudioRef.current = null;
+      }
+      if (runningTimeoutRef.current) {
+        clearTimeout(runningTimeoutRef.current);
       }
     };
   }, []);
@@ -52,7 +63,7 @@ const RunningDog: React.FC = () => {
     }
   };
 
-  const playRunningSound = () => {
+  const startRunningSound = () => {
     if (soundEnabled && runningAudioRef.current) {
       try {
         runningAudioRef.current.currentTime = 0;
@@ -72,21 +83,71 @@ const RunningDog: React.FC = () => {
     }
   };
 
-  const startRunning = () => {
-    setIsRunning(true);
-    // Dog barks when starting to run
-    bark();
-    // Play running sound
-    playRunningSound();
+  const stopRunning = () => {
+    // Clear the running timeout if it exists
+    if (runningTimeoutRef.current) {
+      clearTimeout(runningTimeoutRef.current);
+      runningTimeoutRef.current = null;
+    }
 
-    // Stop running after animation completes (8 seconds)
+    // Stop running state
+    setIsRunning(false);
+
+    // Stop running sound
+    stopRunningSound();
+
+    // Clear any bark state
+    setIsBarking(false);
+    setBarkText("");
+  };
+
+  const startRunning = () => {
+    if (isRunning) return; // Prevent multiple runs
+
+    // Clear any existing bark state immediately
+    setIsBarking(false);
+    setBarkText("");
+
+    setIsRunning(true);
+
+    // Special bark for starting to run (bypasses the running check)
+    const barkSounds = ["Woof!", "Arf!", "Ruff!", "Bow wow!"];
+    const randomBark =
+      barkSounds[Math.floor(Math.random() * barkSounds.length)];
+
+    setIsBarking(true);
+    setBarkText(randomBark);
+    playBarkSound();
+
     setTimeout(() => {
+      setIsBarking(false);
+      setBarkText("");
+    }, 1500);
+
+    // Start running sound immediately when running begins
+    startRunningSound();
+
+    // Stop running after animation completes (6 seconds)
+    runningTimeoutRef.current = setTimeout(() => {
       setIsRunning(false);
-      stopRunningSound(); // Stop the running sound
-    }, 8000);
+      // Stop the running sound when running ends
+      stopRunningSound();
+
+      // Clear any remaining bark state when running ends
+      setTimeout(() => {
+        setIsBarking(false);
+        setBarkText("");
+      }, 100);
+
+      // Clear the timeout ref
+      runningTimeoutRef.current = null;
+    }, 6000);
   };
 
   const bark = () => {
+    // Don't bark if currently running (except for the initial run bark)
+    if (isRunning) return;
+
     const barkSounds = ["Woof!", "Arf!", "Ruff!", "Bow wow!"];
     const randomBark =
       barkSounds[Math.floor(Math.random() * barkSounds.length)];
@@ -105,21 +166,46 @@ const RunningDog: React.FC = () => {
 
   // Random barking every 5-10 seconds when not running
   useEffect(() => {
-    const randomBarkInterval = setInterval(() => {
-      if (!isRunning && Math.random() > 0.7) {
-        bark();
-      }
-    }, Math.random() * 5000 + 5000);
+    let randomBarkInterval: NodeJS.Timeout;
 
-    return () => clearInterval(randomBarkInterval);
+    if (!isRunning) {
+      const setRandomBark = () => {
+        randomBarkInterval = setTimeout(() => {
+          if (!isRunning && Math.random() > 0.7) {
+            bark();
+          }
+          if (!isRunning) {
+            setRandomBark(); // Schedule next bark
+          }
+        }, Math.random() * 5000 + 5000);
+      };
+
+      // Start the random barking cycle
+      setRandomBark();
+    }
+
+    return () => {
+      if (randomBarkInterval) {
+        clearTimeout(randomBarkInterval);
+      }
+    };
   }, [isRunning]);
+
+  // Stop running sound if sound is disabled while running
+  useEffect(() => {
+    if (!soundEnabled && isRunning) {
+      stopRunningSound();
+    } else if (soundEnabled && isRunning) {
+      startRunningSound();
+    }
+  }, [soundEnabled, isRunning]);
 
   return (
     <div className='relative w-full h-32 bg-gradient-to-r from-amber-50 to-orange-50 rounded-lg overflow-hidden border border-orange-100'>
       {/* Sound Toggle Button */}
       <button
         onClick={() => setSoundEnabled(!soundEnabled)}
-        className={`absolute top-2 left-2 px-3 py-1 rounded-full text-xs font-medium transition-all duration-200 ${
+        className={`absolute top-2 left-2 px-3 py-1 rounded-full text-xs font-medium transition-all duration-200 z-10 ${
           soundEnabled
             ? "bg-green-500 hover:bg-green-600 text-white"
             : "bg-gray-300 hover:bg-gray-400 text-gray-600"
@@ -150,7 +236,7 @@ const RunningDog: React.FC = () => {
 
       {/* Running Dog */}
       <div
-        className={`absolute bottom-4 transition-all duration-[8000ms] ease-linear ${
+        className={`absolute bottom-4 transition-all duration-[6000ms] ease-linear ${
           isRunning ? "right-[calc(100%-80px)]" : "right-4"
         }`}
       >
@@ -281,21 +367,52 @@ const RunningDog: React.FC = () => {
               <div className='w-6 h-3 bg-orange-300 rounded-full opacity-40 animate-ping animation-delay-200'></div>
             </div>
           )}
+
+          {/* Running speed lines */}
+          {isRunning && (
+            <div className='absolute -left-8 top-1/2 transform -translate-y-1/2'>
+              <div className='flex flex-col space-y-1'>
+                <div className='w-6 h-0.5 bg-orange-400 animate-pulse'></div>
+                <div className='w-4 h-0.5 bg-orange-300 animate-pulse animation-delay-200'></div>
+                <div className='w-5 h-0.5 bg-orange-400 animate-pulse animation-delay-500'></div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
-      {/* Control Button */}
-      <button
-        onClick={startRunning}
-        disabled={isRunning}
-        className={`absolute top-2 right-2 px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
-          isRunning
-            ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-            : "bg-green-500 hover:bg-orange-600 text-white shadow-lg hover:shadow-xl transform hover:scale-105"
-        }`}
-      >
-        {isRunning ? "Running..." : "Make Dog Run!"}
-      </button>
+      {/* Control Buttons */}
+      <div className='absolute top-2 right-2 flex gap-2 z-10'>
+        {/* Start/Run Button */}
+        <button
+          onClick={startRunning}
+          disabled={isRunning}
+          className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
+            isRunning
+              ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+              : "bg-orange-500 hover:bg-orange-600 text-white shadow-lg hover:shadow-xl transform hover:scale-105"
+          }`}
+        >
+          {isRunning ? "Running..." : "Make Dog Run!"}
+        </button>
+
+        {/* Stop Button */}
+        {isRunning && (
+          <button
+            onClick={stopRunning}
+            className='px-4 py-2 rounded-full text-sm font-medium bg-red-500 hover:bg-red-600 text-white shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200'
+          >
+            ⏹️ Stop
+          </button>
+        )}
+      </div>
+
+      {/* Status indicator */}
+      {isRunning && (
+        <div className='absolute bottom-2 left-2 px-2 py-1 bg-green-500 text-white text-xs rounded-full animate-pulse'>
+          🏃‍♂️ Running with sound!
+        </div>
+      )}
 
       {/* Decorative elements */}
       <div className='absolute top-4 left-1/4 w-2 h-2 bg-yellow-300 rounded-full animate-pulse'></div>
@@ -304,20 +421,5 @@ const RunningDog: React.FC = () => {
     </div>
   );
 };
-
-// Add custom animation delay utility
-const style = document.createElement("style");
-style.textContent = `
-  .animation-delay-200 {
-    animation-delay: 200ms;
-  }
-  .animation-delay-500 {
-    animation-delay: 500ms;
-  }
-  .animation-delay-1000 {
-    animation-delay: 1000ms;
-  }
-`;
-document.head.appendChild(style);
 
 export default RunningDog;
