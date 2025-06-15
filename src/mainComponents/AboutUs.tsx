@@ -5,6 +5,9 @@ import Footer from "@/mainComponents/Footer";
 import { Button } from "@/components/ui/button";
 import { Mail, Phone, MapPin, Heart, Users, Calendar, Dog } from "lucide-react";
 import { Link } from "react-router-dom";
+import aboutusLogo from "./../assets/aboutUS.png";
+import drPrapti from "./../assets/DrPrapti.png";
+import values from "./../assets/values.png";
 
 const AboutUs: React.FC = () => {
   return (
@@ -68,7 +71,7 @@ const AboutUs: React.FC = () => {
             </div>
             <div className='relative rounded-lg overflow-hidden'>
               <img
-                src='/placeholder.svg?height=600&width=800&text=Prapti+Foundation+Story'
+                src={aboutusLogo}
                 alt="Prapti Foundation's journey"
                 className='w-full h-full object-cover'
               />
@@ -150,8 +153,8 @@ const AboutUs: React.FC = () => {
             <div className='bg-white p-6 rounded-lg shadow-sm text-center'>
               <div className='w-24 h-24 rounded-full overflow-hidden mx-auto mb-4'>
                 <img
-                  src='/placeholder.svg?height=96&width=96&text=KP'
-                  alt='Krishnendu Paul'
+                  src={drPrapti}
+                  alt='Dr Prapti Phukan'
                   className='w-full h-full object-cover'
                 />
               </div>
@@ -258,7 +261,7 @@ const AboutUs: React.FC = () => {
           <div className='grid gap-12 lg:grid-cols-2 lg:gap-16 items-center'>
             <div className='order-2 lg:order-1 relative rounded-lg overflow-hidden'>
               <img
-                src='/placeholder.svg?height=600&width=800&text=Our+Values'
+                src={values}
                 alt="Prapti Foundation's values"
                 className='w-full h-full object-cover'
               />

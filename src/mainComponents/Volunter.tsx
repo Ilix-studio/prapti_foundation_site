@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { motion } from "framer-motion";
 import { Header } from "@/mainComponents/Header";
 import Footer from "@/mainComponents/Footer";
 import { Button } from "@/components/ui/button";
@@ -37,6 +36,7 @@ import {
   AlertCircle,
   PawPrint,
 } from "lucide-react";
+import values from "./../assets/values.png";
 
 interface FormData {
   firstName: string;
@@ -73,6 +73,18 @@ const VolunteerPage: React.FC = () => {
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
 
+  // Function to scroll to the volunteer form
+  const scrollToForm = () => {
+    const formSection = document.getElementById("volunteer-form");
+    if (formSection) {
+      formSection.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+        inline: "nearest",
+      });
+    }
+  };
+
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -103,8 +115,8 @@ const VolunteerPage: React.FC = () => {
     });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
     setIsSubmitting(true);
     setError("");
 
@@ -216,14 +228,9 @@ const VolunteerPage: React.FC = () => {
       <section className='relative py-16 md:py-24 bg-amber-50'>
         <div className='container px-4 md:px-6'>
           <div className='max-w-3xl mx-auto text-center space-y-4'>
-            <motion.h1
-              className='text-4xl font-bold tracking-tighter sm:text-5xl'
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-            >
+            <h1 className='text-4xl font-bold tracking-tighter sm:text-5xl'>
               Volunteer with Us
-            </motion.h1>
+            </h1>
             <p className='text-gray-500 md:text-xl'>
               Join our team of dedicated volunteers and help make a difference
               in the lives of stray dogs in Golaghat.
@@ -264,10 +271,16 @@ const VolunteerPage: React.FC = () => {
                   experience.
                 </p>
               </div>
+              <Button
+                onClick={scrollToForm}
+                className='bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded-md transition-colors duration-200'
+              >
+                Fill The Form
+              </Button>
             </div>
             <div className='relative rounded-lg overflow-hidden'>
               <img
-                src='/placeholder.svg?height=600&width=800&text=Volunteers+with+Dogs'
+                src={values}
                 alt='Volunteers working with dogs'
                 className='w-full h-full object-cover'
               />
@@ -450,7 +463,7 @@ const VolunteerPage: React.FC = () => {
       </section>
 
       {/* Volunteer Application Form */}
-      <section className='py-12 md:py-24'>
+      <section id='volunteer-form' className='py-12 md:py-24'>
         <div className='container px-4 md:px-6'>
           <div className='max-w-3xl mx-auto'>
             <div className='text-center space-y-4 mb-12'>
@@ -498,7 +511,7 @@ const VolunteerPage: React.FC = () => {
               )}
 
               {/* Volunteer Form */}
-              <form onSubmit={handleSubmit} className='space-y-8'>
+              <div onSubmit={handleSubmit} className='space-y-8'>
                 {/* Personal Information */}
                 <div className='space-y-4'>
                   <h3 className='text-lg font-semibold border-b pb-2'>
@@ -727,7 +740,7 @@ const VolunteerPage: React.FC = () => {
                 {/* Submit button */}
                 <div className='pt-4'>
                   <Button
-                    type='submit'
+                    onClick={handleSubmit}
                     className='w-full bg-orange-500 hover:bg-orange-600'
                     disabled={isSubmitting}
                   >
@@ -760,7 +773,7 @@ const VolunteerPage: React.FC = () => {
                     )}
                   </Button>
                 </div>
-              </form>
+              </div>
             </div>
           </div>
         </div>

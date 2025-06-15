@@ -1,4 +1,5 @@
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useLocation } from "react-router-dom";
+import { useEffect } from "react";
 import "./App.css";
 import Home from "./Home";
 import BlogPage from "./mainComponents/BlogPosts/SmallBlogUI/Blog";
@@ -18,8 +19,15 @@ import VolunteerPage from "./mainComponents/Volunter";
 import GalleryImages from "./mainComponents/Gallery/GalleryImages";
 import GalleryVideos from "./mainComponents/Gallery/GalleryVideos";
 import ContactUs from "./mainComponents/ContactUs";
+import GalleryPage from "./mainComponents/Gallery/GalleryPage";
 
 function App() {
+  const location = useLocation();
+
+  // Scroll to top when route changes
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location.pathname]);
   return (
     <Routes>
       <Route path='/' element={<Home />} />
@@ -35,6 +43,7 @@ function App() {
       <Route path='/admin/blog/edit/:id' element={<AddBlogPost />} />
 
       {/*  Gallery Routes */}
+      <Route path='/gallery' element={<GalleryPage />} />
       <Route path='/g-images' element={<GalleryImages />} />
       <Route path='/g-videos' element={<GalleryVideos />} />
 
