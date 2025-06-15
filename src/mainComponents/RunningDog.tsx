@@ -144,62 +144,6 @@ const RunningDog: React.FC = () => {
     }, 6000);
   };
 
-  const bark = () => {
-    // Don't bark if currently running (except for the initial run bark)
-    if (isRunning) return;
-
-    const barkSounds = ["Woof!", "Arf!", "Ruff!", "Bow wow!"];
-    const randomBark =
-      barkSounds[Math.floor(Math.random() * barkSounds.length)];
-
-    setIsBarking(true);
-    setBarkText(randomBark);
-
-    // Play bark sound
-    playBarkSound();
-
-    setTimeout(() => {
-      setIsBarking(false);
-      setBarkText("");
-    }, 1500);
-  };
-
-  // Random barking every 5-10 seconds when not running
-  useEffect(() => {
-    let randomBarkInterval: NodeJS.Timeout;
-
-    if (!isRunning) {
-      const setRandomBark = () => {
-        randomBarkInterval = setTimeout(() => {
-          if (!isRunning && Math.random() > 0.7) {
-            bark();
-          }
-          if (!isRunning) {
-            setRandomBark(); // Schedule next bark
-          }
-        }, Math.random() * 5000 + 5000);
-      };
-
-      // Start the random barking cycle
-      setRandomBark();
-    }
-
-    return () => {
-      if (randomBarkInterval) {
-        clearTimeout(randomBarkInterval);
-      }
-    };
-  }, [isRunning]);
-
-  // Stop running sound if sound is disabled while running
-  useEffect(() => {
-    if (!soundEnabled && isRunning) {
-      stopRunningSound();
-    } else if (soundEnabled && isRunning) {
-      startRunningSound();
-    }
-  }, [soundEnabled, isRunning]);
-
   return (
     <div className='relative w-full h-32 bg-gradient-to-r from-amber-50 to-orange-50 rounded-lg overflow-hidden border border-orange-100'>
       {/* Sound Toggle Button */}
