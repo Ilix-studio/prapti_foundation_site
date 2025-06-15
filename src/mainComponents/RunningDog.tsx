@@ -31,7 +31,7 @@ const RunningDog: React.FC = () => {
     if (runningAudioRef.current) {
       runningAudioRef.current.volume = 0.4;
       runningAudioRef.current.preload = "auto";
-      runningAudioRef.current.loop = true; // Loop running sound while running
+      runningAudioRef.current.loop = false; // Loop running sound while running
     }
 
     // Cleanup function
