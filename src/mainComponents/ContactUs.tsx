@@ -14,8 +14,6 @@ import {
   Loader2,
   CheckCircle,
 } from "lucide-react";
-import Footer from "./Footer";
-import { Header } from "./Header";
 
 const ContactUs: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -56,7 +54,6 @@ const ContactUs: React.FC = () => {
 
   return (
     <>
-      <Header />
       <section className='w-full py-12 md:py-24 lg:py-32 bg-gray-50'>
         <div className='container px-4 md:px-6'>
           <div className='grid gap-12 lg:grid-cols-2 lg:gap-16'>
@@ -236,7 +233,6 @@ const ContactUs: React.FC = () => {
           </div>
         </div>
       </section>
-      <Footer />
     </>
   );
 };

@@ -13,7 +13,6 @@ const RunningDog: React.FC = () => {
   // Initialize audio elements
   useEffect(() => {
     barkAudioRef.current = new Audio("/sounds/dog-bark.mp3");
-    runningAudioRef.current = new Audio("/sounds/dog-bark.mp3");
 
     // Set audio properties
     if (barkAudioRef.current) {
