@@ -18,6 +18,7 @@ import authReducer from "./slices/authSlice";
 import { blogApi } from "./services/blogApi";
 import { cloudinaryApi } from "./services/cloudinaryApi";
 import { adminAuthApi } from "./services/adminApi";
+import { volunteerApi } from "./services/volunteerApi";
 
 // Create IndexedDB storage for redux-persist
 const idbStorage = createIdbStorage("prapti-foundation-db");
@@ -35,6 +36,7 @@ const rootReducer = combineReducers({
   [adminAuthApi.reducerPath]: adminAuthApi.reducer,
   [blogApi.reducerPath]: blogApi.reducer,
   [cloudinaryApi.reducerPath]: cloudinaryApi.reducer,
+  [volunteerApi.reducerPath]: volunteerApi.reducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
@@ -50,7 +52,8 @@ export const store = configureStore({
     }).concat(
       adminAuthApi.middleware,
       blogApi.middleware,
-      cloudinaryApi.middleware
+      cloudinaryApi.middleware,
+      volunteerApi.middleware
     ),
 });
 

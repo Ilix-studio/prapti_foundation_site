@@ -15,11 +15,13 @@ import ReportPage from "./mainComponents/ReportAbout/ReportPage";
 import AboutUs from "./mainComponents/AboutUs";
 
 import SupportUs from "./mainComponents/SupportUs";
-import VolunteerPage from "./mainComponents/Volunter";
+
 import GalleryImages from "./mainComponents/Gallery/GalleryImages";
 import GalleryVideos from "./mainComponents/Gallery/GalleryVideos";
 import ContactUs from "./mainComponents/ContactUs";
 import GalleryPage from "./mainComponents/Gallery/GalleryPage";
+import VolunteerPage from "./mainComponents/Volunteer/VolunteerPage";
+import VolunteerDetail from "./mainComponents/Volunteer/VolunteerDetail";
 
 function App() {
   const location = useLocation();
@@ -57,7 +59,10 @@ function App() {
       <Route path='/about' element={<AboutUs />} />
       <Route path='/support' element={<SupportUs />} />
 
+      {/*  Volunteer  Routes */}
       <Route path='/volunteer' element={<VolunteerPage />} />
+      <Route path='/admin/volunteer/:id' element={<VolunteerDetail />} />
+
       <Route path='/contact' element={<ContactUs />} />
 
       <Route path='*' element={<NotFound />} />
