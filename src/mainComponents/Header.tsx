@@ -78,7 +78,7 @@ export function Header() {
           initial={{ opacity: 0, height: 0 }}
           animate={{ opacity: 1, height: "auto" }}
           exit={{ opacity: 0, height: 0 }}
-          transition={{ duration: 0.3 }}
+          transition={{ duration: 0.9 }}
         >
           <nav className='flex flex-col p-4 space-y-4 border-t bg-background'>
             <Link
@@ -95,6 +95,20 @@ export function Header() {
               onClick={() => setIsOpen(false)}
             >
               Blogs
+            </Link>
+            <Link
+              to='/gallery'
+              className='text-sm font-medium hover:text-primary transition-colors'
+              onClick={() => setIsOpen(false)}
+            >
+              Gallery
+            </Link>
+            <Link
+              to='/contact'
+              className='text-sm font-medium hover:text-primary transition-colors'
+              onClick={() => setIsOpen(false)}
+            >
+              Contact us
             </Link>
             <Link
               to='/volunteer'

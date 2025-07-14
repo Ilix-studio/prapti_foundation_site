@@ -47,7 +47,7 @@ export function HeroSection() {
             <Link to='/adopt' className='w-full sm:w-auto'>
               <Button
                 size='lg'
-                className='bg-black hover:bg-gray-800 text-white w-full'
+                className='bg-white/10 backdrop-blur-md border border-white/20 hover:bg-white/20 text-white w-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105'
               >
                 Adopt a dog
               </Button>
