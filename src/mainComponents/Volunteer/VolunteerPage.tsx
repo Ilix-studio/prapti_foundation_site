@@ -449,32 +449,6 @@ const VolunteerPage: React.FC = () => {
             </div>
 
             <div className='bg-white rounded-lg shadow-md p-6 md:p-8'>
-              {/* Success Message */}
-              {success && (
-                <div className='mb-6 p-4 bg-green-50 border border-green-200 rounded-md flex items-start gap-3'>
-                  <Check className='h-5 w-5 text-green-500 mt-0.5' />
-                  <div>
-                    <p className='text-green-600 font-medium'>
-                      Application Submitted Successfully!
-                    </p>
-                    <p className='text-green-600/70 text-sm'>
-                      Thank you for your interest in volunteering. We'll contact
-                      you soon.
-                    </p>
-                  </div>
-                </div>
-              )}
-
-              {/* Error Message */}
-              {error && (
-                <div className='mb-6 p-4 bg-red-50 border border-red-200 rounded-md flex items-start gap-3'>
-                  <AlertCircle className='h-5 w-5 text-red-500 mt-0.5' />
-                  <div>
-                    <p className='text-red-600 font-medium'>{error}</p>
-                  </div>
-                </div>
-              )}
-
               {/* Volunteer Form */}
               <form onSubmit={handleSubmit} className='space-y-6'>
                 {/* Personal Information */}
@@ -672,6 +646,31 @@ const VolunteerPage: React.FC = () => {
                   </Button>
                 </div>
               </form>
+              {/* Success Message */}
+              {success && (
+                <div className='mb-6 p-4 bg-green-50 border border-green-200 rounded-md flex items-start gap-3'>
+                  <Check className='h-5 w-5 text-green-500 mt-0.5' />
+                  <div>
+                    <p className='text-green-600 font-medium'>
+                      Application Submitted Successfully!
+                    </p>
+                    <p className='text-green-600/70 text-sm'>
+                      Thank you for your interest in volunteering. We'll contact
+                      you soon.
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              {/* Error Message */}
+              {error && (
+                <div className='mb-6 p-4 bg-red-50 border border-red-200 rounded-md flex items-start gap-3'>
+                  <AlertCircle className='h-5 w-5 text-red-500 mt-0.5' />
+                  <div>
+                    <p className='text-red-600 font-medium'>{error}</p>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>
