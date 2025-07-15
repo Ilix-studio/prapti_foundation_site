@@ -18,10 +18,11 @@ import SupportUs from "./mainComponents/SupportUs";
 
 import GalleryImages from "./mainComponents/Gallery/GalleryImages";
 import GalleryVideos from "./mainComponents/Gallery/GalleryVideos";
-import ContactUs from "./mainComponents/ContactUs";
+import ContactUs from "./mainComponents/ContactUs/ContactUs";
 import GalleryPage from "./mainComponents/Gallery/GalleryPage";
 import VolunteerPage from "./mainComponents/Volunteer/VolunteerPage";
 import VolunteerDetail from "./mainComponents/Volunteer/VolunteerDetail";
+import ViewMessage from "./mainComponents/ContactUs/ViewMessage";
 
 function App() {
   const location = useLocation();
@@ -63,7 +64,9 @@ function App() {
       <Route path='/volunteer' element={<VolunteerPage />} />
       <Route path='/admin/volunteer/:id' element={<VolunteerDetail />} />
 
+      {/*  Contact  Routes */}
       <Route path='/contact' element={<ContactUs />} />
+      <Route path='/admin/message/:id' element={<ViewMessage />} />
 
       <Route path='*' element={<NotFound />} />
     </Routes>

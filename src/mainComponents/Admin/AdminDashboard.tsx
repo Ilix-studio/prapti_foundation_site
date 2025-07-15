@@ -4,6 +4,7 @@ import { Link, Navigate, useNavigate } from "react-router-dom";
 
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Badge } from "@/components/ui/badge";
 import {
   PawPrint,
   LogOut,
@@ -16,6 +17,9 @@ import {
   AlertCircle,
   Users,
   Eye,
+  MessageSquare,
+  Mail,
+  MailOpen,
 } from "lucide-react";
 import {
   logout,
@@ -30,6 +34,11 @@ import {
   useGetVolunteerApplicationsQuery,
   useDeleteVolunteerApplicationMutation,
 } from "../../redux-store/services/volunteerApi";
+import {
+  useGetContactMessagesQuery,
+  useDeleteContactMessageMutation,
+  useMarkMessageAsReadMutation,
+} from "../../redux-store/services/contactApi";
 
 const AdminDashboard: React.FC = () => {
   const dispatch = useDispatch();
@@ -70,6 +79,25 @@ const AdminDashboard: React.FC = () => {
     string | null
   >(null);
 
+  // Contact Messages State
+  const {
+    data: messagesData,
+    isLoading: messagesLoading,
+    error: messagesError,
+  } = useGetContactMessagesQuery({ page: 1, limit: 10 });
+  const [deleteContactMessage, { isLoading: isDeletingMessage }] =
+    useDeleteContactMessageMutation();
+  const [markAsRead] = useMarkMessageAsReadMutation();
+  const [deletingMessageId, setDeletingMessageId] = useState<string | null>(
+    null
+  );
+  const [showMessageDeleteConfirm, setShowMessageDeleteConfirm] = useState<
+    string | null
+  >(null);
+  const [messageDeleteError, setMessageDeleteError] = useState<string | null>(
+    null
+  );
+
   if (!isAuthenticated || !isAdmin) {
     return <Navigate to='/admin/login' />;
   }
@@ -109,7 +137,6 @@ const AdminDashboard: React.FC = () => {
   };
 
   // Volunteer Application Handlers
-
   const handleVolunteerById = (volunteerId: string) => {
     navigate(`/admin/volunteer/${volunteerId}`);
   };
@@ -137,6 +164,43 @@ const AdminDashboard: React.FC = () => {
   const handleVolunteerDeleteCancel = () => {
     setShowVolunteerDeleteConfirm(null);
     setVolunteerDeleteError(null);
+  };
+
+  // Contact Messages Handlers
+  const handleMessageDeleteClick = (messageId: string) => {
+    setShowMessageDeleteConfirm(messageId);
+    setMessageDeleteError(null);
+  };
+  const handleViewMessageById = (messageId: string) => {
+    navigate(`/admin/message/${messageId}`);
+  };
+
+  const handleMessageDeleteConfirm = async (messageId: string) => {
+    try {
+      setDeletingMessageId(messageId);
+      await deleteContactMessage(messageId).unwrap();
+      setShowMessageDeleteConfirm(null);
+    } catch (err: any) {
+      console.error("Failed to delete message:", err);
+      setMessageDeleteError(
+        err.data?.message || "Failed to delete message. Please try again."
+      );
+    } finally {
+      setDeletingMessageId(null);
+    }
+  };
+
+  const handleMessageDeleteCancel = () => {
+    setShowMessageDeleteConfirm(null);
+    setMessageDeleteError(null);
+  };
+
+  const handleToggleReadStatus = async (messageId: string, isRead: boolean) => {
+    try {
+      await markAsRead({ id: messageId, isRead: !isRead }).unwrap();
+    } catch (err: any) {
+      console.error("Failed to update read status:", err);
+    }
   };
 
   return (
@@ -179,7 +243,7 @@ const AdminDashboard: React.FC = () => {
       {/* Main Content */}
       <main className='container mx-auto px-4 py-8'>
         <Tabs defaultValue='blogs' className='w-full'>
-          <TabsList className='grid w-full grid-cols-2'>
+          <TabsList className='grid w-full grid-cols-3'>
             <TabsTrigger value='blogs' className='flex items-center gap-2'>
               <BookOpen className='h-4 w-4' />
               Blog Posts
@@ -187,6 +251,18 @@ const AdminDashboard: React.FC = () => {
             <TabsTrigger value='volunteers' className='flex items-center gap-2'>
               <Users className='h-4 w-4' />
               Volunteer Applications
+            </TabsTrigger>
+            <TabsTrigger value='messages' className='flex items-center gap-2'>
+              <MessageSquare className='h-4 w-4' />
+              Contact Messages
+              {messagesData?.unreadCount ? (
+                <Badge
+                  variant='destructive'
+                  className='ml-1 h-5 w-5 p-0 text-xs'
+                >
+                  {messagesData.unreadCount}
+                </Badge>
+              ) : null}
             </TabsTrigger>
           </TabsList>
 
@@ -451,10 +527,9 @@ const AdminDashboard: React.FC = () => {
                                 variant='ghost'
                                 size='sm'
                                 className='text-blue-600 hover:text-blue-800'
-                                onClick={() => {
-                                  handleVolunteerById(volunteer._id);
-                                  console.log("View volunteer:", volunteer._id);
-                                }}
+                                onClick={() =>
+                                  handleVolunteerById(volunteer._id)
+                                }
                               >
                                 <Eye className='h-4 w-4' />
                               </Button>
@@ -478,6 +553,199 @@ const AdminDashboard: React.FC = () => {
               ) : (
                 <div className='p-6 text-center text-gray-500'>
                   No volunteer applications found
+                </div>
+              )}
+            </div>
+          </TabsContent>
+
+          {/* Contact Messages Tab */}
+          <TabsContent value='messages' className='space-y-6'>
+            <div className='flex items-center justify-between'>
+              <h2 className='text-2xl font-bold'>Contact Messages</h2>
+              <div className='text-sm text-gray-500'>
+                {messagesData?.pagination?.total || 0} total messages
+                {messagesData?.unreadCount ? (
+                  <span className='ml-2 text-red-600 font-medium'>
+                    ({messagesData.unreadCount} unread)
+                  </span>
+                ) : null}
+              </div>
+            </div>
+
+            {/* Message Delete Error Alert */}
+            {messageDeleteError && (
+              <div className='p-3 rounded-md bg-red-50 border border-red-200 text-red-600 flex items-center gap-2'>
+                <AlertCircle className='h-5 w-5' />
+                <span>{messageDeleteError}</span>
+              </div>
+            )}
+
+            {/* Contact Messages Table */}
+            <div className='bg-white rounded-lg shadow overflow-hidden'>
+              {messagesLoading ? (
+                <div className='p-6 text-center text-gray-500 flex justify-center items-center'>
+                  <Loader2 className='h-5 w-5 animate-spin mr-2' />
+                  Loading messages...
+                </div>
+              ) : messagesError ? (
+                <div className='p-6 text-center text-red-500 flex justify-center items-center'>
+                  <AlertCircle className='h-5 w-5 mr-2' />
+                  Error loading contact messages
+                </div>
+              ) : messagesData?.data && messagesData.data.length > 0 ? (
+                <table className='w-full'>
+                  <thead className='bg-gray-50'>
+                    <tr>
+                      <th className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>
+                        Status
+                      </th>
+                      <th className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>
+                        Name
+                      </th>
+                      <th className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>
+                        Email
+                      </th>
+                      <th className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>
+                        Subject
+                      </th>
+                      <th className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>
+                        Received
+                      </th>
+                      <th className='px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider'>
+                        Actions
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className='divide-y divide-gray-200'>
+                    {messagesData.data.map((message) => (
+                      <tr
+                        key={message._id}
+                        className={`hover:bg-gray-50 ${
+                          !message.isRead ? "bg-blue-50" : ""
+                        }`}
+                      >
+                        <td className='px-6 py-4 whitespace-nowrap'>
+                          <Button
+                            variant='ghost'
+                            size='sm'
+                            onClick={() =>
+                              handleToggleReadStatus(
+                                message._id,
+                                message.isRead
+                              )
+                            }
+                            className={
+                              message.isRead ? "text-gray-400" : "text-blue-600"
+                            }
+                          >
+                            {message.isRead ? (
+                              <MailOpen className='h-4 w-4' />
+                            ) : (
+                              <Mail className='h-4 w-4' />
+                            )}
+                          </Button>
+                        </td>
+                        <td className='px-6 py-4 whitespace-nowrap'>
+                          <div
+                            className={`text-sm ${
+                              !message.isRead
+                                ? "font-semibold text-gray-900"
+                                : "font-medium text-gray-700"
+                            }`}
+                          >
+                            {message.name}
+                          </div>
+                        </td>
+                        <td className='px-6 py-4 whitespace-nowrap'>
+                          <div className='text-sm text-gray-600'>
+                            {message.email}
+                          </div>
+                        </td>
+                        <td className='px-6 py-4 whitespace-nowrap max-w-xs'>
+                          <div
+                            className={`text-sm truncate ${
+                              !message.isRead
+                                ? "font-medium text-gray-900"
+                                : "text-gray-700"
+                            }`}
+                          >
+                            {message.subject}
+                          </div>
+                        </td>
+                        <td className='px-6 py-4 whitespace-nowrap'>
+                          <div className='text-sm text-gray-500'>
+                            {new Date(message.createdAt).toLocaleDateString()}
+                          </div>
+                        </td>
+                        <td className='px-6 py-4 whitespace-nowrap text-right text-sm font-medium'>
+                          {showMessageDeleteConfirm === message._id ? (
+                            <div className='flex justify-end gap-2'>
+                              <span className='text-sm text-gray-600 mr-2 self-center'>
+                                Confirm delete?
+                              </span>
+                              <Button
+                                variant='outline'
+                                size='sm'
+                                className='text-red-600 border-red-600 hover:bg-red-50'
+                                onClick={() =>
+                                  handleMessageDeleteConfirm(message._id)
+                                }
+                                disabled={
+                                  isDeletingMessage &&
+                                  deletingMessageId === message._id
+                                }
+                              >
+                                {isDeletingMessage &&
+                                deletingMessageId === message._id ? (
+                                  <Loader2 className='h-4 w-4 animate-spin mr-1' />
+                                ) : null}
+                                Yes
+                              </Button>
+                              <Button
+                                variant='outline'
+                                size='sm'
+                                className='text-gray-600 border-gray-300'
+                                onClick={handleMessageDeleteCancel}
+                                disabled={
+                                  isDeletingMessage &&
+                                  deletingMessageId === message._id
+                                }
+                              >
+                                No
+                              </Button>
+                            </div>
+                          ) : (
+                            <div className='flex justify-end gap-2'>
+                              <Button
+                                variant='ghost'
+                                size='sm'
+                                className='text-blue-600 hover:text-blue-800'
+                                onClick={() =>
+                                  handleViewMessageById(message._id)
+                                }
+                              >
+                                <Eye className='h-4 w-4' />
+                              </Button>
+                              <Button
+                                variant='ghost'
+                                size='sm'
+                                className='text-red-600 hover:text-red-800'
+                                onClick={() =>
+                                  handleMessageDeleteClick(message._id)
+                                }
+                              >
+                                <Trash2 className='h-4 w-4' />
+                              </Button>
+                            </div>
+                          )}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              ) : (
+                <div className='p-6 text-center text-gray-500'>
+                  No contact messages found
                 </div>
               )}
             </div>

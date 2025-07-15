@@ -13,17 +13,27 @@ import {
   Instagram,
   Loader2,
   CheckCircle,
+  AlertCircle,
 } from "lucide-react";
+import { useSendContactMessageMutation } from "@/redux-store/services/contactApi";
+
+interface FormData {
+  name: string;
+  email: string;
+  subject: string;
+  message: string;
+}
 
 const ContactUs: React.FC = () => {
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormData>({
     name: "",
     email: "",
     subject: "",
     message: "",
   });
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isSubmitted, setIsSubmitted] = useState(false);
+
+  const [sendContactMessage, { isLoading, isSuccess, error }] =
+    useSendContactMessageMutation();
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -37,19 +47,34 @@ const ContactUs: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSubmitting(true);
 
-    // Simulate form submission
-    await new Promise((resolve) => setTimeout(resolve, 2000));
+    if (
+      !formData.name ||
+      !formData.email ||
+      !formData.subject ||
+      !formData.message
+    ) {
+      return;
+    }
 
-    setIsSubmitting(false);
-    setIsSubmitted(true);
-
-    // Reset form after success
-    setTimeout(() => {
+    try {
+      await sendContactMessage(formData).unwrap();
+      // Reset form on success
       setFormData({ name: "", email: "", subject: "", message: "" });
-      setIsSubmitted(false);
-    }, 3000);
+    } catch (err) {
+      // Error is handled by RTK Query
+      console.error("Failed to send message:", err);
+    }
+  };
+
+  const getErrorMessage = () => {
+    if (error) {
+      if ("data" in error) {
+        return (error.data as any)?.message || "Failed to send message";
+      }
+      return "Network error. Please try again.";
+    }
+    return "";
   };
 
   return (
@@ -104,7 +129,7 @@ const ContactUs: React.FC = () => {
                     <h3 className='font-semibold text-gray-900'>
                       Office Address
                     </h3>
-                    <p className='text-gray-600'>Golaghat, Assam , India.</p>
+                    <p className='text-gray-600'>Golaghat, Assam, India.</p>
                   </div>
                 </div>
               </div>
@@ -145,89 +170,110 @@ const ContactUs: React.FC = () => {
                   Send a Message
                 </h3>
 
-                {isSubmitted ? (
-                  <div className='text-center py-8'>
-                    <CheckCircle className='h-16 w-16 text-green-500 mx-auto mb-4' />
-                    <h4 className='text-xl font-semibold text-gray-900 mb-2'>
-                      Message Sent!
+                {/* Success Message */}
+                {isSuccess && (
+                  <div className='text-center py-4'>
+                    <CheckCircle className='h-12 w-12 text-green-500 mx-auto mb-3' />
+                    <h4 className='text-lg font-semibold text-gray-900 mb-2'>
+                      Message Sent Successfully!
                     </h4>
                     <p className='text-gray-600'>
                       Thank you for contacting us. We'll get back to you soon.
                     </p>
                   </div>
-                ) : (
-                  <div className='space-y-4'>
-                    <div className='grid gap-4 sm:grid-cols-2'>
-                      <div className='space-y-2'>
-                        <Label htmlFor='name'>Name</Label>
-                        <Input
-                          id='name'
-                          name='name'
-                          placeholder='Your name'
-                          value={formData.name}
-                          onChange={handleInputChange}
-                          required
-                          className='border-gray-200 focus:border-orange-300 focus:ring-orange-200'
-                        />
-                      </div>
-                      <div className='space-y-2'>
-                        <Label htmlFor='email'>Email</Label>
-                        <Input
-                          id='email'
-                          name='email'
-                          type='email'
-                          placeholder='Your email'
-                          value={formData.email}
-                          onChange={handleInputChange}
-                          required
-                          className='border-gray-200 focus:border-orange-300 focus:ring-orange-200'
-                        />
-                      </div>
-                    </div>
+                )}
 
+                {/* Error Message */}
+                {error && (
+                  <div className='p-4 rounded-lg bg-red-50 border border-red-200 flex items-start gap-3'>
+                    <AlertCircle className='h-5 w-5 text-red-500 mt-0.5' />
+                    <div>
+                      <p className='text-red-600 font-medium'>
+                        Failed to send message
+                      </p>
+                      <p className='text-red-600/70 text-sm'>
+                        {getErrorMessage()}
+                      </p>
+                    </div>
+                  </div>
+                )}
+
+                {/* Contact Form */}
+                <form onSubmit={handleSubmit} className='space-y-4'>
+                  <div className='grid gap-4 sm:grid-cols-2'>
                     <div className='space-y-2'>
-                      <Label htmlFor='subject'>Subject</Label>
+                      <Label htmlFor='name'>Name *</Label>
                       <Input
-                        id='subject'
-                        name='subject'
-                        placeholder='Message subject'
-                        value={formData.subject}
+                        id='name'
+                        name='name'
+                        placeholder='Your name'
+                        value={formData.name}
                         onChange={handleInputChange}
                         required
+                        disabled={isLoading}
                         className='border-gray-200 focus:border-orange-300 focus:ring-orange-200'
                       />
                     </div>
-
                     <div className='space-y-2'>
-                      <Label htmlFor='message'>Message</Label>
-                      <Textarea
-                        id='message'
-                        name='message'
-                        placeholder='Your message'
-                        value={formData.message}
+                      <Label htmlFor='email'>Email *</Label>
+                      <Input
+                        id='email'
+                        name='email'
+                        type='email'
+                        placeholder='Your email'
+                        value={formData.email}
                         onChange={handleInputChange}
                         required
-                        rows={5}
-                        className='border-gray-200 focus:border-orange-300 focus:ring-orange-200 resize-none'
+                        disabled={isLoading}
+                        className='border-gray-200 focus:border-orange-300 focus:ring-orange-200'
                       />
                     </div>
-
-                    <Button
-                      onClick={handleSubmit}
-                      className='w-full bg-orange-500 hover:bg-orange-600 text-white py-3 text-lg font-medium'
-                      disabled={isSubmitting}
-                    >
-                      {isSubmitting ? (
-                        <>
-                          <Loader2 className='mr-2 h-4 w-4 animate-spin' />
-                          Sending Message...
-                        </>
-                      ) : (
-                        "Send Message"
-                      )}
-                    </Button>
                   </div>
-                )}
+
+                  <div className='space-y-2'>
+                    <Label htmlFor='subject'>Subject *</Label>
+                    <Input
+                      id='subject'
+                      name='subject'
+                      placeholder='Message subject'
+                      value={formData.subject}
+                      onChange={handleInputChange}
+                      required
+                      disabled={isLoading}
+                      className='border-gray-200 focus:border-orange-300 focus:ring-orange-200'
+                    />
+                  </div>
+
+                  <div className='space-y-2'>
+                    <Label htmlFor='message'>Message *</Label>
+                    <Textarea
+                      id='message'
+                      name='message'
+                      placeholder='Your message'
+                      value={formData.message}
+                      onChange={handleInputChange}
+                      required
+                      rows={5}
+                      disabled={isLoading}
+                      className='border-gray-200 focus:border-orange-300 focus:ring-orange-200 resize-none'
+                    />
+                  </div>
+
+                  <Button
+                    type='submit'
+                    className='w-full bg-orange-500 hover:bg-orange-600 text-white py-3 text-lg font-medium'
+                    disabled={isLoading}
+                  >
+                    {isLoading ? (
+                      <>
+                        <Loader2 className='mr-2 h-4 w-4 animate-spin' />
+                        Sending Message...
+                      </>
+                    ) : (
+                      "Send Message"
+                    )}
+                  </Button>
+                </form>
               </div>
             </div>
           </div>
