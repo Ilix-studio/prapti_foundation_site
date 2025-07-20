@@ -21,8 +21,11 @@ const Footer = () => {
           <div>
             <div className='flex items-center gap-2 mb-4'>
               <PawPrint className='h-5 w-5 text-orange-500' />
-              <span className='text-lg font-bold'>Prapti Foundation</span>
+              <Link to='/'>
+                <span className='text-lg font-bold'>Prapti Foundation</span>
+              </Link>
             </div>
+
             <p className='text-sm text-gray-600 dark:text-gray-400 mb-4'>
               A sanctuary for stray dogs, providing shelter, food, and medical
               care to homeless dogs in Golaghat since 2017.
@@ -62,12 +65,7 @@ const Footer = () => {
               >
                 About Us
               </Link>
-              <Link
-                to='/our-dogs'
-                className='text-sm text-gray-600 dark:text-gray-400 hover:text-orange-500 transition-colors'
-              >
-                Our Dogs
-              </Link>
+
               <Link
                 to='/blog'
                 className='text-sm text-gray-600 dark:text-gray-400 hover:text-orange-500 transition-colors'
@@ -104,24 +102,6 @@ const Footer = () => {
                 className='text-sm text-gray-600 dark:text-gray-400 hover:text-orange-500 transition-colors'
               >
                 Volunteer
-              </Link>
-              <Link
-                to='/sponsor'
-                className='text-sm text-gray-600 dark:text-gray-400 hover:text-orange-500 transition-colors'
-              >
-                Sponsor a Dog
-              </Link>
-              <Link
-                to='/fundraise'
-                className='text-sm text-gray-600 dark:text-gray-400 hover:text-orange-500 transition-colors'
-              >
-                Fundraise for Us
-              </Link>
-              <Link
-                to='/supplies'
-                className='text-sm text-gray-600 dark:text-gray-400 hover:text-orange-500 transition-colors'
-              >
-                Donate Supplies
               </Link>
             </nav>
           </div>
