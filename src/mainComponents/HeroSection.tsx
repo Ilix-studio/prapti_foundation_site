@@ -1,11 +1,13 @@
-// HeroSection.tsx
 import { motion } from "framer-motion";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, Eye, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
+import { useState } from "react";
 import HeroSectionBgImg from "./../assets/prapti-main.jpeg";
 
 export function HeroSection() {
+  const [showFullImage, setShowFullImage] = useState(false);
+
   return (
     <section className='relative min-h-screen flex items-center overflow-hidden pt-16'>
       {/* Hero image container with overlay */}
@@ -65,6 +67,63 @@ export function HeroSection() {
           </motion.div>
         </div>
       </div>
+
+      {/* Preview Card - Bottom Right */}
+      <motion.div
+        className='absolute bottom-6 right-6 z-20'
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.6, delay: 1 }}
+      >
+        <div className='bg-white/10 backdrop-blur-md rounded-lg border border-white/20 p-2 shadow-lg hover:shadow-xl transition-all duration-300 group cursor-pointer'>
+          <div
+            className='relative w-24 h-16 rounded overflow-hidden'
+            onClick={() => setShowFullImage(true)}
+          >
+            <img
+              src={HeroSectionBgImg}
+              alt='Hero background preview'
+              className='w-full h-full object-cover group-hover:scale-110 transition-transform duration-300'
+            />
+            <div className='absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors duration-300 flex items-center justify-center'>
+              <Eye className='h-4 w-4 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300' />
+            </div>
+          </div>
+        </div>
+      </motion.div>
+
+      {/* Full Image Modal */}
+      {showFullImage && (
+        <motion.div
+          className='fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4'
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          onClick={() => setShowFullImage(false)}
+        >
+          <motion.div
+            className='relative max-w-4xl max-h-[90vh] w-full'
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0.8, opacity: 0 }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <img
+              src={HeroSectionBgImg}
+              alt='Dogs at Prapti Foundation shelter - Full view'
+              className='w-full h-full object-contain rounded-lg'
+            />
+            <Button
+              variant='outline'
+              size='icon'
+              className='absolute top-4 right-4 bg-white/10 backdrop-blur-md border-white/20 text-white hover:bg-white/20'
+              onClick={() => setShowFullImage(false)}
+            >
+              <X className='h-4 w-4' />
+            </Button>
+          </motion.div>
+        </motion.div>
+      )}
     </section>
   );
 }
