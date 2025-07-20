@@ -14,8 +14,12 @@ import {
   Loader2,
   CheckCircle,
   AlertCircle,
+  ArrowLeft,
+  Share2,
 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { useSendContactMessageMutation } from "@/redux-store/services/contactApi";
+import Footer from "../Footer";
 
 interface FormData {
   name: string;
@@ -25,6 +29,7 @@ interface FormData {
 }
 
 const ContactUs: React.FC = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState<FormData>({
     name: "",
     email: "",
@@ -77,8 +82,70 @@ const ContactUs: React.FC = () => {
     return "";
   };
 
+  const handleBack = () => {
+    navigate(-1); // Go back to previous page
+  };
+
+  const handleShare = async () => {
+    const shareData = {
+      title: "Contact Prapti Foundation",
+      text: "Get in touch with Prapti Foundation - helping stray dogs in Golaghat, Assam",
+      url: window.location.href,
+    };
+
+    try {
+      if (navigator.share) {
+        await navigator.share(shareData);
+      } else {
+        // Fallback for browsers that don't support Web Share API
+        await navigator.clipboard.writeText(window.location.href);
+        // You could show a toast notification here
+        alert("Link copied to clipboard!");
+      }
+    } catch (err) {
+      console.error("Error sharing:", err);
+    }
+  };
+
   return (
     <>
+      {/* Custom Header */}
+      <header className='sticky top-0 z-50 bg-white border-b shadow-sm'>
+        <div className='container mx-auto px-4 py-3'>
+          <div className='flex items-center justify-between'>
+            <div className='flex items-center gap-3'>
+              <Button
+                variant='ghost'
+                size='icon'
+                onClick={handleBack}
+                className='hover:bg-orange-50'
+              >
+                <ArrowLeft className='h-5 w-5 text-orange-600' />
+                <span className='sr-only'>Go back</span>
+              </Button>
+              <div>
+                <h1 className='text-xl font-semibold text-gray-900'>
+                  Contact Us
+                </h1>
+                <p className='text-sm text-gray-500'>
+                  Get in touch with our team
+                </p>
+              </div>
+            </div>
+
+            <Button
+              variant='outline'
+              size='sm'
+              onClick={handleShare}
+              className='border-orange-200 text-orange-600 hover:bg-orange-50 hover:border-orange-300'
+            >
+              <Share2 className='h-4 w-4 mr-2' />
+              Share
+            </Button>
+          </div>
+        </div>
+      </header>
+
       <section className='w-full py-12 md:py-24 lg:py-32 bg-gray-50'>
         <div className='container px-4 md:px-6'>
           <div className='grid gap-12 lg:grid-cols-2 lg:gap-16'>
@@ -279,6 +346,7 @@ const ContactUs: React.FC = () => {
           </div>
         </div>
       </section>
+      <Footer />
     </>
   );
 };

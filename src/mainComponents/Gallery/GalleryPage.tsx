@@ -4,9 +4,6 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
   Play,
-  Heart,
-  Share2,
-  Download,
   Calendar,
   MapPin,
   X,
@@ -93,7 +90,6 @@ const galleryData = {
       duration: "3:45",
       category: "Rescues",
       date: "2024-05-12",
-      views: "15.2k",
     },
     {
       id: 2,
@@ -104,7 +100,6 @@ const galleryData = {
       duration: "5:20",
       category: "Daily Life",
       date: "2024-05-08",
-      views: "8.7k",
     },
     {
       id: 3,
@@ -127,7 +122,6 @@ const galleryData = {
       duration: "6:30",
       category: "Adoptions",
       date: "2024-05-01",
-      views: "20.1k",
     },
   ],
 };
@@ -238,10 +232,6 @@ const GalleryPage: React.FC = () => {
           <div className='flex items-center gap-2'>
             <Calendar className='h-3 w-3' />
             {new Date(video.date).toLocaleDateString()}
-          </div>
-          <div className='flex items-center gap-1'>
-            <Video className='h-3 w-3' />
-            {video.views} views
           </div>
         </div>
       </div>
@@ -397,32 +387,6 @@ const GalleryPage: React.FC = () => {
                         <MapPin className='h-4 w-4' />
                         {selectedPhoto.location}
                       </div>
-                    </div>
-                    <div className='flex items-center gap-2 mt-4'>
-                      <Button
-                        variant='ghost'
-                        size='sm'
-                        className='text-white hover:bg-white hover:bg-opacity-20'
-                      >
-                        <Heart className='h-4 w-4 mr-2' />
-                        Like
-                      </Button>
-                      <Button
-                        variant='ghost'
-                        size='sm'
-                        className='text-white hover:bg-white hover:bg-opacity-20'
-                      >
-                        <Share2 className='h-4 w-4 mr-2' />
-                        Share
-                      </Button>
-                      <Button
-                        variant='ghost'
-                        size='sm'
-                        className='text-white hover:bg-white hover:bg-opacity-20'
-                      >
-                        <Download className='h-4 w-4 mr-2' />
-                        Download
-                      </Button>
                     </div>
                   </div>
                 </div>
