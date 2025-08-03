@@ -19,7 +19,6 @@ const Home: React.FC = () => {
       <OurMission />
       <DonateUs />
       <RunningDog />
-
       <Footer />
     </main>
   );
