@@ -6,6 +6,7 @@ import { useGetBlogPostsQuery } from "@/redux-store/services/blogApi";
 
 const LatestBlogPosts: React.FC = () => {
   // Use the RTK Query hook to fetch blog posts
+  // Our Latest rescure stories
   const { data: blogPosts, isLoading, error } = useGetBlogPostsQuery();
 
   // Get the latest 3 posts (sorted by creation date)

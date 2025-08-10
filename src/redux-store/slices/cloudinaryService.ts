@@ -1,6 +1,6 @@
 // src/services/cloudinaryService.ts
 
-import { API_CONFIG } from "@/lib/apiConfig";
+import { API_CONFIG } from "@/constants/apiConfig";
 
 // Interface for signature response
 export interface CloudinarySignature {

@@ -23,6 +23,8 @@ import GalleryPage from "./mainComponents/Gallery/GalleryPage";
 import VolunteerPage from "./mainComponents/Volunteer/VolunteerPage";
 import VolunteerDetail from "./mainComponents/Volunteer/VolunteerDetail";
 import ViewMessage from "./mainComponents/ContactUs/ViewMessage";
+import NewDashAdmin from "./mainComponents/Admin/NewDashAdmin";
+import AllBlogs from "./mainComponents/BlogPosts/SmallBlogUI/AllBlogs";
 
 function App() {
   const location = useLocation();
@@ -42,8 +44,10 @@ function App() {
       {/* Admin Routes */}
       <Route path='/admin/login' element={<LoginUser />} />
       <Route path='/admin/dashboard' element={<AdminDashboard />} />
+      <Route path='/admin/newdash' element={<NewDashAdmin />} />
       <Route path='/admin/blog/new' element={<AddBlogPost />} />
       <Route path='/admin/blog/edit/:id' element={<AddBlogPost />} />
+      <Route path='/admin/all-blog' element={<AllBlogs />} />
 
       {/*  Gallery Routes */}
       <Route path='/gallery' element={<GalleryPage />} />
