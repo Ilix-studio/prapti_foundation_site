@@ -3,7 +3,7 @@ import { ChevronRight, Eye, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { useState } from "react";
-import HeroSectionBgImg from "./../assets/prapti-main.jpeg";
+import HeroSectionBgImg from "./../assets/prapti-main.webp";
 
 export function HeroSection() {
   const [showFullImage, setShowFullImage] = useState(false);
@@ -36,9 +36,9 @@ export function HeroSection() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
           >
-            Since 2017, Prapti Foundation has been providing shelter, food, and
-            medical care to homeless dogs in Golaghat. Join us in our mission to
-            give every dog the love and care they deserve.
+            Since 2017, Prapti Foundation has been rescuing and caring for
+            homeless dogs in Golaghat with shelter, food, and medical aid. Help
+            us give every dog the love they deserve.
           </motion.p>
           <motion.div
             className='flex flex-col sm:flex-row gap-4 pt-4'

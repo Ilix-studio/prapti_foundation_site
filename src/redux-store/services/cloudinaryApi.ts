@@ -1,6 +1,6 @@
 // src/redux-store/services/cloudinaryApi.ts
 import { createApi } from "@reduxjs/toolkit/query/react";
-import { baseQuery, handleApiError } from "../../lib/apiConfig";
+import { baseQuery, handleApiError } from "../../constants/apiConfig";
 
 // Define the response type for the signature
 export interface CloudinarySignatureResponse {

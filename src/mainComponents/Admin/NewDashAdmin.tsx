@@ -81,7 +81,7 @@ const NewDashAdmin: React.FC = () => {
       bgColor: "bg-blue-50",
       loading: blogsLoading,
       error: blogsError,
-      action: () => navigate("/admin/dashboard"),
+      action: () => navigate("/admin/all-blog"),
     },
     {
       title: "Total Gallery Photos",

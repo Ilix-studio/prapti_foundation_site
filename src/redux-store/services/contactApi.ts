@@ -1,6 +1,6 @@
 // src/redux-store/services/contactApi.ts
 import { createApi } from "@reduxjs/toolkit/query/react";
-import { baseQuery, handleApiError } from "../../lib/apiConfig";
+import { baseQuery, handleApiError } from "../../constants/apiConfig";
 
 // Define types for contact messages
 export interface ContactMessage {
