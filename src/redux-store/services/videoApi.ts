@@ -1,5 +1,5 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
-import { baseQuery } from "../../lib/apiConfig";
+import { baseQuery } from "../../constants/apiConfig";
 import {
   VideoQueryParams,
   VideosResponse,

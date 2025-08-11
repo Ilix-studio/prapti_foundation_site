@@ -1,19 +1,6 @@
-// src/redux-store/services/blogApi.ts
 import { createApi } from "@reduxjs/toolkit/query/react";
 import { baseQuery, handleApiError } from "../../constants/apiConfig";
-
-// Define types for blog posts
-export interface BlogPost {
-  _id: string;
-  title: string;
-  excerpt: string;
-  content: string;
-  category: string;
-  image: string;
-  author: string;
-  createdAt: string;
-  updatedAt: string;
-}
+import { BlogPost } from "@/types/blogs.types";
 
 // Create the blog API service
 export const blogApi = createApi({

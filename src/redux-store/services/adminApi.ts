@@ -1,23 +1,7 @@
-// src/redux-store/services/adminApi.ts
 import { createApi } from "@reduxjs/toolkit/query/react";
 import { baseQuery } from "../../constants/apiConfig";
 import { User, loginSuccess, logout } from "../slices/authSlice";
-
-export interface LoginRequest {
-  email: string;
-  password: string;
-}
-
-export interface LoginResponse {
-  success: boolean;
-  message: string;
-  data: {
-    id: string;
-    name: string;
-    email: string;
-    token: string;
-  };
-}
+import { LoginRequest, LoginResponse } from "@/types/admin.types";
 
 export const adminAuthApi = createApi({
   reducerPath: "adminAuthApi",

@@ -1,5 +1,5 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
-import { baseQuery } from "../../lib/apiConfig";
+import { baseQuery } from "../../constants/apiConfig";
 import {
   Category,
   CategoryCreateData,
@@ -12,7 +12,7 @@ export const categoryApi = createApi({
   tagTypes: ["Category"],
   endpoints: (builder) => ({
     // Get categories by type (Public)
-    getCategoriesByType: builder.query<Category[], "photo" | "video" | "press">(
+    getCategoriesByType: builder.query<Category[], "photo" | "video" | "blogs">(
       {
         query: (type) => `/categories/${type}`,
         transformResponse: (response: { success: boolean; data: Category[] }) =>
