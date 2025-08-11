@@ -3,7 +3,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { Calendar } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { BlogPost } from "@/redux-store/services/blogApi";
+import { BlogPost } from "@/types/blogs.types";
 
 interface BlogCardProps {
   post: BlogPost;
