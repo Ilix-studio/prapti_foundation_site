@@ -1,11 +1,8 @@
 import { fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
-// export const API_CONFIG = {
-//   BASE_URL:
-//     "https://prapti-foundation-api-927740497516.asia-northeast1.run.app/api",
-// };
 export const API_CONFIG = {
-  BASE_URL: "https://prapti-foundation-be.onrender.com/api",
+  BASE_URL:
+    "https://prapti-foundation-be-874257626954.europe-west1.run.app/api",
 };
 
 export const baseQuery = fetchBaseQuery({
