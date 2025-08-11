@@ -28,7 +28,7 @@ export function HeroSection() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
           >
-            A Sanctuary for Stray Dogs
+            A Home for Paws
           </motion.h2>
           <motion.p
             className='text-lg md:text-xl text-white'

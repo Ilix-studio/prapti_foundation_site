@@ -2,7 +2,7 @@ import { Route, Routes, useLocation } from "react-router-dom";
 import { useEffect } from "react";
 import "./App.css";
 import Home from "./Home";
-import BlogPage from "./mainComponents/BlogPosts/SmallBlogUI/Blog";
+
 import BlogPostPage from "./mainComponents/BlogPosts/SmallBlogUI/BlogPost";
 import AddBlogForm from "./mainComponents/BlogPosts/AddBlogForm";
 import NotFound from "./mainComponents/NotFound";
@@ -22,9 +22,10 @@ import ContactUs from "./mainComponents/ContactUs/ContactUs";
 import GalleryPage from "./mainComponents/Gallery/GalleryPage";
 import VolunteerPage from "./mainComponents/Volunteer/VolunteerPage";
 import VolunteerDetail from "./mainComponents/Volunteer/VolunteerDetail";
-import ViewMessage from "./mainComponents/ContactUs/ViewMessage";
+import ViewMessage from "./mainComponents/Admin/AdminMessage/ViewMessage";
 import NewDashAdmin from "./mainComponents/Admin/NewDashAdmin";
 import AllBlogs from "./mainComponents/BlogPosts/SmallBlogUI/AllBlogs";
+import SeeBlogs from "./mainComponents/BlogPosts/SmallBlogUI/SeeBlogs";
 
 function App() {
   const location = useLocation();
@@ -37,7 +38,7 @@ function App() {
     <Routes>
       <Route path='/' element={<Home />} />
       {/* Blog Routes */}
-      <Route path='/blog' element={<BlogPage />} />
+      <Route path='/blog' element={<SeeBlogs />} />
       <Route path='/blog/:id' element={<BlogPostPage />} />
       <Route path='/blog/new' element={<AddBlogForm />} />
 

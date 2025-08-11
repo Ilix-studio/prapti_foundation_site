@@ -20,6 +20,11 @@ import { cloudinaryApi } from "./services/cloudinaryApi";
 import { adminAuthApi } from "./services/adminApi";
 import { volunteerApi } from "./services/volunteerApi";
 import { contactApi } from "./services/contactApi";
+//New
+import { photoApi } from "./services/photoApi";
+import { videoApi } from "./services/videoApi";
+import { visitorApi } from "./services/visitorApi";
+import { categoryApi } from "./services/categoryApi";
 
 // Create IndexedDB storage for redux-persist
 const idbStorage = createIdbStorage("prapti-foundation-db");
@@ -39,6 +44,11 @@ const rootReducer = combineReducers({
   [cloudinaryApi.reducerPath]: cloudinaryApi.reducer,
   [volunteerApi.reducerPath]: volunteerApi.reducer,
   [contactApi.reducerPath]: contactApi.reducer,
+  //
+  [categoryApi.reducerPath]: categoryApi.reducer,
+  [photoApi.reducerPath]: photoApi.reducer,
+  [videoApi.reducerPath]: videoApi.reducer,
+  [visitorApi.reducerPath]: visitorApi.reducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
@@ -56,7 +66,11 @@ export const store = configureStore({
       blogApi.middleware,
       cloudinaryApi.middleware,
       volunteerApi.middleware,
-      contactApi.middleware
+      contactApi.middleware,
+      categoryApi.middleware,
+      photoApi.middleware,
+      videoApi.middleware,
+      visitorApi.middleware
     ),
 });
 

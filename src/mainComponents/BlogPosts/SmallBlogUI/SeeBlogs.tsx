@@ -14,7 +14,7 @@ import { selectIsAdmin } from "@/redux-store/slices/authSlice";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 
-const BlogPage: React.FC = () => {
+const SeeBlogs: React.FC = () => {
   const { data: blogPosts, isLoading, error } = useGetBlogPostsQuery();
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -199,4 +199,4 @@ const BlogPage: React.FC = () => {
   );
 };
 
-export default BlogPage;
+export default SeeBlogs;

@@ -9,6 +9,7 @@ import Footer from "./mainComponents/Footer";
 
 import RunningDog from "./mainComponents/RunningDog";
 import HalfAbout from "./mainComponents/HalfAbout";
+import HomeGallery from "./mainComponents/Gallery/HomeGallery";
 
 const Home: React.FC = () => {
   return (
@@ -17,6 +18,7 @@ const Home: React.FC = () => {
       <HeroSection />
       <EmergencyCall />
       <HalfAbout />
+      <HomeGallery />
       <LatestBlogPosts />
       <OurMission />
       <DonateUs />
