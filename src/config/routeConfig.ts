@@ -8,11 +8,12 @@ import LoginUser from "../mainComponents/Admin/LoginUser";
 
 import NotFound from "../mainComponents/NotFound";
 import BlogPostPage from "@/mainComponents/BlogPosts/SmallBlogUI/BlogPost";
-import AllBlogs from "@/mainComponents/BlogPosts/SmallBlogUI/AllBlogs";
 import VolunteerPage from "@/mainComponents/Volunteer/Volunter";
 import VolunteerDetail from "@/mainComponents/Volunteer/VolunteerDetail";
 import AddBlogPost from "@/mainComponents/BlogPosts/AddBlogForm";
 import EditBlogPost from "@/mainComponents/Admin/AdminBlogs/EditBlogPost";
+import VolunteerDash from "@/mainComponents/Volunteer/VolunteerDash";
+import BlogsDash from "@/mainComponents/BlogPosts/SmallBlogUI/BlogsDash";
 
 // Lazy load components (loaded only when needed)
 
@@ -74,7 +75,8 @@ export const adminRoutes = [
   { path: "/admin/dashboard", component: NewDashAdmin },
   { path: "/admin/photoDashboard", component: PhotoDash },
   { path: "/admin/videoDashboard", component: VideoDash },
-  { path: "/admin/all-blog", component: AllBlogs },
+  { path: "/admin/blogsDashboard", component: BlogsDash },
+  { path: "/admin/volunteerDashboard", component: VolunteerDash },
 
   { path: "/admin/categories", component: CategoryManager },
   { path: "/admin/volunteer/:id", component: VolunteerDetail },
@@ -133,14 +135,14 @@ export const adSpecificRoutes: AdSpecificRoute[] = [
   {
     path: "/admin/blog/new",
     component: AddBlogPost,
-    parentDashboard: "/admin/all-blog",
+    parentDashboard: "/admin/blogsDashboard",
     category: "blogs",
   },
 
   {
     path: "/admin/blog/edit/:id",
     component: EditBlogPost,
-    parentDashboard: "/admin/all-blog",
+    parentDashboard: "/admin/blogsDashboard",
     category: "blogs",
   },
 ];

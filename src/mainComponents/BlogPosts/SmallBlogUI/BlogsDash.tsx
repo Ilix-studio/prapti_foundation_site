@@ -17,7 +17,7 @@ import {
   useGetBlogPostsQuery,
 } from "@/redux-store/services/blogApi";
 
-const AllBlogs: React.FC = () => {
+const BlogsDash: React.FC = () => {
   const navigate = useNavigate();
   const { isAuthenticated } = useSelector(selectAuth);
   const isAdmin = useSelector(selectIsAdmin);
@@ -277,4 +277,4 @@ const AllBlogs: React.FC = () => {
   );
 };
 
-export default AllBlogs;
+export default BlogsDash;

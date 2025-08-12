@@ -30,6 +30,12 @@ export function Header() {
         <div className='hidden md:flex md:items-center md:gap-4'>
           <nav className='flex items-center gap-6'>
             <Link
+              to='/'
+              className='text-sm font-medium hover:text-primary transition-colors'
+            >
+              Home
+            </Link>
+            <Link
               to='/about'
               className='text-sm font-medium hover:text-primary transition-colors'
             >
@@ -81,6 +87,13 @@ export function Header() {
           transition={{ duration: 0.9 }}
         >
           <nav className='flex flex-col p-4 space-y-4 border-t bg-background'>
+            <Link
+              to='/'
+              className='text-sm font-medium hover:text-primary transition-colors'
+              onClick={() => setIsOpen(false)}
+            >
+              Home
+            </Link>
             <Link
               to='/about'
               className='text-sm font-medium hover:text-primary transition-colors'

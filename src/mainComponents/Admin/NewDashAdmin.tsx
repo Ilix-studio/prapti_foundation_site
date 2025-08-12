@@ -81,7 +81,7 @@ const NewDashAdmin: React.FC = () => {
       bgColor: "bg-blue-50",
       loading: blogsLoading,
       error: blogsError,
-      action: () => navigate("/admin/all-blog"),
+      action: () => navigate("/admin/blogsDashboard"),
     },
     {
       title: "Total Gallery Photos",
@@ -91,7 +91,7 @@ const NewDashAdmin: React.FC = () => {
       color: "text-purple-600",
       bgColor: "bg-purple-50",
       loading: false,
-      action: () => navigate("/admin/gallery"),
+      action: () => navigate("/admin/photoDashboard"),
     },
     {
       title: "Total Gallery Videos",
@@ -101,7 +101,7 @@ const NewDashAdmin: React.FC = () => {
       color: "text-purple-600",
       bgColor: "bg-purple-50",
       loading: false,
-      action: () => navigate("/admin/gallery"),
+      action: () => navigate("/admin/videoDashboard"),
     },
     {
       title: "Total Volunteer Applications",
@@ -112,7 +112,7 @@ const NewDashAdmin: React.FC = () => {
       bgColor: "bg-orange-50",
       loading: volunteersLoading,
       error: volunteersError,
-      action: () => navigate("/admin/volunteers"),
+      action: () => navigate("/admin/volunteerDashboard"),
     },
   ];
 
@@ -127,19 +127,19 @@ const NewDashAdmin: React.FC = () => {
       title: "Upload Photo",
       icon: Upload,
       color: "bg-purple-600",
-      action: () => navigate("/admin/upload-photo"),
+      action: () => navigate("/admin/addPhoto"),
     },
     {
       title: "Upload Video",
       icon: Video,
       color: "bg-green-600",
-      action: () => navigate("/volunteer"),
+      action: () => navigate("/admin/addVideo"),
     },
     {
       title: "Add Category",
       icon: FileText,
       color: "bg-orange-600",
-      action: () => navigate("/admin/article/new"),
+      action: () => navigate("/admin/addCategory"),
     },
   ];
 
