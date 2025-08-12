@@ -5,8 +5,6 @@ import { Button } from "@/components/ui/button";
 import { useGetBlogPostsQuery } from "@/redux-store/services/blogApi";
 
 const LatestBlogPosts: React.FC = () => {
-  // Use the RTK Query hook to fetch blog posts
-  // Our Latest rescure stories
   const { data: blogPosts, isLoading, error } = useGetBlogPostsQuery();
 
   // Get the latest 3 posts (sorted by creation date)
@@ -16,7 +14,7 @@ const LatestBlogPosts: React.FC = () => {
           (a, b) =>
             new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
         )
-        .slice(0, 3)
+        .slice(0, 6)
     : [];
 
   return (

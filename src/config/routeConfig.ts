@@ -2,18 +2,34 @@ import { lazy } from "react";
 
 // Immediate load components (critical for first page load)
 import Home from "../Home";
-import AboutUs from "@/mainComponents/AboutUs";
-import ContactUs from "@/mainComponents/ContactUs/ContactUs";
-import LoginUser from "../mainComponents/Admin/LoginUser";
+
+// const AboutUs = lazy(() => import(""))
+const AboutUs = lazy(() => import("@/mainComponents/AboutUs"));
+const ContactUs = lazy(() => import("@/mainComponents/ContactUs/ContactUs"));
+const LoginUser = lazy(() => import("../mainComponents/Admin/LoginUser"));
+const BlogPostPage = lazy(
+  () => import("@/mainComponents/BlogPosts/SmallBlogUI/BlogPost")
+);
+const VolunteerPage = lazy(() => import("@/mainComponents/Volunteer/Volunter"));
+const VolunteerDetail = lazy(
+  () => import("@/mainComponents/Volunteer/VolunteerDetail")
+);
+const AddBlogPost = lazy(
+  () => import("@/mainComponents/BlogPosts/AddBlogForm")
+);
+const EditBlogPost = lazy(
+  () => import("@/mainComponents/Admin/AdminBlogs/EditBlogPost")
+);
+const VolunteerDash = lazy(
+  () => import("@/mainComponents/Volunteer/VolunteerDash")
+);
+const BlogsDash = lazy(
+  () => import("@/mainComponents/BlogPosts/SmallBlogUI/BlogsDash")
+);
 
 import NotFound from "../mainComponents/NotFound";
-import BlogPostPage from "@/mainComponents/BlogPosts/SmallBlogUI/BlogPost";
-import VolunteerPage from "@/mainComponents/Volunteer/Volunter";
-import VolunteerDetail from "@/mainComponents/Volunteer/VolunteerDetail";
-import AddBlogPost from "@/mainComponents/BlogPosts/AddBlogForm";
-import EditBlogPost from "@/mainComponents/Admin/AdminBlogs/EditBlogPost";
-import VolunteerDash from "@/mainComponents/Volunteer/VolunteerDash";
-import BlogsDash from "@/mainComponents/BlogPosts/SmallBlogUI/BlogsDash";
+import ViewMessage from "@/mainComponents/Admin/AdminMessage/ViewMessage";
+import ViewAllMessage from "@/mainComponents/Admin/AdminMessage/ViewAllMessage";
 
 // Lazy load components (loaded only when needed)
 
@@ -77,9 +93,10 @@ export const adminRoutes = [
   { path: "/admin/videoDashboard", component: VideoDash },
   { path: "/admin/blogsDashboard", component: BlogsDash },
   { path: "/admin/volunteerDashboard", component: VolunteerDash },
-
-  { path: "/admin/categories", component: CategoryManager },
   { path: "/admin/volunteer/:id", component: VolunteerDetail },
+  { path: "/admin/messages", component: ViewAllMessage },
+  { path: "/admin/messages/:id", component: ViewMessage },
+  { path: "/admin/categories", component: CategoryManager },
 ];
 
 // NEW: Admin specific routes with dashboard mapping

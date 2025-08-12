@@ -16,8 +16,6 @@ import AboutUs from "./mainComponents/AboutUs";
 
 import SupportUs from "./mainComponents/SupportUs";
 
-import GalleryImages from "./mainComponents/Gallery/GalleryImages";
-import GalleryVideos from "./mainComponents/Gallery/GalleryVideos";
 import ContactUs from "./mainComponents/ContactUs/ContactUs";
 import GalleryPage from "./mainComponents/Gallery/GalleryPage";
 import VolunteerPage from "./mainComponents/Volunteer/VolunteerPage";
@@ -50,8 +48,6 @@ function App() {
 
       {/*  Gallery Routes - Public */}
       <Route path='/gallery' element={<GalleryPage />} />
-      <Route path='/g-images' element={<GalleryImages />} />
-      <Route path='/g-videos' element={<GalleryVideos />} />
 
       {/*  Adopt Routes */}
       <Route path='/adopt' element={<AdoptionForm />} />
@@ -96,6 +92,7 @@ function App() {
       <Route path='/admin/volunteer/:id' element={<VolunteerDetail />} />
       {/* Category Routes */}
       <Route path='/admin/addCategory' element={<CategoryManager />} />
+
       {/* Not Found */}
       <Route path='*' element={<NotFound />} />
     </Routes>

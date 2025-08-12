@@ -10,6 +10,7 @@ import Footer from "./mainComponents/Footer";
 import RunningDog from "./mainComponents/RunningDog";
 import HalfAbout from "./mainComponents/HalfAbout";
 import HomeGallery from "./mainComponents/Gallery/HomeGallery";
+import SmallContactSec from "./mainComponents/ContactUs/SmallContactSec";
 
 const Home: React.FC = () => {
   return (
@@ -17,11 +18,12 @@ const Home: React.FC = () => {
       <Header />
       <HeroSection />
       <EmergencyCall />
+      <LatestBlogPosts />
       <HalfAbout />
       <HomeGallery />
-      <LatestBlogPosts />
       <OurMission />
       <DonateUs />
+      <SmallContactSec />
       <RunningDog />
       <Footer />
     </main>

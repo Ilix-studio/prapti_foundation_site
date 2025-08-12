@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 
 export function EmergencyCall() {
   return (
-    <section className='w-full py-8 bg-red-50 border-y border-red-100'>
+    <section className='w-full py-8 bg-white-50 border-y border-white-100'>
       <div className='container px-4 md:px-6'>
         <div className='flex flex-col md:flex-row items-center justify-between gap-6'>
           <div className='flex items-center gap-4'>
