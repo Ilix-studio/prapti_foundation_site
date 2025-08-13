@@ -36,7 +36,7 @@ import {
   AlertCircle,
   PawPrint,
 } from "lucide-react";
-import values from "./../assets/values.png";
+import values from "../../assets/values.png";
 
 interface FormData {
   firstName: string;

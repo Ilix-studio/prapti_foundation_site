@@ -1,30 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
 
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Badge } from "@/components/ui/badge";
-import {
-  Mail,
-  Phone,
-  MapPin,
-  Facebook,
-  Twitter,
-  Instagram,
-  Loader2,
-  CheckCircle,
-  AlertCircle,
-} from "lucide-react";
-import { useSendContactMessageMutation } from "@/redux-store/services/contactApi";
-
-interface FormData {
-  name: string;
-  email: string;
-  subject: string;
-  message: string;
-}
-
 const RunningDog: React.FC = () => {
   const [isRunning, setIsRunning] = useState(false);
   const [isBarking, setIsBarking] = useState(false);
@@ -168,61 +143,60 @@ const RunningDog: React.FC = () => {
       runningTimeoutRef.current = null;
     }, 6000);
   };
-  const [formData, setFormData] = useState<FormData>({
-    name: "",
-    email: "",
-    subject: "",
-    message: "",
-  });
-
-  const [sendContactMessage, { isLoading, isSuccess, error }] =
-    useSendContactMessageMutation();
-
-  const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (
-      !formData.name ||
-      !formData.email ||
-      !formData.subject ||
-      !formData.message
-    ) {
-      return;
-    }
-
-    try {
-      await sendContactMessage(formData).unwrap();
-      // Reset form on success
-      setFormData({ name: "", email: "", subject: "", message: "" });
-    } catch (err) {
-      // Error is handled by RTK Query
-      console.error("Failed to send message:", err);
-    }
-  };
-
-  const getErrorMessage = () => {
-    if (error) {
-      if ("data" in error) {
-        return (error.data as any)?.message || "Failed to send message";
-      }
-      return "Network error. Please try again.";
-    }
-    return "";
-  };
 
   return (
     <>
-      <div className='relative w-full h-32 bg-gradient-to-r from-amber-50 to-orange-50 rounded-lg overflow-hidden border border-orange-100'>
+      <div className='relative w-full h-40 bg-white rounded-lg overflow-hidden border-2 border-white-100 shadow-lg'>
+        {/* Sky with clouds */}
+
+        {/* Sun */}
+        <div className='absolute top-4 left-26 w-8 h-8 bg-yellow-400 rounded-full shadow-lg'>
+          <div className='absolute -top-1 -left-1 w-10 h-10 bg-yellow-200 rounded-full animate-ping opacity-30'></div>
+        </div>
+
+        {/* Trees in background */}
+        <div className='absolute bottom-12 left-8'>
+          <svg width='24' height='32' viewBox='0 0 24 32'>
+            {/* Tree trunk */}
+            <rect x='10' y='24' width='4' height='8' fill='#8B4513' />
+            {/* Tree leaves */}
+            <circle cx='12' cy='20' r='8' fill='#22C55E' />
+            <circle cx='8' cy='18' r='6' fill='#16A34A' />
+            <circle cx='16' cy='18' r='6' fill='#16A34A' />
+          </svg>
+        </div>
+
+        {/* Bushes */}
+        <div className='absolute bottom-8 left-20 w-16 h-6 bg-green-400 rounded-full'></div>
+        <div className='absolute bottom-8 right-28 w-12 h-4 bg-green-500 rounded-full'></div>
+
+        {/* Flowers scattered around */}
+        <div className='absolute bottom-10 left-4'>
+          <div className='w-3 h-3 bg-pink-400 rounded-full'></div>
+          <div className='w-1 h-3 bg-green-400 mx-auto'></div>
+        </div>
+        <div className='absolute bottom-12 right-8'>
+          <div className='w-2 h-2 bg-yellow-400 rounded-full'></div>
+          <div className='w-0.5 h-2 bg-green-400 mx-auto'></div>
+        </div>
+        <div className='absolute bottom-9 left-32'>
+          <div className='w-3 h-3 bg-purple-400 rounded-full'></div>
+          <div className='w-1 h-3 bg-green-400 mx-auto'></div>
+        </div>
+
+        {/* Park bench */}
+        <div className='absolute bottom-12 left-1/2 transform -translate-x-1/2'>
+          <svg width='32' height='16' viewBox='0 0 32 16'>
+            {/* Bench seat */}
+            <rect x='4' y='8' width='24' height='3' fill='#8B4513' rx='1' />
+            {/* Bench back */}
+            <rect x='4' y='4' width='24' height='2' fill='#A0522D' rx='1' />
+            {/* Bench legs */}
+            <rect x='6' y='11' width='2' height='5' fill='#654321' />
+            <rect x='24' y='11' width='2' height='5' fill='#654321' />
+          </svg>
+        </div>
+
         {/* Sound Toggle Button */}
         <button
           onClick={() => setSoundEnabled(!soundEnabled)}
@@ -235,8 +209,19 @@ const RunningDog: React.FC = () => {
           🔊 {soundEnabled ? "ON" : "OFF"}
         </button>
 
-        {/* Ground/grass effect */}
-        <div className='absolute bottom-0 w-full h-4 bg-gradient-to-r from-green-200 to-green-300'></div>
+        {/* Ground/grass effect with more detail */}
+        <div className='absolute bottom-0 w-full h-8 bg-gradient-to-r from-green-400 via-green-500 to-green-400'>
+          {/* Grass blades */}
+          <div className='absolute bottom-0 left-4 w-1 h-3 bg-green-600 transform rotate-12'></div>
+          <div className='absolute bottom-0 left-8 w-1 h-4 bg-green-700 transform -rotate-6'></div>
+          <div className='absolute bottom-0 left-16 w-1 h-2 bg-green-600 transform rotate-45'></div>
+          <div className='absolute bottom-0 left-24 w-1 h-3 bg-green-700 transform -rotate-12'></div>
+          <div className='absolute bottom-0 left-32 w-1 h-4 bg-green-600 transform rotate-6'></div>
+          <div className='absolute bottom-0 right-4 w-1 h-3 bg-green-700 transform -rotate-12'></div>
+          <div className='absolute bottom-0 right-8 w-1 h-2 bg-green-600 transform rotate-30'></div>
+          <div className='absolute bottom-0 right-16 w-1 h-4 bg-green-700 transform -rotate-6'></div>
+          <div className='absolute bottom-0 right-24 w-1 h-3 bg-green-600 transform rotate-12'></div>
+        </div>
 
         {/* Bark speech bubble */}
         {isBarking && (
@@ -257,7 +242,7 @@ const RunningDog: React.FC = () => {
 
         {/* Running Dog */}
         <div
-          className={`absolute bottom-4 transition-all duration-[6000ms] ease-linear ${
+          className={`absolute bottom-8 transition-all duration-[6000ms] ease-linear ${
             isRunning ? "right-[calc(100%-80px)]" : "right-4"
           }`}
         >
@@ -384,8 +369,8 @@ const RunningDog: React.FC = () => {
             {/* Running dust clouds */}
             {isRunning && (
               <div className='absolute -bottom-2 -right-2'>
-                <div className='w-8 h-4 bg-orange-200 rounded-full opacity-60 animate-ping'></div>
-                <div className='w-6 h-3 bg-orange-300 rounded-full opacity-40 animate-ping animation-delay-200'></div>
+                <div className='w-8 h-4 bg-green-200 rounded-full opacity-60 animate-ping'></div>
+                <div className='w-6 h-3 bg-green-300 rounded-full opacity-40 animate-ping animation-delay-200'></div>
               </div>
             )}
 
@@ -414,7 +399,7 @@ const RunningDog: React.FC = () => {
                 : "bg-orange-500 hover:bg-orange-600 text-white shadow-lg hover:shadow-xl transform hover:scale-105"
             }`}
           >
-            {isRunning ? "Running..." : "Make Dog Run!"}
+            {isRunning ? "Running..." : "Go, Doggy, Go!"}
           </button>
 
           {/* Stop Button */}
@@ -431,220 +416,16 @@ const RunningDog: React.FC = () => {
         {/* Status indicator */}
         {isRunning && (
           <div className='absolute bottom-2 left-2 px-2 py-1 bg-green-500 text-white text-xs rounded-full animate-pulse'>
-            🏃‍♂️ Running with sound!
+            🏃‍♂️ Running in the park!
           </div>
         )}
 
-        {/* Decorative elements */}
-        <div className='absolute top-4 left-1/4 w-2 h-2 bg-yellow-300 rounded-full animate-pulse'></div>
-        <div className='absolute top-8 right-1/3 w-1.5 h-1.5 bg-yellow-400 rounded-full animate-pulse animation-delay-500'></div>
-        <div className='absolute top-6 left-2/3 w-1 h-1 bg-yellow-500 rounded-full animate-pulse animation-delay-1000'></div>
-      </div>
-
-      {/* contact section  */}
-      <section
-        className='w-full py-12 md:py-24 lg:py-32 bg-gray-50'
-        id='contact'
-      >
-        <div className='container px-4 md:px-6'>
-          <div className='grid gap-12 lg:grid-cols-2 lg:gap-16'>
-            {/* Left Column - Contact Information */}
-            <div className='space-y-8'>
-              <div className='space-y-4'>
-                <Badge className='bg-green-100 text-green-700 border-green-200 hover:bg-green-200'>
-                  Get in Touch
-                </Badge>
-                <h2 className='text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl'>
-                  Connect With Us
-                </h2>
-                <p className='text-gray-600 text-lg'>
-                  Have questions or suggestions? Reach out to our office. We're
-                  here to listen and assist.
-                </p>
-              </div>
-
-              {/* Contact Details */}
-              <div className='space-y-6'>
-                <div className='flex items-start gap-4 p-4 rounded-lg bg-white shadow-sm border'>
-                  <div className='p-2 rounded-full bg-orange-100'>
-                    <Mail className='h-5 w-5 text-orange-600' />
-                  </div>
-                  <div>
-                    <h3 className='font-semibold text-gray-900'>Email</h3>
-                    <p className='text-gray-600'>
-                      contact@prapti-foundation.com
-                    </p>
-                  </div>
-                </div>
-
-                <div className='flex items-start gap-4 p-4 rounded-lg bg-white shadow-sm border'>
-                  <div className='p-2 rounded-full bg-orange-100'>
-                    <Phone className='h-5 w-5 text-orange-600' />
-                  </div>
-                  <div>
-                    <h3 className='font-semibold text-gray-900'>Phone</h3>
-                    <p className='text-gray-600'>+91 98765 43210</p>
-                  </div>
-                </div>
-
-                <div className='flex items-start gap-4 p-4 rounded-lg bg-white shadow-sm border'>
-                  <div className='p-2 rounded-full bg-orange-100'>
-                    <MapPin className='h-5 w-5 text-orange-600' />
-                  </div>
-                  <div>
-                    <h3 className='font-semibold text-gray-900'>
-                      Office Address
-                    </h3>
-                    <p className='text-gray-600'>Golaghat, Assam, India.</p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Social Media */}
-              <div className='flex gap-4'>
-                <Button
-                  variant='outline'
-                  size='icon'
-                  className='rounded-full border-orange-200 hover:bg-orange-50 hover:border-orange-300'
-                >
-                  <Facebook className='h-4 w-4 text-orange-600' />
-                  <span className='sr-only'>Facebook</span>
-                </Button>
-                <Button
-                  variant='outline'
-                  size='icon'
-                  className='rounded-full border-orange-200 hover:bg-orange-50 hover:border-orange-300'
-                >
-                  <Twitter className='h-4 w-4 text-orange-600' />
-                  <span className='sr-only'>Twitter</span>
-                </Button>
-                <Button
-                  variant='outline'
-                  size='icon'
-                  className='rounded-full border-orange-200 hover:bg-orange-50 hover:border-orange-300'
-                >
-                  <Instagram className='h-4 w-4 text-orange-600' />
-                  <span className='sr-only'>Instagram</span>
-                </Button>
-              </div>
-            </div>
-
-            {/* Right Column - Contact Form */}
-            <div className='bg-white rounded-2xl shadow-lg p-6 md:p-8'>
-              <div className='space-y-6'>
-                <h3 className='text-2xl font-bold text-gray-900'>
-                  Send a Message
-                </h3>
-
-                {/* Success Message */}
-                {isSuccess && (
-                  <div className='text-center py-4'>
-                    <CheckCircle className='h-12 w-12 text-green-500 mx-auto mb-3' />
-                    <h4 className='text-lg font-semibold text-gray-900 mb-2'>
-                      Message Sent Successfully!
-                    </h4>
-                    <p className='text-gray-600'>
-                      Thank you for contacting us. We'll get back to you soon.
-                    </p>
-                  </div>
-                )}
-
-                {/* Error Message */}
-                {error && (
-                  <div className='p-4 rounded-lg bg-red-50 border border-red-200 flex items-start gap-3'>
-                    <AlertCircle className='h-5 w-5 text-red-500 mt-0.5' />
-                    <div>
-                      <p className='text-red-600 font-medium'>
-                        Failed to send message
-                      </p>
-                      <p className='text-red-600/70 text-sm'>
-                        {getErrorMessage()}
-                      </p>
-                    </div>
-                  </div>
-                )}
-
-                {/* Contact Form */}
-                <form onSubmit={handleSubmit} className='space-y-4'>
-                  <div className='grid gap-4 sm:grid-cols-2'>
-                    <div className='space-y-2'>
-                      <Label htmlFor='name'>Name *</Label>
-                      <Input
-                        id='name'
-                        name='name'
-                        placeholder='Your name'
-                        value={formData.name}
-                        onChange={handleInputChange}
-                        required
-                        disabled={isLoading}
-                        className='border-gray-200 focus:border-orange-300 focus:ring-orange-200'
-                      />
-                    </div>
-                    <div className='space-y-2'>
-                      <Label htmlFor='email'>Email *</Label>
-                      <Input
-                        id='email'
-                        name='email'
-                        type='email'
-                        placeholder='Your email'
-                        value={formData.email}
-                        onChange={handleInputChange}
-                        required
-                        disabled={isLoading}
-                        className='border-gray-200 focus:border-orange-300 focus:ring-orange-200'
-                      />
-                    </div>
-                  </div>
-
-                  <div className='space-y-2'>
-                    <Label htmlFor='subject'>Subject *</Label>
-                    <Input
-                      id='subject'
-                      name='subject'
-                      placeholder='Message subject'
-                      value={formData.subject}
-                      onChange={handleInputChange}
-                      required
-                      disabled={isLoading}
-                      className='border-gray-200 focus:border-orange-300 focus:ring-orange-200'
-                    />
-                  </div>
-
-                  <div className='space-y-2'>
-                    <Label htmlFor='message'>Message *</Label>
-                    <Textarea
-                      id='message'
-                      name='message'
-                      placeholder='Your message'
-                      value={formData.message}
-                      onChange={handleInputChange}
-                      required
-                      rows={5}
-                      disabled={isLoading}
-                      className='border-gray-200 focus:border-orange-300 focus:ring-orange-200 resize-none'
-                    />
-                  </div>
-
-                  <Button
-                    type='submit'
-                    className='w-full bg-orange-500 hover:bg-orange-600 text-white py-3 text-lg font-medium'
-                    disabled={isLoading}
-                  >
-                    {isLoading ? (
-                      <>
-                        <Loader2 className='mr-2 h-4 w-4 animate-spin' />
-                        Sending Message...
-                      </>
-                    ) : (
-                      "Send Message"
-                    )}
-                  </Button>
-                </form>
-              </div>
-            </div>
-          </div>
+        {/* Decorative butterflies */}
+        <div className='absolute top-6 left-1/4 w-2 h-2 bg-yellow-300 rounded-full animate-pulse'>
+          <div className='absolute -top-1 -left-1 w-1 h-1 bg-yellow-400 rounded-full'></div>
+          <div className='absolute -top-1 right-0 w-1 h-1 bg-yellow-400 rounded-full'></div>
         </div>
-      </section>
+      </div>
     </>
   );
 };

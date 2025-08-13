@@ -31,11 +31,16 @@ import {
 } from "../../redux-store/slices/authSlice";
 import { useGetBlogPostsQuery } from "../../redux-store/services/blogApi";
 import { useGetVolunteerApplicationsQuery } from "../../redux-store/services/volunteerApi";
+// Import visitor API hooks
+import { useGetVisitorStatsQuery } from "../../redux-store/services/visitorApi";
+// Import contact API hooks
+import { useGetContactMessagesQuery } from "../../redux-store/services/contactApi";
+import TotalImpactDashboard from "./AdminImpact/Impact";
 
 const NewDashAdmin: React.FC = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { isAuthenticated, user } = useSelector(selectAuth);
+  const { isAuthenticated } = useSelector(selectAuth);
   const isAdmin = useSelector(selectIsAdmin);
 
   // API hooks
@@ -51,15 +56,30 @@ const NewDashAdmin: React.FC = () => {
     error: volunteersError,
   } = useGetVolunteerApplicationsQuery({ page: 1, limit: 5 });
 
+  // Contact messages API hooks
+  const {
+    data: messagesData,
+    isLoading: messagesLoading,
+    error: messagesError,
+    refetch: refetchMessages,
+  } = useGetContactMessagesQuery({
+    page: 1,
+    limit: 4, // Show 4 recent messages in dashboard
+  });
+
+  // Message action hooks
+
+  // Visitor API hooks
+  const {
+    data: visitorStatsData,
+    isLoading: visitorStatsLoading,
+    error: visitorStatsError,
+    refetch: refetchVisitorStats,
+  } = useGetVisitorStatsQuery();
+
   // Mock data for additional stats (you can replace with real API calls)
   const [mockStats] = useState({
-    totalMessages: 12,
-    unreadMessages: 3,
     totalPhotos: 45,
-    todayVisitors: 12,
-    thisWeekVisitors: 4,
-    growthRate: 12,
-    totalVisitors: 112,
   });
 
   if (!isAuthenticated || !isAdmin) {
@@ -68,6 +88,26 @@ const NewDashAdmin: React.FC = () => {
 
   const handleLogout = () => {
     dispatch(logout());
+  };
+
+  const handleViewMessage = (id: string) => {
+    navigate(`/admin/messages/${id}`);
+  };
+
+  const formatTimeAgo = (dateString: string) => {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffInMs = now.getTime() - date.getTime();
+    const diffInHours = Math.floor(diffInMs / (1000 * 60 * 60));
+    const diffInDays = Math.floor(diffInHours / 24);
+
+    if (diffInDays > 0) {
+      return `${diffInDays} day${diffInDays > 1 ? "s" : ""} ago`;
+    } else if (diffInHours > 0) {
+      return `${diffInHours} hour${diffInHours > 1 ? "s" : ""} ago`;
+    } else {
+      return "Just now";
+    }
   };
 
   // Stats configuration
@@ -81,7 +121,7 @@ const NewDashAdmin: React.FC = () => {
       bgColor: "bg-blue-50",
       loading: blogsLoading,
       error: blogsError,
-      action: () => navigate("/admin/all-blog"),
+      action: () => navigate("/admin/blogsDashboard"),
     },
     {
       title: "Total Gallery Photos",
@@ -91,17 +131,17 @@ const NewDashAdmin: React.FC = () => {
       color: "text-purple-600",
       bgColor: "bg-purple-50",
       loading: false,
-      action: () => navigate("/admin/gallery"),
+      action: () => navigate("/admin/photoDashboard"),
     },
     {
       title: "Total Gallery Videos",
       value: mockStats.totalPhotos.toString(),
       change: "+5",
-      icon: Heart,
-      color: "text-purple-600",
-      bgColor: "bg-purple-50",
+      icon: Video,
+      color: "text-green-600",
+      bgColor: "bg-green-50",
       loading: false,
-      action: () => navigate("/admin/gallery"),
+      action: () => navigate("/admin/videoDashboard"),
     },
     {
       title: "Total Volunteer Applications",
@@ -112,7 +152,7 @@ const NewDashAdmin: React.FC = () => {
       bgColor: "bg-orange-50",
       loading: volunteersLoading,
       error: volunteersError,
-      action: () => navigate("/admin/volunteers"),
+      action: () => navigate("/admin/volunteerDashboard"),
     },
   ];
 
@@ -127,53 +167,24 @@ const NewDashAdmin: React.FC = () => {
       title: "Upload Photo",
       icon: Upload,
       color: "bg-purple-600",
-      action: () => navigate("/admin/upload-photo"),
+      action: () => navigate("/admin/addPhoto"),
     },
     {
       title: "Upload Video",
       icon: Video,
       color: "bg-green-600",
-      action: () => navigate("/volunteer"),
+      action: () => navigate("/admin/addVideo"),
     },
     {
       title: "Add Category",
       icon: FileText,
       color: "bg-orange-600",
-      action: () => navigate("/admin/article/new"),
+      action: () => navigate("/admin/addCategory"),
     },
   ];
 
   // Mock recent messages (replace with real data)
-  const recentMessages = [
-    {
-      id: "1",
-      name: "John Doe",
-      subject: "Volunteer inquiry",
-      time: "2 hours ago",
-      isNew: true,
-    },
-    {
-      id: "2",
-      name: "Sarah Smith",
-      subject: "Dog adoption question",
-      time: "4 hours ago",
-      isNew: true,
-    },
-    {
-      id: "3",
-      name: "Mike Johnson",
-      subject: "Donation information",
-      time: "1 day ago",
-      isNew: false,
-    },
-    {
-      id: "4",
-      name: "Emily Davis",
-      subject: "Event participation",
-      time: "2 days ago",
-      isNew: false,
-    },
-  ];
+  const recentMessages = messagesData?.data || [];
 
   return (
     <div className='min-h-screen bg-white'>
@@ -218,7 +229,8 @@ const NewDashAdmin: React.FC = () => {
         {/* Welcome Section */}
         <div className='mb-8 animate-in fade-in duration-700'>
           <h2 className='text-2xl font-bold text-gray-900 mb-2'>
-            Welcome back, <span className='font-medium'>{user?.name}</span>
+            Welcome back,
+            {/* <span className='font-medium'>{user?.name}</span> */}
           </h2>
           <p className='text-gray-600'>
             Here's what's happening with your website today.
@@ -272,55 +284,113 @@ const NewDashAdmin: React.FC = () => {
         </div>
 
         {/* Visitor Analytics Section */}
-        <div className='mb-8 animate-in slide-in-from-left duration-700'>
-          <Card className='border-l-4 border-l-blue-500 shadow-sm'>
-            <CardHeader>
-              <CardTitle className='flex items-center gap-2'>
-                <TrendingUp className='w-5 h-5 text-blue-600' />
-                Visitor Analytics
-                <Badge variant='outline' className='ml-auto'>
-                  Live
-                </Badge>
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className='grid grid-cols-2 md:grid-cols-4 gap-4'>
-                <div className='text-center p-4 bg-green-50 rounded-lg border border-green-200 hover:bg-green-100 transition-colors'>
-                  <p className='text-2xl font-bold text-green-900'>
-                    {mockStats.totalVisitors}
-                  </p>
-                  <p className='text-green-600 text-sm font-medium'>
-                    Total Visitors
-                  </p>
-                </div>
-                <div className='text-center p-4 bg-blue-50 rounded-lg border border-blue-200 hover:bg-blue-100 transition-colors'>
-                  <p className='text-2xl font-bold text-blue-900'>
-                    {mockStats.todayVisitors}
-                  </p>
-                  <p className='text-blue-600 text-sm font-medium'>
-                    Today's Visitors
-                  </p>
-                </div>
-                <div className='text-center p-4 bg-purple-50 rounded-lg border border-purple-200 hover:bg-purple-100 transition-colors'>
-                  <p className='text-2xl font-bold text-purple-900'>
-                    {mockStats.thisWeekVisitors}
-                  </p>
-                  <p className='text-purple-600 text-sm font-medium'>
-                    This Week
-                  </p>
-                </div>
-                <div className='text-center p-4 bg-yellow-50 rounded-lg border border-yellow-200 hover:bg-yellow-100 transition-colors'>
-                  <p className='text-2xl font-bold text-yellow-900'>
-                    +{mockStats.growthRate}%
-                  </p>
-                  <p className='text-yellow-600 text-sm font-medium'>
-                    Growth Rate
-                  </p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
+        {visitorStatsData?.data && (
+          <div className='mb-8 animate-in slide-in-from-left duration-700'>
+            <Card className='border-l-4 border-l-blue-500 shadow-sm'>
+              <CardHeader>
+                <CardTitle className='flex items-center gap-2 justify-between'>
+                  <div className='flex items-center gap-2'>
+                    <TrendingUp className='w-5 h-5 text-blue-600' />
+                    Visitor Analytics
+                    <Badge variant='outline' className='ml-auto'>
+                      Live
+                    </Badge>
+                  </div>
+                  {/* Reset Counter Button */}
+                  {/* <Button
+                    onClick={handleResetVisitorCounter}
+                    variant='outline'
+                    size='sm'
+                    className='text-red-600 border-red-300 hover:bg-red-50'
+                    disabled={isResetting}
+                  >
+                    {isResetting ? (
+                      <Loader2 className='w-4 h-4 animate-spin mr-1' />
+                    ) : null}
+                    Reset Counter
+                  </Button> */}
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                {visitorStatsLoading ? (
+                  <div className='flex items-center justify-center py-8'>
+                    <Loader2 className='w-6 h-6 animate-spin mr-2' />
+                    <span>Loading visitor stats...</span>
+                  </div>
+                ) : visitorStatsError ? (
+                  <div className='text-center py-8'>
+                    <AlertCircle className='w-12 h-12 text-red-400 mx-auto mb-4' />
+                    <p className='text-red-600 mb-4'>
+                      Failed to load visitor stats
+                    </p>
+                    <Button
+                      onClick={() => refetchVisitorStats()}
+                      variant='outline'
+                    >
+                      Retry
+                    </Button>
+                  </div>
+                ) : (
+                  <>
+                    <div className='grid grid-cols-2 md:grid-cols-4 gap-4'>
+                      <div className='text-center p-4 bg-green-50 rounded-lg border border-green-200 hover:bg-green-100 transition-colors'>
+                        <p className='text-2xl font-bold text-green-900'>
+                          {visitorStatsData.data.totalVisitors?.toLocaleString() ||
+                            "0"}
+                        </p>
+                        <p className='text-green-600 text-sm font-medium'>
+                          Total Visitors
+                        </p>
+                      </div>
+                      <div className='text-center p-4 bg-blue-50 rounded-lg border border-blue-200 hover:bg-blue-100 transition-colors'>
+                        <p className='text-2xl font-bold text-blue-900'>
+                          {visitorStatsData.data.todayVisitors || "0"}
+                        </p>
+                        <p className='text-blue-600 text-sm font-medium'>
+                          Today's Visitors
+                        </p>
+                      </div>
+                      <div className='text-center p-4 bg-purple-50 rounded-lg border border-purple-200 hover:bg-purple-100 transition-colors'>
+                        <p className='text-2xl font-bold text-purple-900'>
+                          {visitorStatsData.data.weeklyStats?.thisWeek || "0"}
+                        </p>
+                        <p className='text-purple-600 text-sm font-medium'>
+                          This Week
+                        </p>
+                      </div>
+                      <div className='text-center p-4 bg-yellow-50 rounded-lg border border-yellow-200 hover:bg-yellow-100 transition-colors'>
+                        <p
+                          className={`text-2xl font-bold ${
+                            (visitorStatsData.data.weeklyStats?.growth || 0) >=
+                            0
+                              ? "text-green-900"
+                              : "text-red-900"
+                          }`}
+                        >
+                          {(visitorStatsData.data.weeklyStats?.growth || 0) >= 0
+                            ? "+"
+                            : ""}
+                          {visitorStatsData.data.weeklyStats?.growth || 0}%
+                        </p>
+                        <p className='text-yellow-600 text-sm font-medium'>
+                          Weekly Growth
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Last Visit Info */}
+                    {visitorStatsData.data.lastVisit && (
+                      <div className='mt-4 text-center text-sm text-gray-600'>
+                        Last visitor:{" "}
+                        {formatTimeAgo(visitorStatsData.data.lastVisit)}
+                      </div>
+                    )}
+                  </>
+                )}
+              </CardContent>
+            </Card>
+          </div>
+        )}
 
         <div className='grid grid-cols-1 lg:grid-cols-3 gap-6'>
           {/* Recent Messages */}
@@ -330,44 +400,70 @@ const NewDashAdmin: React.FC = () => {
                 <CardTitle className='flex items-center gap-2'>
                   <MessageCircle className='w-5 h-5 text-green-600' />
                   Recent Messages
-                  <Badge variant='destructive' className='ml-2'>
-                    {mockStats.unreadMessages} new
-                  </Badge>
+                  {messagesData?.unreadCount &&
+                    messagesData.unreadCount > 0 && (
+                      <Badge variant='destructive' className='ml-2'>
+                        {messagesData.unreadCount} new
+                      </Badge>
+                    )}
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className='space-y-4'>
-                  {recentMessages.map((message) => (
-                    <div
-                      key={message.id}
-                      className='flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors border border-gray-200 hover:border-gray-300'
-                    >
-                      <div className='flex-1'>
-                        <div className='flex items-center gap-2 mb-1'>
-                          <p className='font-medium text-gray-900'>
-                            {message.name}
-                          </p>
-                          {message.isNew && (
-                            <Badge variant='destructive' className='text-xs'>
-                              New
-                            </Badge>
-                          )}
-                        </div>
-                        <p className='text-sm text-gray-600 mb-1'>
-                          {message.subject}
-                        </p>
-                        <p className='text-xs text-gray-500'>{message.time}</p>
-                      </div>
-                      <Button
-                        size='sm'
-                        variant='outline'
-                        className='hover:bg-orange-50 hover:border-orange-300'
+                {messagesLoading ? (
+                  <div className='flex items-center justify-center py-8'>
+                    <Loader2 className='w-6 h-6 animate-spin mr-2' />
+                    <span>Loading messages...</span>
+                  </div>
+                ) : messagesError ? (
+                  <div className='text-center py-8'>
+                    <AlertCircle className='w-12 h-12 text-red-400 mx-auto mb-4' />
+                    <p className='text-red-600 mb-4'>Failed to load messages</p>
+                    <Button onClick={() => refetchMessages()} variant='outline'>
+                      Retry
+                    </Button>
+                  </div>
+                ) : recentMessages.length > 0 ? (
+                  <div className='space-y-4'>
+                    {recentMessages.map((message) => (
+                      <div
+                        key={message._id}
+                        className='flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors border border-gray-200 hover:border-gray-300'
                       >
-                        <Eye className='w-4 h-4' />
-                      </Button>
-                    </div>
-                  ))}
-                </div>
+                        <div className='flex-1'>
+                          <div className='flex items-center gap-2 mb-1'>
+                            <p className='font-medium text-gray-900'>
+                              {message.name}
+                            </p>
+                            {!message.isRead && (
+                              <Badge variant='destructive' className='text-xs'>
+                                New
+                              </Badge>
+                            )}
+                          </div>
+                          <p className='text-sm text-gray-600 mb-1'>
+                            {message.subject}
+                          </p>
+                          <p className='text-xs text-gray-500'>
+                            {formatTimeAgo(message.createdAt)}
+                          </p>
+                        </div>
+                        <Button
+                          size='sm'
+                          variant='outline'
+                          className='hover:bg-orange-50 hover:border-orange-300'
+                          onClick={() => handleViewMessage(message._id)}
+                        >
+                          <Eye className='w-4 h-4' />
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className='text-center py-8'>
+                    <MessageCircle className='w-12 h-12 text-gray-400 mx-auto mb-4' />
+                    <p className='text-gray-600'>No messages found</p>
+                  </div>
+                )}
 
                 <Button
                   className='w-full mt-6 bg-orange-500 hover:bg-orange-600 text-white font-medium'
@@ -447,37 +543,7 @@ const NewDashAdmin: React.FC = () => {
           </div>
         </div>
 
-        {/* Additional Quick Stats Footer */}
-        <div className='mt-8 animate-in fade-in duration-1000'>
-          <Card className='bg-gradient-to-r from-orange-50 to-amber-50 border-orange-200'>
-            <CardContent className='p-6'>
-              <div className='flex items-center justify-between'>
-                <div>
-                  <h3 className='text-lg font-semibold text-gray-900 mb-1'>
-                    Foundation Impact
-                  </h3>
-                  <p className='text-gray-600 text-sm'>
-                    Making a difference in the community through your efforts
-                  </p>
-                </div>
-                <div className='flex items-center gap-6 text-center'>
-                  <div>
-                    <p className='text-2xl font-bold text-orange-600'>24</p>
-                    <p className='text-xs text-gray-600'>Dogs Rescued</p>
-                  </div>
-                  <div>
-                    <p className='text-2xl font-bold text-green-600'>18</p>
-                    <p className='text-xs text-gray-600'>Adopted</p>
-                  </div>
-                  <div>
-                    <p className='text-2xl font-bold text-blue-600'>32</p>
-                    <p className='text-xs text-gray-600'>Volunteers</p>
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
+        <TotalImpactDashboard />
       </div>
     </div>
   );

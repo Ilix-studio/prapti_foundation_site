@@ -141,7 +141,7 @@ const Footer = () => {
               © {currentYear} Prapti Foundation. All rights reserved.
             </p>
             <p className='text-xs text-gray-500 mt-2 sm:mt-0'>
-              Made with 🧡 by{" "}
+              Paw-crafted with 🧡 by{" "}
               <Link
                 to='https://ilix-hazarika.vercel.app/'
                 target='_blank'

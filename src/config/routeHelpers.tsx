@@ -22,6 +22,21 @@ export const createImmediateRoute = (
 ) => <Route key={path} path={path} element={<Component />} />;
 
 // Create public route (with lazy loading)
+export const createImmediateRouteTwo = (
+  path: string,
+  Component: React.ComponentType
+) => (
+  <Route
+    key={path}
+    path={path}
+    element={
+      <Suspense fallback={<LoadingSpinner />}>
+        <Component />
+      </Suspense>
+    }
+  />
+);
+// Create public route (with lazy loading)
 export const createPublicRoute = (
   path: string,
   Component: React.ComponentType
