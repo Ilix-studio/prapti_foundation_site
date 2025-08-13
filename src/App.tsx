@@ -1,40 +1,25 @@
-import { Route, Routes, useLocation } from "react-router-dom";
+import { Routes, useLocation } from "react-router-dom";
 import { useEffect } from "react";
 import "./App.css";
-import Home from "./Home";
 
-import BlogPostPage from "./mainComponents/BlogPosts/SmallBlogUI/BlogPost";
-import AddBlogForm from "./mainComponents/BlogPosts/AddBlogForm";
-import NotFound from "./mainComponents/NotFound";
-import LoginUser from "./mainComponents/Admin/LoginUser";
-import AdminDashboard from "./mainComponents/Admin/AdminDashboard";
-import AddBlogPost from "./mainComponents/BlogPosts/AddBlogForm";
-import AdoptionForm from "./mainComponents/Adopt/AdoptionForm";
+import { Toaster } from "react-hot-toast";
 
-import ReportPage from "./mainComponents/ReportAbout/ReportPage";
-import AboutUs from "./mainComponents/AboutUs";
-
-import SupportUs from "./mainComponents/SupportUs";
-
-import ContactUs from "./mainComponents/ContactUs/ContactUs";
-import GalleryPage from "./mainComponents/Gallery/GalleryPage";
-import VolunteerPage from "./mainComponents/Volunteer/VolunteerPage";
-import VolunteerDetail from "./mainComponents/Volunteer/VolunteerDetail";
-import ViewMessage from "./mainComponents/Admin/AdminMessage/ViewMessage";
-import NewDashAdmin from "./mainComponents/Admin/NewDashAdmin";
-import SeeBlogs from "./mainComponents/BlogPosts/SmallBlogUI/SeeBlogs";
-import PhotoDash from "./mainComponents/Admin/AdminPhoto/PhotoDash";
-import AddPhoto from "./mainComponents/Admin/AdminPhoto/AddPhoto";
-import EditPhoto from "./mainComponents/Admin/AdminPhoto/EditPhoto";
-import PhotoViewPage from "./mainComponents/Admin/AdminPhoto/PhotoCardWrapper";
-import VideoDash from "./mainComponents/Admin/AdminVideo/VideoDash";
-import AddVideo from "./mainComponents/Admin/AdminVideo/AddVideo";
-import EditVideo from "./mainComponents/Admin/AdminVideo/EditVideo";
-import PlayVideo from "./mainComponents/Admin/AdminVideo/PlayVideo";
-import VolunteerDash from "./mainComponents/Volunteer/VolunteerDash";
-import BlogsDash from "./mainComponents/BlogPosts/SmallBlogUI/BlogsDash";
-import CategoryManager from "./mainComponents/Admin/AdminCategory/CategoryManager";
-import ViewAllMessage from "./mainComponents/Admin/AdminMessage/ViewAllMessage";
+// Import route configurations
+import {
+  immediateRoute,
+  immediateRouteTwo,
+  publicRoutes,
+  adminRoutes,
+  adSpecificRoutes,
+  fallbackRoute,
+} from "./config/routeConfig";
+import {
+  createAdminRoute,
+  createAdSpecificRoute,
+  createImmediateRoute,
+  createImmediateRouteTwo,
+  createPublicRoute,
+} from "./config/routeHelpers";
 
 function App() {
   const location = useLocation();
@@ -44,63 +29,97 @@ function App() {
     window.scrollTo(0, 0);
   }, [location.pathname]);
   return (
-    <Routes>
-      <Route path='/' element={<Home />} />
+    <>
+      <Toaster
+        position='top-right'
+        reverseOrder={false}
+        gutter={8}
+        containerClassName=''
+        containerStyle={{
+          top: 20,
+          left: 20,
+          bottom: 20,
+          right: 20,
+        }}
+        toastOptions={{
+          // Default options for all toasts
+          duration: 3000,
+          style: {
+            background: "#fff",
+            color: "#363636",
+            border: "1px solid #e5e7eb",
+            borderRadius: "8px",
+            boxShadow:
+              "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)",
+            fontSize: "14px",
+            maxWidth: "420px",
+            padding: "12px 16px",
+            fontFamily: "system-ui, -apple-system, sans-serif",
+          },
+          // Specific styles for different toast types
+          success: {
+            duration: 4000,
+            iconTheme: {
+              primary: "#10b981",
+              secondary: "#fff",
+            },
+            style: {
+              border: "1px solid #10b981",
+              background: "#f0fdf4",
+              color: "#065f46",
+            },
+          },
+          error: {
+            duration: 5000,
+            iconTheme: {
+              primary: "#ef4444",
+              secondary: "#fff",
+            },
+            style: {
+              border: "1px solid #ef4444",
+              background: "#fef2f2",
+              color: "#991b1b",
+            },
+          },
+          loading: {
+            duration: Infinity,
+            style: {
+              border: "1px solid #3b82f6",
+              background: "#eff6ff",
+              color: "#1e40af",
+            },
+          },
+        }}
+      />
 
-      {/*  Gallery Routes - Public */}
-      <Route path='/gallery' element={<GalleryPage />} />
+      <Routes>
+        {/* Step 1: Immediate routes (no lazy loading) */}
+        {immediateRoute.map(({ path, component }) =>
+          createImmediateRoute(path, component)
+        )}
+        {immediateRouteTwo.map(({ path, component }) =>
+          createImmediateRouteTwo(path, component)
+        )}
 
-      {/*  Adopt Routes */}
-      <Route path='/adopt' element={<AdoptionForm />} />
+        {/* Step 2: Public routes (with lazy loading) */}
+        {publicRoutes.map(({ path, component }) =>
+          createPublicRoute(path, component)
+        )}
 
-      {/*  Report  Routes */}
-      <Route path='/report' element={<ReportPage />} />
+        {/* Step 3: Admin routes (with protection + lazy loading) */}
+        {adminRoutes.map(({ path, component }) =>
+          createAdminRoute(path, component)
+        )}
 
-      {/*  About us  Routes */}
-      <Route path='/about' element={<AboutUs />} />
-      <Route path='/support' element={<SupportUs />} />
+        {/* Step 4: Admin Specific Dashboard routes (with protection + lazy loading) */}
+        {adSpecificRoutes.map(({ path, component }) =>
+          createAdSpecificRoute(path, component)
+        )}
 
-      {/*  Contact  Routes */}
-      <Route path='/contact' element={<ContactUs />} />
-      <Route path='/admin/message/:id' element={<ViewMessage />} />
-
-      {/* Admin Routes */}
-      <Route path='/admin/login' element={<LoginUser />} />
-      <Route path='/admin/newdash' element={<AdminDashboard />} />
-      <Route path='/admin/dashboard' element={<NewDashAdmin />} />
-
-      {/* Blogs Routes */}
-      <Route path='/blog' element={<SeeBlogs />} />
-      <Route path='/blog/:id' element={<BlogPostPage />} />
-      <Route path='/blog/new' element={<AddBlogForm />} />
-      {/* Private Blogs */}
-      <Route path='/admin/blog/new' element={<AddBlogPost />} />
-      <Route path='/admin/blog/edit/:id' element={<AddBlogPost />} />
-      <Route path='/admin/blogsDashboard' element={<BlogsDash />} />
-      {/* Photo Routes  */}
-      <Route path='/admin/photoDashboard' element={<PhotoDash />} />
-      <Route path='/admin/addPhoto' element={<AddPhoto />} />
-      <Route path='/admin/edit/:id' element={<EditPhoto />} />
-      <Route path='/admin/view/:id' element={<PhotoViewPage />} />
-      {/* video Routes  */}
-      <Route path='/admin/videoDashboard' element={<VideoDash />} />
-      <Route path='/admin/addVideo' element={<AddVideo />} />
-      <Route path='/admin/editVideo/:id"' element={<EditVideo />} />
-      <Route path='/admin/play/:id"' element={<PlayVideo />} />
-      {/*  Volunteer  Routes */}
-      <Route path='/volunteer' element={<VolunteerPage />} />
-      <Route path='/admin/volunteerDashboard' element={<VolunteerDash />} />
-      <Route path='/admin/volunteer/:id' element={<VolunteerDetail />} />
-      {/* Category Routes */}
-      <Route path='/admin/addCategory' element={<CategoryManager />} />
-
-      {/* message  */}
-      <Route path='/admin/messages/:id' element={<ViewMessage />} />
-      <Route path='/admin/messages' element={<ViewAllMessage />} />
-
-      {/* Not Found */}
-      <Route path='*' element={<NotFound />} />
-    </Routes>
+        {/* Step 4: Fallback route */}
+        {createImmediateRoute(fallbackRoute.path, fallbackRoute.component)}
+      </Routes>
+    </>
   );
 }
 

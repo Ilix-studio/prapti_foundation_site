@@ -1,12 +1,29 @@
 import { lazy } from "react";
+// const AboutUs = lazy(() => import(""))
 
 // Immediate load components (critical for first page load)
 import Home from "../Home";
 
-// const AboutUs = lazy(() => import(""))
+// Immediate two
 const AboutUs = lazy(() => import("@/mainComponents/AboutUs"));
 const ContactUs = lazy(() => import("@/mainComponents/ContactUs/ContactUs"));
 const LoginUser = lazy(() => import("../mainComponents/Admin/LoginUser"));
+// Public Routes
+const GalleryPage = lazy(() => import("@/mainComponents/Gallery/GalleryPage"));
+const AdoptionForm = lazy(() => import("@/mainComponents/Adopt/AdoptionForm"));
+const ReportPage = lazy(
+  () => import("@/mainComponents/ReportAbout/ReportPage")
+);
+const SupportUs = lazy(() => import("@/mainComponents/SupportUs"));
+const SeeBlogs = lazy(
+  () => import("@/mainComponents/BlogPosts/SmallBlogUI/SeeBlogs")
+);
+
+//
+const ViewMessage = lazy(
+  () => import("@/mainComponents/Admin/AdminMessage/ViewMessage")
+);
+
 const BlogPostPage = lazy(
   () => import("@/mainComponents/BlogPosts/SmallBlogUI/BlogPost")
 );
@@ -28,7 +45,6 @@ const BlogsDash = lazy(
 );
 
 import NotFound from "../mainComponents/NotFound";
-import ViewMessage from "@/mainComponents/Admin/AdminMessage/ViewMessage";
 import ViewAllMessage from "@/mainComponents/Admin/AdminMessage/ViewAllMessage";
 
 // Lazy load components (loaded only when needed)
@@ -83,6 +99,12 @@ export const publicRoutes = [
   // { path: "/video-gallery", component: VideoGallery },
   // { path: "/view/photo/:id", component: ViewPhotoId },
   // { path: "/view/video/:id", component: ViewVideoId },
+
+  { path: "/gallery", component: GalleryPage },
+  { path: "/adopt", component: AdoptionForm },
+  { path: "/report", component: ReportPage },
+  { path: "/support", component: SupportUs },
+  { path: "/blog", component: SeeBlogs },
   { path: "/blog/:id", component: BlogPostPage }, // create a component for admin to read blog
   { path: "/volunteer", component: VolunteerPage },
 ];
@@ -93,7 +115,6 @@ export const adminRoutes = [
   { path: "/admin/videoDashboard", component: VideoDash },
   { path: "/admin/blogsDashboard", component: BlogsDash },
   { path: "/admin/volunteerDashboard", component: VolunteerDash },
-  { path: "/admin/volunteer/:id", component: VolunteerDetail },
   { path: "/admin/messages", component: ViewAllMessage },
   { path: "/admin/messages/:id", component: ViewMessage },
   { path: "/admin/categories", component: CategoryManager },
@@ -104,7 +125,7 @@ export interface AdSpecificRoute {
   path: string;
   component: React.ComponentType;
   parentDashboard: string; // The dashboard this route should go back to
-  category: "photo" | "video" | "blogs" | "message";
+  category: "photo" | "video" | "blogs" | "message" | "volunteer";
 }
 
 export const adSpecificRoutes: AdSpecificRoute[] = [
@@ -161,6 +182,12 @@ export const adSpecificRoutes: AdSpecificRoute[] = [
     component: EditBlogPost,
     parentDashboard: "/admin/blogsDashboard",
     category: "blogs",
+  },
+  {
+    path: "/admin/volunteer/:id",
+    component: VolunteerDetail,
+    parentDashboard: "/admin/volunteerDashboard",
+    category: "volunteer",
   },
 ];
 

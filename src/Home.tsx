@@ -25,8 +25,8 @@ const Home: React.FC = () => {
       <OurMission />
       <DonateUs />
       <SmallContactSec />
-      <RunningDog />
       <TotalImpactView />
+      <RunningDog />
       <Footer />
     </main>
   );

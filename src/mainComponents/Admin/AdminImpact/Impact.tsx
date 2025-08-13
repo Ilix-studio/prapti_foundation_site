@@ -212,168 +212,162 @@ const TotalImpactDashboard: React.FC = () => {
 
   return (
     <>
-      <div className='max-w-6xl mx-auto mt-8'>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className='mb-8'
+      >
+        <h1 className='text-2xl font-bold text-gray-900 mb-2'>
+          Total Impact Dashboard
+        </h1>
+        <p className='text-gray-600'>
+          Manage foundation impact records and view statistics
+        </p>
+      </motion.div>
+
+      {/* Statistics Cards */}
+      {statsData && (
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className='mb-8'
+          transition={{ delay: 0.1 }}
+          className='grid grid-cols-1 md:grid-cols-4 gap-6 mb-8'
         >
-          <h1 className='text-3xl font-bold text-gray-900 mb-2'>
-            Total Impact Dashboard
-          </h1>
-          <p className='text-gray-600'>
-            Manage foundation impact records and view statistics
-          </p>
-        </motion.div>
-
-        {/* Statistics Cards */}
-        {statsData && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className='grid grid-cols-1 md:grid-cols-4 gap-6 mb-8'
-          >
-            <Card className='bg-white  border-l-4 border-l-orange-500'>
-              <CardContent className='p-6'>
-                <div className='flex items-center'>
-                  <Heart className='w-8 h-8 text-orange-600' />
-                  <div className='ml-4'>
-                    <p className='text-2xl font-bold text-orange-600'>
-                      {statsData.data.totalDogsRescued}
-                    </p>
-                    <p className='text-xs text-gray-600'>Total Dogs Rescued</p>
-                  </div>
+          <Card className='bg-white  border-l-4 border-l-orange-500'>
+            <CardContent className='p-6'>
+              <div className='flex items-center'>
+                <Heart className='w-8 h-8 text-orange-600' />
+                <div className='ml-4'>
+                  <p className='text-2xl font-bold text-orange-600'>
+                    {statsData.data.totalDogsRescued}
+                  </p>
+                  <p className='text-xs text-gray-600'>Total Dogs Rescued</p>
                 </div>
-              </CardContent>
-            </Card>
-
-            <Card className='bg-white  border-l-4 border-l-orange-500'>
-              <CardContent className='p-6'>
-                <div className='flex items-center'>
-                  <Home className='w-8 h-8 text-green-600' />
-                  <div className='ml-4'>
-                    <p className='text-2xl font-bold text-green-600'>
-                      {statsData.data.totalDogsAdopted}
-                    </p>
-                    <p className='text-xs text-gray-600'>Total Dogs Adopted</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card className='bg-white  border-l-4 border-l-orange-500'>
-              <CardContent className='p-6'>
-                <div className='flex items-center'>
-                  <Users className='w-8 h-8 text-blue-600' />
-                  <div className='ml-4'>
-                    <p className='text-2xl font-bold text-blue-600'>
-                      {statsData.data.totalVolunteers}
-                    </p>
-                    <p className='text-xs text-gray-600'>Total Volunteers</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card className='bg-white  border-l-4 border-l-orange-500'>
-              <CardContent className='p-6'>
-                <div className='flex items-center'>
-                  <TrendingUp className='w-8 h-8 text-purple-600' />
-                  <div className='ml-4'>
-                    <p className='text-2xl font-bold text-purple-600'>
-                      {statsData.data.avgAdoptionRate.toFixed(1)}%
-                    </p>
-                    <p className='text-xs text-gray-600'>Avg Adoption Rate</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </motion.div>
-        )}
-
-        {/* Actions */}
-        <div className='flex justify-between items-center mb-6'>
-          <h2 className='text-xl font-semibold text-gray-900'>
-            Impact Records
-          </h2>
-          <Button
-            onClick={() => setShowCreateDialog(true)}
-            className='bg-blue-600 hover:bg-blue-700'
-          >
-            <Plus className='w-4 h-4 mr-2' />
-            Add Record
-          </Button>
-        </div>
-
-        {/* Records Table */}
-        <Card>
-          <CardContent className='p-0'>
-            {isLoading ? (
-              <div className='flex items-center justify-center p-8'>
-                <Loader2 className='w-6 h-6 animate-spin' />
-                <span className='ml-2'>Loading records...</span>
               </div>
-            ) : (
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Title</TableHead>
-                    <TableHead>Dogs Rescued</TableHead>
-                    <TableHead>Dogs Adopted</TableHead>
-                    <TableHead>Volunteers</TableHead>
+            </CardContent>
+          </Card>
 
-                    <TableHead>Status</TableHead>
-                    <TableHead>Created</TableHead>
-                    <TableHead>Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {impactData?.data.map((impact) => (
-                    <TableRow key={impact._id}>
-                      <TableCell>{impact.dogsRescued}</TableCell>
-                      <TableCell>{impact.dogsAdopted}</TableCell>
-                      <TableCell>{impact.volunteers}</TableCell>
-                      <TableCell>{impact.adoptionRate}%</TableCell>
-                      <TableCell>
-                        <Badge
-                          variant={impact.isActive ? "default" : "secondary"}
-                        >
-                          {impact.isActive ? "Active" : "Inactive"}
-                        </Badge>
-                      </TableCell>
-                      <TableCell>
-                        {new Date(impact.createdAt).toLocaleDateString()}
-                      </TableCell>
-                      <TableCell>
-                        <div className='flex gap-2'>
-                          <Button
-                            variant='outline'
-                            size='sm'
-                            onClick={() => handleEdit(impact)}
-                          >
-                            <Edit2 className='w-4 h-4' />
-                          </Button>
-                          <Button
-                            variant='outline'
-                            size='sm'
-                            onClick={() => {
-                              setSelectedImpact(impact);
-                              setShowDeleteDialog(true);
-                            }}
-                          >
-                            <Trash2 className='w-4 h-4' />
-                          </Button>
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            )}
-          </CardContent>
-        </Card>
+          <Card className='bg-white  border-l-4 border-l-orange-500'>
+            <CardContent className='p-6'>
+              <div className='flex items-center'>
+                <Home className='w-8 h-8 text-green-600' />
+                <div className='ml-4'>
+                  <p className='text-2xl font-bold text-green-600'>
+                    {statsData.data.totalDogsAdopted}
+                  </p>
+                  <p className='text-xs text-gray-600'>Total Dogs Adopted</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className='bg-white  border-l-4 border-l-orange-500'>
+            <CardContent className='p-6'>
+              <div className='flex items-center'>
+                <Users className='w-8 h-8 text-blue-600' />
+                <div className='ml-4'>
+                  <p className='text-2xl font-bold text-blue-600'>
+                    {statsData.data.totalVolunteers}
+                  </p>
+                  <p className='text-xs text-gray-600'>Total Volunteers</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className='bg-white  border-l-4 border-l-orange-500'>
+            <CardContent className='p-6'>
+              <div className='flex items-center'>
+                <TrendingUp className='w-8 h-8 text-purple-600' />
+                <div className='ml-4'>
+                  <p className='text-2xl font-bold text-purple-600'>
+                    {statsData.data.avgAdoptionRate.toFixed(1)}%
+                  </p>
+                  <p className='text-xs text-gray-600'>Avg Adoption Rate</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </motion.div>
+      )}
+
+      {/* Actions */}
+      <div className='flex justify-between items-center mb-6'>
+        <h2 className='text-xl font-semibold text-gray-900'>Impact Records</h2>
+        <Button
+          onClick={() => setShowCreateDialog(true)}
+          className='bg-orange-600 hover:bg-blue-700'
+        >
+          <Plus className='w-4 h-4 mr-2' />
+          Add Record
+        </Button>
       </div>
+
+      {/* Records Table */}
+      <Card>
+        <CardContent className='p-0'>
+          {isLoading ? (
+            <div className='flex items-center justify-center p-8'>
+              <Loader2 className='w-6 h-6 animate-spin' />
+              <span className='ml-2'>Loading records...</span>
+            </div>
+          ) : (
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Dogs Rescued</TableHead>
+                  <TableHead>Dogs Adopted</TableHead>
+                  <TableHead>Volunteers</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Created</TableHead>
+                  <TableHead>Actions</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {impactData?.data.map((impact) => (
+                  <TableRow key={impact._id}>
+                    <TableCell>{impact.dogsRescued}</TableCell>
+                    <TableCell>{impact.dogsAdopted}</TableCell>
+                    <TableCell>{impact.volunteers}</TableCell>
+                    <TableCell>{impact.adoptionRate}%</TableCell>
+                    <TableCell>
+                      <Badge
+                        variant={impact.isActive ? "default" : "secondary"}
+                      >
+                        {impact.isActive ? "Active" : "Inactive"}
+                      </Badge>
+                    </TableCell>
+                    <TableCell>
+                      {new Date(impact.createdAt).toLocaleDateString()}
+                    </TableCell>
+                    <TableCell>
+                      <div className='flex gap-2'>
+                        <Button
+                          variant='outline'
+                          size='sm'
+                          onClick={() => handleEdit(impact)}
+                        >
+                          <Edit2 className='w-4 h-4' />
+                        </Button>
+                        <Button
+                          variant='outline'
+                          size='sm'
+                          onClick={() => {
+                            setSelectedImpact(impact);
+                            setShowDeleteDialog(true);
+                          }}
+                        >
+                          <Trash2 className='w-4 h-4' />
+                        </Button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          )}
+        </CardContent>
+      </Card>
 
       {/* Create Dialog */}
       <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>

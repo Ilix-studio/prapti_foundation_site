@@ -1,10 +1,9 @@
 import React from "react";
-import { useParams, Link } from "react-router-dom";
-import { Button } from "@/components/ui/button";
+import { useParams } from "react-router-dom";
+
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
-  ArrowLeft,
   Mail,
   Phone,
   MapPin,
@@ -17,7 +16,7 @@ import {
 } from "lucide-react";
 import { useGetVolunteerApplicationByIdQuery } from "@/redux-store/services/volunteerApi";
 
-import Footer from "../Footer";
+import { BackNavigation } from "@/config/navigation/BackNavigation";
 
 const VolunteerDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -25,28 +24,25 @@ const VolunteerDetail: React.FC = () => {
 
   if (isLoading) {
     return (
-      <div className='min-h-screen flex items-center justify-center'>
-        <Loader2 className='h-8 w-8 animate-spin mr-2' />
-        <span>Loading volunteer details...</span>
+      <div className='min-h-screen flex items-center justify-center bg-gray-50'>
+        <div className='flex items-center space-x-3'>
+          <Loader2 className='h-8 w-8 animate-spin text-orange-500' />
+          <span className='text-gray-700 font-medium'>
+            Loading volunteer details...
+          </span>
+        </div>
       </div>
     );
   }
 
   if (error || !data?.data) {
     return (
-      <div className='min-h-screen flex items-center justify-center'>
-        <div className='text-center'>
-          <AlertCircle className='h-12 w-12 text-red-500 mx-auto mb-4' />
-          <h2 className='text-xl font-semibold mb-2'>Application Not Found</h2>
-          <p className='text-gray-600 mb-4'>
-            The volunteer application could not be loaded.
-          </p>
-          <Link to='/admin/dashboard'>
-            <Button>
-              <ArrowLeft className='h-4 w-4 mr-2' />
-              Back to Dashboard
-            </Button>
-          </Link>
+      <div className='min-h-screen flex items-center justify-center bg-gray-50'>
+        <div className='text-center max-w-md'>
+          <AlertCircle className='h-16 w-16 text-red-500 mx-auto mb-6' />
+          <h2 className='text-2xl font-semibold text-gray-900 mb-3'>
+            Application Not Found
+          </h2>
         </div>
       </div>
     );
@@ -55,188 +51,241 @@ const VolunteerDetail: React.FC = () => {
   const volunteer = data.data;
 
   return (
-    <div className='min-h-screen bg-gray-50 py-8'>
-      <div className='container mx-auto px-4 max-w-4xl'>
-        <div className='mb-6'>
-          <Link to='/admin/dashboard'>
-            <Button variant='outline' className='mb-4'>
-              <ArrowLeft className='h-4 w-4 mr-2' />
-              Back to Dashboard
-            </Button>
-          </Link>
-          <h1 className='text-3xl font-bold flex items-center gap-2'>
+    <div className='min-h-screen bg-gray-50'>
+      <div className='container mx-auto px-4 py-8 max-w-6xl'>
+        {/* Header Section */}
+        <div className='mb-8 space-y-4'>
+          <BackNavigation />
+          <div className='flex items-center space-x-3'>
             <Hash className='h-8 w-8 text-orange-500' />
-            Volunteer Application
-          </h1>
-          <p className='text-gray-600'>
-            Submitted on {new Date(volunteer.submittedAt).toLocaleDateString()}
-          </p>
+            <div>
+              <h1 className='text-3xl font-bold text-gray-900'>
+                Volunteer Application
+              </h1>
+              <p className='text-gray-600 mt-1'>
+                Submitted on{" "}
+                {new Date(volunteer.submittedAt).toLocaleDateString("en-US", {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                })}
+              </p>
+            </div>
+          </div>
         </div>
 
-        <div className='grid gap-6 lg:grid-cols-3'>
-          {/* Personal Information */}
-          <Card className='lg:col-span-2'>
-            <CardHeader>
-              <CardTitle className='flex items-center gap-2'>
-                <User className='h-5 w-5' />
-                Personal Information
-              </CardTitle>
-            </CardHeader>
-            <CardContent className='space-y-4'>
-              <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
-                <div>
-                  <label className='text-sm font-medium text-gray-500'>
-                    Full Name
-                  </label>
-                  <p className='text-lg font-semibold'>
-                    {volunteer.firstName} {volunteer.lastName}
-                  </p>
-                </div>
-                <div>
-                  <label className='text-sm font-medium text-gray-500'>
-                    Availability
-                  </label>
-                  <p className='text-lg capitalize'>{volunteer.availability}</p>
-                </div>
-              </div>
-
-              <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
-                <div className='flex items-center gap-2'>
-                  <Mail className='h-4 w-4 text-gray-400' />
-                  <div>
-                    <label className='text-sm font-medium text-gray-500'>
-                      Email
-                    </label>
-                    <p>{volunteer.email}</p>
-                  </div>
-                </div>
-                <div className='flex items-center gap-2'>
-                  <Phone className='h-4 w-4 text-gray-400' />
-                  <div>
-                    <label className='text-sm font-medium text-gray-500'>
-                      Phone
-                    </label>
-                    <p>{volunteer.phone}</p>
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Quick Stats */}
-          <Card>
-            <CardHeader>
-              <CardTitle className='flex items-center gap-2'>
-                <Clock className='h-5 w-5' />
-                Application Summary
-              </CardTitle>
-            </CardHeader>
-            <CardContent className='space-y-4'>
-              <div className='flex items-center gap-2'>
-                <Calendar className='h-4 w-4 text-gray-400' />
-                <div>
-                  <p className='text-sm text-gray-500'>Submitted</p>
-                  <p className='font-medium'>
-                    {new Date(volunteer.submittedAt).toLocaleDateString()}
-                  </p>
-                </div>
-              </div>
-              <div>
-                <p className='text-sm text-gray-500 mb-2'>Areas of Interest</p>
-                <p className='font-medium'>
-                  {volunteer.interests.length} selected
-                </p>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Address */}
-        <Card className='mt-6'>
-          <CardHeader>
-            <CardTitle className='flex items-center gap-2'>
-              <MapPin className='h-5 w-5' />
-              Address
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className='grid grid-cols-1 md:grid-cols-4 gap-4'>
-              <div className='md:col-span-4'>
-                <label className='text-sm font-medium text-gray-500'>
-                  Street Address
-                </label>
-                <p>{volunteer.address}</p>
-              </div>
-              <div>
-                <label className='text-sm font-medium text-gray-500'>
-                  District
-                </label>
-                <p>{volunteer.district}</p>
-              </div>
-              <div>
-                <label className='text-sm font-medium text-gray-500'>
-                  State
-                </label>
-                <p>{volunteer.state}</p>
-              </div>
-              <div>
-                <label className='text-sm font-medium text-gray-500'>
-                  Pincode
-                </label>
-                <p>{volunteer.pincode}</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Interests */}
-        <Card className='mt-6'>
-          <CardHeader>
-            <CardTitle>Areas of Interest</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className='flex flex-wrap gap-2'>
-              {volunteer.interests.map((interest) => (
-                <Badge
-                  key={interest}
-                  className='bg-orange-100 text-orange-800 px-3 py-1'
-                >
-                  {interest}
-                </Badge>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Experience & Reason */}
-        <div className='grid gap-6 lg:grid-cols-2 mt-6'>
-          {volunteer.experience && (
-            <Card>
-              <CardHeader>
-                <CardTitle>Previous Experience</CardTitle>
+        <div className='grid gap-8 lg:grid-cols-12'>
+          {/* Main Content */}
+          <div className='lg:col-span-8 space-y-8'>
+            {/* Personal Information */}
+            <Card className='shadow-sm border-0 bg-white'>
+              <CardHeader className='pb-6'>
+                <CardTitle className='flex items-center gap-3 text-xl text-gray-900'>
+                  <User className='h-6 w-6 text-orange-500' />
+                  Personal Information
+                </CardTitle>
               </CardHeader>
-              <CardContent>
-                <p className='text-gray-700 whitespace-pre-wrap'>
-                  {volunteer.experience}
-                </p>
+              <CardContent className='space-y-6'>
+                <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
+                  <div className='space-y-2'>
+                    <label className='text-sm font-medium text-gray-500 uppercase tracking-wide'>
+                      Full Name
+                    </label>
+                    <p className='text-xl font-semibold text-gray-900'>
+                      {volunteer.firstName} {volunteer.lastName}
+                    </p>
+                  </div>
+                  <div className='space-y-2'>
+                    <label className='text-sm font-medium text-gray-500 uppercase tracking-wide'>
+                      Availability
+                    </label>
+                    <p className='text-lg capitalize text-gray-700'>
+                      {volunteer.availability}
+                    </p>
+                  </div>
+                </div>
+
+                <div className='grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-gray-100'>
+                  <div className='flex items-start gap-3'>
+                    <Mail className='h-5 w-5 text-gray-400 mt-1' />
+                    <div className='space-y-1'>
+                      <label className='text-sm font-medium text-gray-500 uppercase tracking-wide'>
+                        Email Address
+                      </label>
+                      <p className='text-gray-700 break-all'>
+                        {volunteer.email}
+                      </p>
+                    </div>
+                  </div>
+                  <div className='flex items-start gap-3'>
+                    <Phone className='h-5 w-5 text-gray-400 mt-1' />
+                    <div className='space-y-1'>
+                      <label className='text-sm font-medium text-gray-500 uppercase tracking-wide'>
+                        Phone Number
+                      </label>
+                      <p className='text-gray-700'>{volunteer.phone}</p>
+                    </div>
+                  </div>
+                </div>
               </CardContent>
             </Card>
-          )}
 
-          <Card>
-            <CardHeader>
-              <CardTitle>Why They Want to Volunteer</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className='text-gray-700 whitespace-pre-wrap'>
-                {volunteer.reason}
-              </p>
-            </CardContent>
-          </Card>
+            {/* Address */}
+            <Card className='shadow-sm border-0 bg-white'>
+              <CardHeader className='pb-6'>
+                <CardTitle className='flex items-center gap-3 text-xl text-gray-900'>
+                  <MapPin className='h-6 w-6 text-orange-500' />
+                  Address Details
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className='grid grid-cols-1 gap-6'>
+                  <div className='space-y-2'>
+                    <label className='text-sm font-medium text-gray-500 uppercase tracking-wide'>
+                      Street Address
+                    </label>
+                    <p className='text-gray-700 leading-relaxed'>
+                      {volunteer.address}
+                    </p>
+                  </div>
+                  <div className='grid grid-cols-1 md:grid-cols-3 gap-6'>
+                    <div className='space-y-2'>
+                      <label className='text-sm font-medium text-gray-500 uppercase tracking-wide'>
+                        District
+                      </label>
+                      <p className='text-gray-700'>{volunteer.district}</p>
+                    </div>
+                    <div className='space-y-2'>
+                      <label className='text-sm font-medium text-gray-500 uppercase tracking-wide'>
+                        State
+                      </label>
+                      <p className='text-gray-700'>{volunteer.state}</p>
+                    </div>
+                    <div className='space-y-2'>
+                      <label className='text-sm font-medium text-gray-500 uppercase tracking-wide'>
+                        Pincode
+                      </label>
+                      <p className='text-gray-700 font-mono'>
+                        {volunteer.pincode}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Interests */}
+            <Card className='shadow-sm border-0 bg-white'>
+              <CardHeader className='pb-6'>
+                <CardTitle className='text-xl text-gray-900'>
+                  Areas of Interest
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className='flex flex-wrap gap-3'>
+                  {volunteer.interests.map((interest) => (
+                    <Badge
+                      key={interest}
+                      className='bg-orange-50 text-orange-700 border border-orange-200 px-4 py-2 text-sm font-medium hover:bg-orange-100 transition-colors'
+                    >
+                      {interest}
+                    </Badge>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Experience & Reason */}
+            <div className='grid gap-8 lg:grid-cols-1'>
+              {volunteer.experience && (
+                <Card className='shadow-sm border-0 bg-white'>
+                  <CardHeader className='pb-6'>
+                    <CardTitle className='text-xl text-gray-900'>
+                      Previous Experience
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className='text-gray-700 leading-relaxed whitespace-pre-wrap'>
+                      {volunteer.experience}
+                    </p>
+                  </CardContent>
+                </Card>
+              )}
+
+              <Card className='shadow-sm border-0 bg-white'>
+                <CardHeader className='pb-6'>
+                  <CardTitle className='text-xl text-gray-900'>
+                    Motivation to Volunteer
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className='text-gray-700 leading-relaxed whitespace-pre-wrap'>
+                    {volunteer.reason}
+                  </p>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+
+          {/* Sidebar */}
+          <div className='lg:col-span-4'>
+            <Card className='shadow-sm border-0 bg-white sticky top-8'>
+              <CardHeader className='pb-6'>
+                <CardTitle className='flex items-center gap-3 text-xl text-gray-900'>
+                  <Clock className='h-6 w-6 text-orange-500' />
+                  Application Summary
+                </CardTitle>
+              </CardHeader>
+              <CardContent className='space-y-6'>
+                <div className='flex items-start gap-3 p-4 bg-gray-50 rounded-lg'>
+                  <Calendar className='h-5 w-5 text-gray-400 mt-1' />
+                  <div className='space-y-1'>
+                    <p className='text-sm font-medium text-gray-500 uppercase tracking-wide'>
+                      Submitted
+                    </p>
+                    <p className='font-semibold text-gray-900'>
+                      {new Date(volunteer.submittedAt).toLocaleDateString(
+                        "en-US",
+                        {
+                          weekday: "long",
+                          year: "numeric",
+                          month: "long",
+                          day: "numeric",
+                        }
+                      )}
+                    </p>
+                    <p className='text-sm text-gray-600'>
+                      {new Date(volunteer.submittedAt).toLocaleTimeString(
+                        "en-US",
+                        {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        }
+                      )}
+                    </p>
+                  </div>
+                </div>
+
+                <div className='p-4 bg-orange-50 border border-orange-200 rounded-lg'>
+                  <div className='space-y-1'>
+                    <p className='text-sm font-medium text-orange-700 uppercase tracking-wide'>
+                      Areas of Interest
+                    </p>
+                    <p className='text-2xl font-bold text-orange-800'>
+                      {volunteer.interests.length}
+                    </p>
+                    <p className='text-sm text-orange-600'>
+                      {volunteer.interests.length === 1
+                        ? "Area selected"
+                        : "Areas selected"}
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
         </div>
       </div>
-      <br />
-      <Footer />
     </div>
   );
 };
