@@ -34,6 +34,7 @@ import PlayVideo from "./mainComponents/Admin/AdminVideo/PlayVideo";
 import VolunteerDash from "./mainComponents/Volunteer/VolunteerDash";
 import BlogsDash from "./mainComponents/BlogPosts/SmallBlogUI/BlogsDash";
 import CategoryManager from "./mainComponents/Admin/AdminCategory/CategoryManager";
+import ViewAllMessage from "./mainComponents/Admin/AdminMessage/ViewAllMessage";
 
 function App() {
   const location = useLocation();
@@ -92,6 +93,10 @@ function App() {
       <Route path='/admin/volunteer/:id' element={<VolunteerDetail />} />
       {/* Category Routes */}
       <Route path='/admin/addCategory' element={<CategoryManager />} />
+
+      {/* message  */}
+      <Route path='/admin/messages/:id' element={<ViewMessage />} />
+      <Route path='/admin/messages' element={<ViewAllMessage />} />
 
       {/* Not Found */}
       <Route path='*' element={<NotFound />} />

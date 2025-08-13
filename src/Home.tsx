@@ -11,6 +11,7 @@ import RunningDog from "./mainComponents/RunningDog";
 import HalfAbout from "./mainComponents/HalfAbout";
 import HomeGallery from "./mainComponents/Gallery/HomeGallery";
 import SmallContactSec from "./mainComponents/ContactUs/SmallContactSec";
+import TotalImpactView from "./mainComponents/Admin/AdminImpact/TotalImpactView";
 
 const Home: React.FC = () => {
   return (
@@ -25,6 +26,7 @@ const Home: React.FC = () => {
       <DonateUs />
       <SmallContactSec />
       <RunningDog />
+      <TotalImpactView />
       <Footer />
     </main>
   );

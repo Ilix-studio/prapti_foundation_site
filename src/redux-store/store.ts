@@ -25,6 +25,8 @@ import { photoApi } from "./services/photoApi";
 import { videoApi } from "./services/videoApi";
 import { visitorApi } from "./services/visitorApi";
 import { categoryApi } from "./services/categoryApi";
+//
+import { totalImpactApi } from "./services/impactApi";
 
 // Create IndexedDB storage for redux-persist
 const idbStorage = createIdbStorage("prapti-foundation-db");
@@ -49,6 +51,8 @@ const rootReducer = combineReducers({
   [photoApi.reducerPath]: photoApi.reducer,
   [videoApi.reducerPath]: videoApi.reducer,
   [visitorApi.reducerPath]: visitorApi.reducer,
+  //
+  [totalImpactApi.reducerPath]: totalImpactApi.reducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
@@ -70,7 +74,8 @@ export const store = configureStore({
       categoryApi.middleware,
       photoApi.middleware,
       videoApi.middleware,
-      visitorApi.middleware
+      visitorApi.middleware,
+      totalImpactApi.middleware
     ),
 });
 
