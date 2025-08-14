@@ -3,7 +3,7 @@ import { Header } from "./mainComponents/Header";
 import { HeroSection } from "./mainComponents/HeroSection";
 import { EmergencyCall } from "./mainComponents/ReportAbout/EmergencyCall";
 import OurMission from "./mainComponents/OurMission";
-import LatestBlogPosts from "./mainComponents/BlogPosts/LatestBlogPosts";
+import LatestBlogPosts from "./mainComponents/AdminBlogs/LatestBlogPosts";
 import DonateUs from "./mainComponents/DonateUs";
 import Footer from "./mainComponents/Footer";
 

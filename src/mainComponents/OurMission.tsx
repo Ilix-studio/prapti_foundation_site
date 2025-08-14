@@ -26,7 +26,7 @@ const OurMission: React.FC = () => {
 
               <div className='pt-4'>
                 <Link to='/about'>
-                  <Button className='bg-orange-500 hover:bg-orange-600 px-8 py-3 text-base'>
+                  <Button className='bg-gray-500 hover:bg-orange-600 px-8 py-3 text-base'>
                     About Us
                   </Button>
                 </Link>

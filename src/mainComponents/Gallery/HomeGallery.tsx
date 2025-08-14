@@ -11,6 +11,7 @@ import {
   X,
   Camera,
   PlayCircle,
+  ArrowRight,
 } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -35,6 +36,7 @@ import { Photo } from "@/types/photo.types";
 import { formatDate, getPhotoCategoryName } from "./galleryHelper";
 import { cn } from "@/constants/utils";
 import { getCategoryColor } from "./getColor";
+import { Button } from "@/components/ui/button";
 
 // Types for common props
 interface MediaItemProps {
@@ -389,7 +391,7 @@ const HomeGallery = () => {
     }
 
     return (
-      <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 max-w-7xl mx-auto'>
+      <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-7 max-w-7xl mx-auto'>
         {items.map((item, index) => {
           const isHovered = hovered === (isPhotos ? index : index + 1000);
 
@@ -537,14 +539,14 @@ const HomeGallery = () => {
 
             {/* See More Button */}
             <div className='text-center mt-8'>
-              <button
-                onClick={() => {
-                  navigate(activeTab === "photos" ? "/gallery" : "/gallery");
-                }}
-                className='px-6 py-3 bg-white text-black font-medium rounded-lg hover:from-[#FF9933]/90 hover:to-[#138808]/90 transition-all duration-300 shadow-lg hover:shadow-xl'
+              <Button
+                onClick={() => navigate("/gallery")}
+                variant='outline'
+                className='px-6 py-3 font-medium rounded-lg transition-all duration-300 shadow-lg hover:shadow-xl border-orange-500 text-orange-500 hover:bg-orange-50'
               >
                 See More {activeTab === "photos" ? "Photos" : "Videos"}
-              </button>
+                <ArrowRight className='ml-2 h-4 w-4' />
+              </Button>
             </div>
           </Tabs>
         )}

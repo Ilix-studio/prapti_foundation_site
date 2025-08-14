@@ -26,7 +26,7 @@ const DonateUs: React.FC = () => {
             </div>
 
             {/* Impact Statistics */}
-            <div className='grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-4xl'>
+            <div className='grid grid-cols-1 md:grid-cols-3 gap-12 w-full max-w-4xl'>
               <div className='bg-white rounded-lg p-6 shadow-lg'>
                 <div className='flex items-center justify-center w-12 h-12 bg-orange-100 rounded-lg mx-auto mb-4'>
                   <Heart className='h-6 w-6 text-orange-600' />
@@ -60,7 +60,7 @@ const DonateUs: React.FC = () => {
                 Ways to Help
               </h3>
 
-              <div className='grid grid-cols-1 md:grid-cols-2 gap-6 mb-8'>
+              <div className='grid grid-cols-1 md:grid-cols-2 gap-10 mb-8'>
                 <div className='bg-white rounded-lg p-6 border border-orange-200'>
                   <IconBrandGooglePlay className='h-8 w-8 text-orange-600 mb-4' />
                   <h4 className='text-lg font-semibold mb-3'>
@@ -96,9 +96,9 @@ const DonateUs: React.FC = () => {
 
               {/* Call to Action */}
               <div className='space-y-4'>
-                <div className='flex flex-col sm:flex-row justify-center gap-4'>
+                <div className='flex flex-col  md:flex-row justify-center gap-6'>
                   <Link to='/support'>
-                    <Button className='bg-orange-500 hover:bg-orange-600 px-8 py-3 text-base'>
+                    <Button className='bg-gray-500 hover:bg-orange-600 px-8 py-3 text-base'>
                       Donate Now
                       <Heart className='ml-2 h-4 w-4' />
                     </Button>

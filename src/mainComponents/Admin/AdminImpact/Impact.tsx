@@ -218,11 +218,9 @@ const TotalImpactDashboard: React.FC = () => {
         className='mb-8'
       >
         <h1 className='text-2xl font-bold text-gray-900 mb-2'>
-          Total Impact Dashboard
+          Total Impact stats
         </h1>
-        <p className='text-gray-600'>
-          Manage foundation impact records and view statistics
-        </p>
+        <p className='text-gray-600'>Manage foundation impact records</p>
       </motion.div>
 
       {/* Statistics Cards */}
@@ -296,7 +294,7 @@ const TotalImpactDashboard: React.FC = () => {
         <h2 className='text-xl font-semibold text-gray-900'>Impact Records</h2>
         <Button
           onClick={() => setShowCreateDialog(true)}
-          className='bg-orange-600 hover:bg-blue-700'
+          className='bg-gray-600 hover:bg-blue-700'
         >
           <Plus className='w-4 h-4 mr-2' />
           Add Record

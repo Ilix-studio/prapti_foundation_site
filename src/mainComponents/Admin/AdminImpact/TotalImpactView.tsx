@@ -81,7 +81,7 @@ const TotalImpactView: React.FC = () => {
           transition={{ duration: 0.8, ease: "easeOut" }}
           className='animate-in fade-in duration-1000'
         >
-          <Card className='bg-white border-orange-20 shadow-xl hover:shadow-2xl transition-shadow duration-300'>
+          <Card className='bg-white  shadow-xl hover:shadow-2xl transition-shadow duration-300'>
             <CardContent className='p-8 sm:p-10 lg:p-12'>
               {/* Header Section */}
               <div className='flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8 lg:gap-12'>
