@@ -428,7 +428,7 @@ const HomeGallery = () => {
         {selectedCategory ? "Gallery" : "Our Pawfect Moments"}
       </div>
 
-      <h2 className='text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight'>
+      {/* <h2 className='text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight'>
         {selectedCategory
           ? `${selectedCategoryName} ${
               activeTab === "photos" ? "Photos" : "Videos"
@@ -436,7 +436,7 @@ const HomeGallery = () => {
           : selectedCategory
           ? "Pawprints of Love"
           : "Moments from the Journey"}
-      </h2>
+      </h2> */}
 
       <p className='text-muted-foreground mt-4 px-2'>
         {selectedCategory
@@ -536,6 +536,7 @@ const HomeGallery = () => {
             <TabsContent value='videos' className='w-full'>
               <GalleryGrid items={videos} isPhotos={false} isLoading={false} />
             </TabsContent>
+            <br />
 
             {/* See More Button */}
             <div className='text-center mt-8'>

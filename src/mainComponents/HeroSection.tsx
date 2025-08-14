@@ -58,7 +58,7 @@ export function HeroSection() {
               <Button
                 size='lg'
                 variant='outline'
-                className='bg-orange-500 text-white border-white hover:bg-orange-600 w-full'
+                className='bg-orange-490 text-white border-2 hover:bg-white/20 hover:text-white w-full'
               >
                 Support our cause
                 <ChevronRight className='ml-2 h-4 w-4' />
