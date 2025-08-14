@@ -19,7 +19,7 @@ const TotalImpactView: React.FC = () => {
         animate={{ opacity: 1, y: 0 }}
         className='mt-12 mb-16 mx-auto max-w-6xl px-4 sm:px-6 lg:px-8'
       >
-        <Card className='bg-gradient-to-r from-orange-50 to-amber-50 border-orange-200 shadow-lg'>
+        <Card className='bg-gradient-to-r from-orange-50 to-amber-50 border-orange-200 '>
           <CardContent className='p-8 sm:p-10 lg:p-12'>
             <div className='flex items-center justify-center space-x-3'>
               <Loader2 className='w-7 h-7 animate-spin text-orange-600' />
@@ -40,7 +40,7 @@ const TotalImpactView: React.FC = () => {
         animate={{ opacity: 1, y: 0 }}
         className='mt-12 mb-16 mx-auto max-w-6xl px-4 sm:px-6 lg:px-8'
       >
-        <Card className='bg-gradient-to-r from-red-50 to-pink-50 border-red-200 shadow-lg'>
+        <Card className='bg-gradient-to-r from-red-50 to-pink-50 border-red-200 '>
           <CardContent className='p-8 sm:p-10 lg:p-12'>
             <div className='flex items-center justify-center text-red-600'>
               <AlertCircle className='w-6 h-6 mr-3' />
@@ -59,7 +59,7 @@ const TotalImpactView: React.FC = () => {
         animate={{ opacity: 1, y: 0 }}
         className='mt-12 mb-16 mx-auto max-w-6xl px-4 sm:px-6 lg:px-8'
       >
-        <Card className='bg-gradient-to-r from-gray-50 to-slate-50 border-gray-200 shadow-lg'>
+        <Card className='bg-gradient-to-r from-gray-50 to-slate-50 border-gray-200 '>
           <CardContent className='p-8 sm:p-10 lg:p-12'>
             <div className='text-center text-gray-600'>
               <p className='font-medium'>No impact data available</p>
@@ -81,7 +81,7 @@ const TotalImpactView: React.FC = () => {
           transition={{ duration: 0.8, ease: "easeOut" }}
           className='animate-in fade-in duration-1000'
         >
-          <Card className='bg-white  shadow-xl hover:shadow-2xl transition-shadow duration-300'>
+          <Card className='bg-white    duration-300'>
             <CardContent className='p-8 sm:p-10 lg:p-12'>
               {/* Header Section */}
               <div className='flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8 lg:gap-12'>
@@ -100,7 +100,7 @@ const TotalImpactView: React.FC = () => {
                     transition={{ delay: 0.3 }}
                     className='text-sm sm:text-base lg:text-lg text-gray-700 leading-relaxed max-w-lg'
                   >
-                    Making a difference in the community through your efforts
+                    Making a difference
                   </motion.p>
                 </div>
 

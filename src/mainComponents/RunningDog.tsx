@@ -146,7 +146,7 @@ const RunningDog: React.FC = () => {
 
   return (
     <>
-      <div className='relative w-full h-40 bg-white rounded-lg overflow-hidden border-2 border-white-100 shadow-lg'>
+      <div className='relative w-full h-40 bg-white rounded-lg overflow-hidden  border-white-100 shadow-lg'>
         {/* Sky with clouds */}
 
         {/* Sun */}

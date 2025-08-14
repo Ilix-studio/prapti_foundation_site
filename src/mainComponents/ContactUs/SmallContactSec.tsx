@@ -141,11 +141,12 @@ const SmallContactSec = () => {
 
               {/* Right Column - Contact Form */}
               <div className='space-y-6'>
-                <div className='bg-white rounded-2xl shadow-lg p-6 md:p-8'>
+                <div className='bg-white rounded-2xl shadow-lg p-6 md:p-8 border-2'>
                   <div className='space-y-6'>
                     <h3 className='text-2xl font-bold text-gray-900'>
                       Send a Message
                     </h3>
+                    <br />
 
                     {/* Success Message */}
                     {isSuccess && (
@@ -207,6 +208,7 @@ const SmallContactSec = () => {
                           />
                         </div>
                       </div>
+                      <br />
 
                       <div className='space-y-2'>
                         <Label htmlFor='subject'>Subject *</Label>
@@ -221,6 +223,7 @@ const SmallContactSec = () => {
                           className='border-gray-200 focus:border-orange-300 focus:ring-orange-200'
                         />
                       </div>
+                      <br />
 
                       <div className='space-y-2'>
                         <Label htmlFor='message'>Message *</Label>
@@ -259,10 +262,12 @@ const SmallContactSec = () => {
           </div>
         </section>
 
+        <br />
+
         {/* Map Section */}
-        <section className='w-full py-12 md:py-16'>
+        <section className='w-full py-12 md:py-16 border-2'>
           <div className='container px-4 md:px-6'>
-            <div className='bg-white rounded-2xl shadow-lg overflow-hidden flex flex-col md:flex-row min-h-[400px]'>
+            <div className='bg-white rounded-2xl  overflow-hidden flex flex-col md:flex-row min-h-[400px]'>
               <div className='p-6 md:p-8 flex-1 flex flex-col justify-center space-y-6'>
                 <div className='space-y-4'>
                   <h3 className='text-2xl md:text-3xl font-bold text-gray-900'>

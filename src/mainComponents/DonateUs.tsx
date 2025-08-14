@@ -7,7 +7,7 @@ import { Link } from "react-router-dom";
 const DonateUs: React.FC = () => {
   return (
     <>
-      <section className='w-full py-16 md:py-28 lg:py-36 bg-white-50 border-2 border-white-100 shadow-lg'>
+      <section className='w-full py-16 md:py-28 lg:py-36 bg-white-50 border-0 border-white-100 '>
         <div className='container px-6 md:px-8'>
           <div className='flex flex-col items-center text-center space-y-12'>
             {/* Header Section */}

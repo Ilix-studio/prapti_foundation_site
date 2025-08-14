@@ -6,7 +6,6 @@ import OurMission from "./mainComponents/OurMission";
 import LatestBlogPosts from "./mainComponents/AdminBlogs/LatestBlogPosts";
 import DonateUs from "./mainComponents/DonateUs";
 import Footer from "./mainComponents/Footer";
-
 import RunningDog from "./mainComponents/RunningDog";
 import HalfAbout from "./mainComponents/HalfAbout";
 import HomeGallery from "./mainComponents/Gallery/HomeGallery";
@@ -15,20 +14,31 @@ import TotalImpactView from "./mainComponents/Admin/AdminImpact/TotalImpactView"
 
 const Home: React.FC = () => {
   return (
-    <main className='min-h-screen flex flex-col'>
+    <div className='min-h-screen flex flex-col'>
       <Header />
       <HeroSection />
       <EmergencyCall />
       <LatestBlogPosts />
+      <br />
+      <br />
       <HalfAbout />
+      <br />
+      <br />
       <HomeGallery />
+      <br />
       <OurMission />
+      <br />
       <DonateUs />
+      <br />
+      <br />
       <SmallContactSec />
+      <br />
       <TotalImpactView />
+      <br />
       <RunningDog />
+      <br />
       <Footer />
-    </main>
+    </div>
   );
 };
 
