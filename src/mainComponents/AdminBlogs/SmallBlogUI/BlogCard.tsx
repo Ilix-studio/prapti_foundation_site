@@ -3,7 +3,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { Calendar } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { BlogPost } from "@/types/blogs.types";
+import { BlogPost, getBlogCategoryName } from "@/types/blogs.types";
 
 interface BlogCardProps {
   post: BlogPost;
@@ -55,7 +55,7 @@ const BlogCard: React.FC<BlogCardProps> = ({ post, compact = false }) => {
       <div className='space-y-3 p-4'>
         <div className='flex items-center gap-2 flex-wrap'>
           <Badge className='text-orange-500 border-orange-200 bg-orange-50'>
-            {post.category}
+            {getBlogCategoryName(post.category)}
           </Badge>
           <div className='flex items-center text-sm text-gray-500'>
             <Calendar className='mr-1 h-3 w-3' />

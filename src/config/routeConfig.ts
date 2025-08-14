@@ -16,7 +16,7 @@ const ReportPage = lazy(
 );
 const SupportUs = lazy(() => import("@/mainComponents/SupportUs"));
 const SeeBlogs = lazy(
-  () => import("@/mainComponents/BlogPosts/SmallBlogUI/SeeBlogs")
+  () => import("@/mainComponents/AdminBlogs/SmallBlogUI/SeeBlogs")
 );
 
 //
@@ -25,23 +25,23 @@ const ViewMessage = lazy(
 );
 
 const BlogPostPage = lazy(
-  () => import("@/mainComponents/BlogPosts/SmallBlogUI/BlogPost")
+  () => import("@/mainComponents/AdminBlogs/SmallBlogUI/BlogPost")
 );
 const VolunteerPage = lazy(() => import("@/mainComponents/Volunteer/Volunter"));
 const VolunteerDetail = lazy(
   () => import("@/mainComponents/Volunteer/VolunteerDetail")
 );
 const AddBlogPost = lazy(
-  () => import("@/mainComponents/BlogPosts/AddBlogForm")
+  () => import("@/mainComponents/AdminBlogs/AddBlogForm")
 );
 const EditBlogPost = lazy(
-  () => import("@/mainComponents/Admin/AdminBlogs/EditBlogPost")
+  () => import("@/mainComponents/AdminBlogs/EditBlogPost")
 );
 const VolunteerDash = lazy(
   () => import("@/mainComponents/Volunteer/VolunteerDash")
 );
 const BlogsDash = lazy(
-  () => import("@/mainComponents/BlogPosts/SmallBlogUI/BlogsDash")
+  () => import("@/mainComponents/AdminBlogs/SmallBlogUI/BlogsDash")
 );
 
 import NotFound from "../mainComponents/NotFound";

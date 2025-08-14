@@ -41,7 +41,7 @@ export function Header() {
               Home
               {/* Decorative underline for active state */}
               <span
-                className={`absolute -bottom-1 left-0 h-0.5 bg-orange-500 transition-all duration-300 ${
+                className={`absolute -bottom-1 left-0 h-1 bg-orange-500 transition-all duration-300 ${
                   isActive("/") ? "w-full" : "w-0 group-hover:w-full"
                 }`}
               ></span>
@@ -53,7 +53,7 @@ export function Header() {
             >
               About us
               <span
-                className={`absolute -bottom-1 left-0 h-0.5 bg-orange-500 transition-all duration-300 ${
+                className={`absolute -bottom-1 left-0 h-1 bg-orange-500 transition-all duration-300 ${
                   isActive("/about") ? "w-full" : "w-0 group-hover:w-full"
                 }`}
               ></span>
@@ -65,15 +65,8 @@ export function Header() {
             >
               Blogs
               <span
-                className={`absolute -bottom-1 left-0 h-0.5 bg-orange-500 transition-all duration-300 ${
+                className={`absolute -bottom-1 left-0 h-1 bg-orange-500 transition-all duration-300 ${
                   isActive("/blog") ? "w-full" : "w-0 group-hover:w-full"
-                }`}
-              ></span>
-              <span
-                className={`absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-orange-500 rounded-full transition-opacity duration-300 ${
-                  isActive("/blog")
-                    ? "opacity-100"
-                    : "opacity-0 group-hover:opacity-100"
                 }`}
               ></span>
             </Link>
@@ -84,7 +77,7 @@ export function Header() {
             >
               Gallery
               <span
-                className={`absolute -bottom-1 left-0 h-0.5 bg-orange-500 transition-all duration-300 ${
+                className={`absolute -bottom-1 left-0 h-1 bg-orange-500 transition-all duration-300 ${
                   isActive("/gallery") ? "w-full" : "w-0 group-hover:w-full"
                 }`}
               ></span>
@@ -96,7 +89,7 @@ export function Header() {
             >
               Volunteer
               <span
-                className={`absolute -bottom-1 left-0 h-0.5 bg-orange-500 transition-all duration-300 ${
+                className={`absolute -bottom-1 left-0 h-1 bg-orange-500 transition-all duration-300 ${
                   isActive("/volunteer") ? "w-full" : "w-0 group-hover:w-full"
                 }`}
               ></span>
@@ -108,7 +101,7 @@ export function Header() {
             >
               Contact
               <span
-                className={`absolute -bottom-1 left-0 h-0.5 bg-orange-500 transition-all duration-300 ${
+                className={`absolute -bottom-1 left-0 h-1 bg-orange-500 transition-all duration-300 ${
                   isActive("/contact") ? "w-full" : "w-0 group-hover:w-full"
                 }`}
               ></span>

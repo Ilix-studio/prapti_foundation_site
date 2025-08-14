@@ -7,7 +7,6 @@ import { useGetBlogPostsQuery } from "@/redux-store/services/blogApi";
 const LatestBlogPosts: React.FC = () => {
   const { data: blogPosts, isLoading, error } = useGetBlogPostsQuery();
 
-  // Get the latest 3 posts (sorted by creation date)
   const latestPosts = blogPosts
     ? [...blogPosts]
         .sort(
@@ -18,16 +17,13 @@ const LatestBlogPosts: React.FC = () => {
     : [];
 
   return (
-    <section className='w-full py-12 md:py-24 lg:py-32 bg-amber-50'>
+    <section className='w-full  py-16 md:py-28 lg:py-36 bg-amber-50 flex flex-col justify-center'>
       <div className='container px-4 md:px-6'>
-        <div className='flex flex-col items-center justify-center space-y-4 text-center mb-8'>
+        <div className='flex flex-col items-center justify-center space-y-4 text-center mb-12'>
           <div className='space-y-2'>
             <h2 className='text-3xl font-bold tracking-tighter sm:text-4xl'>
               Our Latest rescue stories
             </h2>
-            <p className='max-w-[900px] text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed'>
-              Stories, tips, and updates from our shelter community.
-            </p>
           </div>
         </div>
 
@@ -70,7 +66,7 @@ const LatestBlogPosts: React.FC = () => {
           </div>
         )}
 
-        <div className='flex justify-center mt-8'>
+        <div className='flex justify-center mt-12'>
           <Link to='/blog'>
             <Button
               variant='outline'

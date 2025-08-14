@@ -1,7 +1,13 @@
 // src/mainComponents/BlogPosts/SmallBlogUI/Blog.tsx
 import React, { useState } from "react";
 
-import { Search, Loader2, PlusCircle } from "lucide-react";
+import {
+  Search,
+  Loader2,
+  PlusCircle,
+  ChevronLeft,
+  ChevronRight,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -13,10 +19,13 @@ import { useGetBlogPostsQuery } from "@/redux-store/services/blogApi";
 import { selectIsAdmin } from "@/redux-store/slices/authSlice";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { getBlogCategoryName } from "@/types/blogs.types";
 
 const SeeBlogs: React.FC = () => {
   const { data: blogPosts, isLoading, error } = useGetBlogPostsQuery();
   const [searchTerm, setSearchTerm] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const postsPerPage = 3;
 
   const isAdmin = useSelector(selectIsAdmin);
 
@@ -26,9 +35,17 @@ const SeeBlogs: React.FC = () => {
         (post) =>
           post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
           post.excerpt.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          post.category.toLowerCase().includes(searchTerm.toLowerCase())
+          getBlogCategoryName(post.category)
+            .toLowerCase()
+            .includes(searchTerm.toLowerCase())
       )
     : [];
+
+  // Pagination calculations
+  const totalPages = Math.ceil(filteredPosts.length / postsPerPage);
+  const startIndex = (currentPage - 1) * postsPerPage;
+  const endIndex = startIndex + postsPerPage;
+  const currentPosts = filteredPosts.slice(startIndex, endIndex);
 
   // Calculate popular posts (in a real app, this might be based on views or engagement)
   const popularPosts = blogPosts
@@ -42,12 +59,54 @@ const SeeBlogs: React.FC = () => {
 
   // Get unique categories from posts
   const categories = blogPosts
-    ? [...new Set(blogPosts.map((post) => post.category))]
+    ? [...new Set(blogPosts.map((post) => getBlogCategoryName(post.category)))]
     : [];
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    // Search is already handled by the filteredPosts variable
+    setCurrentPage(1); // Reset to first page when searching
+  };
+
+  const handleSearchTermChange = (value: string) => {
+    setSearchTerm(value);
+    setCurrentPage(1); // Reset to first page when search term changes
+  };
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const handleCategoryClick = (categoryName: string) => {
+    setSearchTerm(categoryName);
+    setCurrentPage(1);
+  };
+
+  // Generate page numbers for pagination
+  const getPageNumbers = () => {
+    const pages = [];
+    const maxVisiblePages = 5;
+
+    if (totalPages <= maxVisiblePages) {
+      for (let i = 1; i <= totalPages; i++) {
+        pages.push(i);
+      }
+    } else {
+      let startPage = Math.max(1, currentPage - 2);
+      let endPage = Math.min(totalPages, currentPage + 2);
+
+      if (currentPage <= 3) {
+        endPage = maxVisiblePages;
+      } else if (currentPage >= totalPages - 2) {
+        startPage = totalPages - maxVisiblePages + 1;
+      }
+
+      for (let i = startPage; i <= endPage; i++) {
+        pages.push(i);
+      }
+    }
+
+    return pages;
   };
 
   return (
@@ -93,41 +152,66 @@ const SeeBlogs: React.FC = () => {
                   Error loading blog posts. Please try again later.
                 </div>
               ) : filteredPosts.length > 0 ? (
-                <div className='grid gap-12'>
-                  {filteredPosts.map((post) => (
-                    <BlogCard key={post._id} post={post} />
-                  ))}
-                </div>
+                <>
+                  <div className='grid gap-12'>
+                    {currentPosts.map((post) => (
+                      <BlogCard key={post._id} post={post} />
+                    ))}
+                  </div>
+
+                  {/* Pagination */}
+                  {totalPages > 1 && (
+                    <div className='flex justify-center mt-12'>
+                      <div className='flex items-center gap-2'>
+                        <Button
+                          variant='outline'
+                          size='icon'
+                          onClick={() => handlePageChange(currentPage - 1)}
+                          disabled={currentPage === 1}
+                          className='h-9 w-9'
+                        >
+                          <ChevronLeft className='h-4 w-4' />
+                        </Button>
+
+                        {getPageNumbers().map((page) => (
+                          <Button
+                            key={page}
+                            variant='outline'
+                            size='sm'
+                            onClick={() => handlePageChange(page)}
+                            className={
+                              currentPage === page
+                                ? "bg-orange-500 text-white hover:bg-orange-600"
+                                : "hover:bg-gray-100"
+                            }
+                          >
+                            {page}
+                          </Button>
+                        ))}
+
+                        <Button
+                          variant='outline'
+                          size='icon'
+                          onClick={() => handlePageChange(currentPage + 1)}
+                          disabled={currentPage === totalPages}
+                          className='h-9 w-9'
+                        >
+                          <ChevronRight className='h-4 w-4' />
+                        </Button>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Results info */}
+                  <div className='text-center mt-4 text-sm text-gray-500'>
+                    Showing {startIndex + 1}-
+                    {Math.min(endIndex, filteredPosts.length)} of{" "}
+                    {filteredPosts.length} posts
+                  </div>
+                </>
               ) : (
                 <div className='text-center p-10 bg-gray-50 rounded-lg'>
                   No blog posts found matching your search criteria.
-                </div>
-              )}
-
-              {/* Pagination could be added here in the future */}
-              {filteredPosts.length > 0 && (
-                <div className='flex justify-center mt-12'>
-                  <div className='flex items-center gap-2'>
-                    <Button variant='outline' size='icon' disabled>
-                      &lt;
-                    </Button>
-                    <Button
-                      variant='outline'
-                      size='sm'
-                      className='bg-orange-500 text-white hover:bg-orange-600'
-                    >
-                      1
-                    </Button>
-                    <Button variant='outline' size='sm'>
-                      2
-                    </Button>
-                    <Button variant='outline' size='sm'>
-                      3
-                    </Button>
-                    <Button variant='outline' size='icon'>
-                      &gt;
-                    </Button>
-                  </div>
                 </div>
               )}
             </div>
@@ -140,7 +224,7 @@ const SeeBlogs: React.FC = () => {
                     placeholder='Search blog posts...'
                     className='pr-10'
                     value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
+                    onChange={(e) => handleSearchTermChange(e.target.value)}
                   />
                   <Button
                     type='submit'
@@ -156,13 +240,13 @@ const SeeBlogs: React.FC = () => {
               <div className='border rounded-lg p-6'>
                 <h3 className='text-lg font-semibold mb-4'>Categories</h3>
                 <div className='flex flex-wrap gap-2'>
-                  {categories.map((category) => (
+                  {categories.map((categoryName, index) => (
                     <Badge
-                      key={category}
+                      key={`${categoryName}-${index}`}
                       className='bg-orange-100 text-orange-800 hover:bg-orange-200 cursor-pointer'
-                      onClick={() => setSearchTerm(category)}
+                      onClick={() => handleCategoryClick(categoryName)}
                     >
-                      {category}
+                      {categoryName}
                     </Badge>
                   ))}
                 </div>

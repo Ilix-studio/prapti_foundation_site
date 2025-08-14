@@ -1,6 +1,6 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
 import { baseQuery, handleApiError } from "../../constants/apiConfig";
-import { BlogPost } from "@/types/blogs.types";
+import { BlogPost, BlogFormData } from "@/types/blogs.types";
 
 // Create the blog API service
 export const blogApi = createApi({
@@ -31,10 +31,23 @@ export const blogApi = createApi({
       transformErrorResponse: (response) => handleApiError(response),
     }),
 
+    // Get blogs by category
+    getBlogsByCategory: builder.query<BlogPost[], string>({
+      query: (categoryId) => `/blogs?category=${categoryId}`,
+      providesTags: (result, _error, categoryId) => [
+        { type: "BlogPosts", id: `category-${categoryId}` },
+        ...(result || []).map(({ _id }) => ({
+          type: "BlogPosts" as const,
+          id: _id,
+        })),
+      ],
+      transformErrorResponse: (response) => handleApiError(response),
+    }),
+
     // Create a new blog post
     createBlogPost: builder.mutation<
       { success: boolean; message: string; data: BlogPost },
-      Partial<BlogPost>
+      BlogFormData
     >({
       query: (data) => ({
         url: "/blogs/create",
@@ -48,7 +61,7 @@ export const blogApi = createApi({
     // Update an existing blog post
     updateBlogPost: builder.mutation<
       { success: boolean; message: string; data: BlogPost },
-      { id: string; data: Partial<BlogPost> }
+      { id: string; data: Partial<BlogFormData> }
     >({
       query: ({ id, data }) => ({
         url: `/blogs/update/${id}`,
@@ -81,6 +94,7 @@ export const blogApi = createApi({
 export const {
   useGetBlogPostsQuery,
   useGetBlogPostByIdQuery,
+  useGetBlogsByCategoryQuery,
   useCreateBlogPostMutation,
   useUpdateBlogPostMutation,
   useDeleteBlogPostMutation,

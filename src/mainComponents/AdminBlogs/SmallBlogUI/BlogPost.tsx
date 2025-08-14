@@ -21,6 +21,7 @@ import {
   useGetBlogPostByIdQuery,
   useGetBlogPostsQuery,
 } from "@/redux-store/services/blogApi";
+import { getBlogCategoryName, getBlogCategoryId } from "@/types/blogs.types";
 
 const BlogPostPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -30,11 +31,16 @@ const BlogPostPage: React.FC = () => {
   const { data: allPosts } = useGetBlogPostsQuery();
 
   // Get related posts (posts in the same category)
-  const relatedPosts = allPosts
-    ? allPosts
-        .filter((p) => p.category === post?.category && p._id !== post?._id)
-        .slice(0, 3)
-    : [];
+  const relatedPosts =
+    allPosts && post
+      ? allPosts
+          .filter(
+            (p) =>
+              getBlogCategoryId(p.category) ===
+                getBlogCategoryId(post.category) && p._id !== post._id
+          )
+          .slice(0, 3)
+      : [];
 
   if (isLoading) {
     return (
@@ -112,7 +118,7 @@ const BlogPostPage: React.FC = () => {
           <div className='space-y-4'>
             <div className='flex items-center gap-2'>
               <Badge className='text-orange-500 border-orange-200 bg-orange-50'>
-                {post.category}
+                {getBlogCategoryName(post.category)}
               </Badge>
               <div className='flex items-center text-sm text-gray-500'>
                 <Calendar className='mr-1 h-3 w-3' />

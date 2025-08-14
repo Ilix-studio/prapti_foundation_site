@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 
@@ -36,6 +36,8 @@ import { useGetVisitorStatsQuery } from "../../redux-store/services/visitorApi";
 // Import contact API hooks
 import { useGetContactMessagesQuery } from "../../redux-store/services/contactApi";
 import TotalImpactDashboard from "./AdminImpact/Impact";
+import { useGetPhotosQuery } from "@/redux-store/services/photoApi";
+import { useGetVideosQuery } from "@/redux-store/services/videoApi";
 
 const NewDashAdmin: React.FC = () => {
   const dispatch = useDispatch();
@@ -64,10 +66,8 @@ const NewDashAdmin: React.FC = () => {
     refetch: refetchMessages,
   } = useGetContactMessagesQuery({
     page: 1,
-    limit: 4, // Show 4 recent messages in dashboard
+    limit: 2,
   });
-
-  // Message action hooks
 
   // Visitor API hooks
   const {
@@ -77,9 +77,15 @@ const NewDashAdmin: React.FC = () => {
     refetch: refetchVisitorStats,
   } = useGetVisitorStatsQuery();
 
-  // Mock data for additional stats (you can replace with real API calls)
-  const [mockStats] = useState({
-    totalPhotos: 45,
+  // Get counts for photos, videos, and press articles
+  const { data: photosData } = useGetPhotosQuery({
+    page: 1,
+    limit: 1, // We only need the count
+  });
+
+  const { data: videosData } = useGetVideosQuery({
+    page: "1",
+    limit: "1", // We only need the count
   });
 
   if (!isAuthenticated || !isAdmin) {
@@ -125,7 +131,7 @@ const NewDashAdmin: React.FC = () => {
     },
     {
       title: "Total Gallery Photos",
-      value: mockStats.totalPhotos.toString(),
+      value: photosData?.data?.pagination?.total?.toString() || "0",
       change: "+5",
       icon: Heart,
       color: "text-purple-600",
@@ -135,7 +141,7 @@ const NewDashAdmin: React.FC = () => {
     },
     {
       title: "Total Gallery Videos",
-      value: mockStats.totalPhotos.toString(),
+      value: videosData?.data?.pagination?.totalVideos?.toString() || "0",
       change: "+5",
       icon: Video,
       color: "text-green-600",
@@ -206,7 +212,7 @@ const NewDashAdmin: React.FC = () => {
               <Button
                 variant='outline'
                 size='sm'
-                className='text-orange-500 border-orange-500 hover:bg-orange-50'
+                className='text-gray-500 border-orange-500 hover:bg-orange-50'
               >
                 <Home className='h-4 w-4 mr-2' />
                 <span className='hidden sm:inline'>View Website</span>
@@ -466,7 +472,7 @@ const NewDashAdmin: React.FC = () => {
                 )}
 
                 <Button
-                  className='w-full mt-6 bg-orange-500 hover:bg-orange-600 text-white font-medium'
+                  className='w-full mt-6 bg-gray-500 hover:bg-orange-600 text-white font-medium'
                   onClick={() => navigate("/admin/messages")}
                 >
                   View All Messages

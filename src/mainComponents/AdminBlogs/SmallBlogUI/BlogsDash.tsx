@@ -16,6 +16,7 @@ import {
   useDeleteBlogPostMutation,
   useGetBlogPostsQuery,
 } from "@/redux-store/services/blogApi";
+import { getBlogCategoryName } from "@/types/blogs.types";
 import { BackNavigation } from "@/config/navigation/BackNavigation";
 
 const BlogsDash: React.FC = () => {
@@ -185,7 +186,7 @@ const BlogsDash: React.FC = () => {
                       </td>
                       <td className='px-8 py-6'>
                         <span className='px-4 py-2 inline-flex text-sm font-medium rounded-full bg-white-500 text-orange-500 border border-[#FF9933]/30'>
-                          {post.category}
+                          {getBlogCategoryName(post.category)}
                         </span>
                       </td>
 
