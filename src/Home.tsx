@@ -11,6 +11,7 @@ import HalfAbout from "./mainComponents/HalfAbout";
 import HomeGallery from "./mainComponents/Gallery/HomeGallery";
 import SmallContactSec from "./mainComponents/ContactUs/SmallContactSec";
 import TotalImpactView from "./mainComponents/Admin/AdminImpact/TotalImpactView";
+import Testimonials from "./mainComponents/Testimonials/Testimonials";
 
 const Home: React.FC = () => {
   return (
@@ -30,6 +31,7 @@ const Home: React.FC = () => {
       <br />
       <DonateUs />
       <br />
+      <Testimonials />
       <br />
       <SmallContactSec />
       <br />

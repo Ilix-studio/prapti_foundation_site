@@ -46,7 +46,9 @@ const VolunteerDash = lazy(
 const BlogsDash = lazy(
   () => import("@/mainComponents/AdminBlogs/SmallBlogUI/BlogsDash")
 );
-
+const WriteTestimonial = lazy(
+  () => import("@/mainComponents/Testimonials/WriteTestimonial")
+);
 import NotFound from "../mainComponents/NotFound";
 import ViewAllMessage from "@/mainComponents/Admin/AdminMessage/ViewAllMessage";
 
@@ -99,6 +101,7 @@ export const publicRoutes = [
   { path: "/blog", component: SeeBlogs },
   { path: "/blog/:id", component: BlogPostPage }, // create a component for admin to read blog
   { path: "/volunteer", component: VolunteerPage },
+  { path: "/write-testimonial", component: WriteTestimonial },
 ];
 
 export const adminRoutes = [
