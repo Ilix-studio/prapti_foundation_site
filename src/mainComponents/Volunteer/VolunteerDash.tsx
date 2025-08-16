@@ -10,7 +10,6 @@ import {
   Users,
   AlertCircle,
   Loader2,
-  ArrowLeft,
   Calendar,
   MapPin,
   Mail,
@@ -30,6 +29,7 @@ import {
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import Footer from "../Footer";
+import { BackNavigation } from "@/config/navigation/BackNavigation";
 
 const VolunteerDash = () => {
   const navigate = useNavigate();
@@ -149,18 +149,12 @@ const VolunteerDash = () => {
   };
 
   return (
-    <div className='min-h-screen bg-gray-50'>
-      <div className='container mx-auto px-4 py-8 max-w-7xl'>
-        {/* Header Section */}
-        <div className='mb-8'>
+    <>
+      <BackNavigation />
+      <div className='min-h-screen bg-gray-50'>
+        <div className='container mx-auto px-4 py-8 max-w-7xl'>
           <div className='flex items-center justify-between mb-6'>
             <div className='flex items-center gap-4'>
-              <Link to='/admin/dashboard'>
-                <Button variant='outline' size='sm'>
-                  <ArrowLeft className='h-4 w-4 mr-2' />
-                  Back to Dashboard
-                </Button>
-              </Link>
               <div>
                 <h1 className='text-3xl font-bold text-gray-900 flex items-center gap-3'>
                   <Users className='h-8 w-8 text-orange-500' />
@@ -583,7 +577,7 @@ const VolunteerDash = () => {
       </div>
 
       <Footer />
-    </div>
+    </>
   );
 };
 

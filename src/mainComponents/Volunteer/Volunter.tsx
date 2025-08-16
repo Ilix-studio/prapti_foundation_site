@@ -18,7 +18,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+
 import {
   Heart,
   Calendar,
@@ -196,30 +196,6 @@ const VolunteerPage: React.FC = () => {
     },
   ];
 
-  const testimonials = [
-    {
-      quote:
-        "Volunteering at Prapti Foundation has been one of the most rewarding experiences of my life. Seeing the transformation in these dogs from scared and untrusting to loving and playful is incredibly fulfilling.",
-      name: "Anjali Sharma",
-      role: "Dog Walker & Kennel Assistant",
-      duration: "Volunteer for 2 years",
-    },
-    {
-      quote:
-        "As a photographer, I've been able to use my skills to help dogs find homes. A good photo can make all the difference in a dog's adoption prospects. It's amazing to be part of that process!",
-      name: "Rahul Patel",
-      role: "Volunteer Photographer",
-      duration: "Volunteer for 1 year",
-    },
-    {
-      quote:
-        "The team at Prapti Foundation is like a family. We all work together for the common goal of helping these beautiful animals. Even just a few hours a week makes such a difference.",
-      name: "Meera Devi",
-      role: "Weekend Volunteer",
-      duration: "Volunteer for 6 months",
-    },
-  ];
-
   return (
     <div className='flex flex-col min-h-screen'>
       <Header />
@@ -290,45 +266,6 @@ const VolunteerPage: React.FC = () => {
       </section>
 
       {/* Volunteer Opportunities */}
-      <section className='py-12 md:py-24 bg-orange-50'>
-        <div className='container px-4 md:px-6'>
-          <div className='text-center space-y-4 max-w-3xl mx-auto mb-12'>
-            <div className='inline-block rounded-lg bg-orange-100 px-3 py-1 text-sm'>
-              Opportunities
-            </div>
-            <h2 className='text-3xl font-bold tracking-tighter sm:text-4xl'>
-              Ways You Can Help
-            </h2>
-            <p className='text-gray-500'>
-              We have various volunteer roles to match your skills, interests,
-              and availability.
-            </p>
-          </div>
-
-          <div className='grid sm:grid-cols-2 lg:grid-cols-4 gap-6'>
-            {volunteerOpportunities.map((opportunity, index) => (
-              <Card
-                key={index}
-                className='bg-white hover:shadow-md transition-shadow'
-              >
-                <CardHeader className='space-y-1 flex flex-row items-start'>
-                  <div className='bg-orange-100 p-2 rounded-lg mr-3'>
-                    {opportunity.icon}
-                  </div>
-                  <div>
-                    <CardTitle className='text-xl'>
-                      {opportunity.title}
-                    </CardTitle>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <p className='text-gray-500'>{opportunity.description}</p>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
 
       {/* Volunteer Benefits */}
       <section className='py-12 md:py-24'>
@@ -412,52 +349,6 @@ const VolunteerPage: React.FC = () => {
                 outreach programs.
               </p>
             </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Volunteer Testimonials */}
-      <section className='py-12 md:py-24 bg-gray-50'>
-        <div className='container px-4 md:px-6'>
-          <div className='text-center space-y-4 max-w-3xl mx-auto mb-12'>
-            <div className='inline-block rounded-lg bg-orange-100 px-3 py-1 text-sm'>
-              Testimonials
-            </div>
-            <h2 className='text-3xl font-bold tracking-tighter sm:text-4xl'>
-              Hear From Our Volunteers
-            </h2>
-            <p className='text-gray-500'>
-              Discover what our dedicated volunteers have to say about their
-              experiences with us.
-            </p>
-          </div>
-
-          <div className='grid md:grid-cols-3 gap-8'>
-            {testimonials.map((testimonial, index) => (
-              <div
-                key={index}
-                className='bg-white p-6 rounded-lg shadow-sm space-y-4'
-              >
-                <p className='italic text-gray-600'>"{testimonial.quote}"</p>
-                <div className='flex items-center gap-3'>
-                  <div className='w-10 h-10 rounded-full overflow-hidden bg-gray-200'>
-                    <img
-                      src={`/placeholder.svg?height=40&width=40&text=${testimonial.name.charAt(
-                        0
-                      )}`}
-                      alt={testimonial.name}
-                    />
-                  </div>
-                  <div>
-                    <p className='font-medium'>{testimonial.name}</p>
-                    <p className='text-sm text-gray-500'>{testimonial.role}</p>
-                    <p className='text-xs text-orange-500'>
-                      {testimonial.duration}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            ))}
           </div>
         </div>
       </section>

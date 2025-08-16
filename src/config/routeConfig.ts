@@ -50,14 +50,6 @@ const BlogsDash = lazy(
 import NotFound from "../mainComponents/NotFound";
 import ViewAllMessage from "@/mainComponents/Admin/AdminMessage/ViewAllMessage";
 
-// Lazy load components (loaded only when needed)
-
-// const VideoGallery = lazy(
-//   () => import("../mainComponents/Gallery/VideoGallery")
-// );
-// const ViewPhotoId = lazy(() => import("../mainComponents/Gallery/ViewPhotoId"));
-// const ViewVideoId = lazy(() => import("../mainComponents/Gallery/ViewVideoId"));
-
 // Admin components (lazy loaded)
 const NewDashAdmin = lazy(() => import("../mainComponents/Admin/NewDashAdmin"));
 const PhotoDash = lazy(
