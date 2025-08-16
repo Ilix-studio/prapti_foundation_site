@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, Variants } from "framer-motion";
 import {
   Facebook,
   Instagram,
@@ -88,13 +88,14 @@ const Footer = () => {
     return () => clearTimeout(timer);
   }, [incrementVisitorCounter, getVisitorCount, visitorTracked]);
 
-  const visitorVariants = {
+  // Fixed variants with proper TypeScript typing
+  const visitorVariants: Variants = {
     hidden: { opacity: 0, y: 20, scale: 0.9 },
     visible: {
       opacity: 1,
       y: 0,
       scale: 1,
-      transition: { duration: 0.6, ease: "easeOut" },
+      transition: { duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }, // Cubic bezier for ease-out
     },
     pulse: {
       scale: [1, 1.05, 1],
@@ -102,7 +103,7 @@ const Footer = () => {
     },
   };
 
-  const newVisitorVariants = {
+  const newVisitorVariants: Variants = {
     hidden: { opacity: 0, x: 20 },
     visible: {
       opacity: 1,

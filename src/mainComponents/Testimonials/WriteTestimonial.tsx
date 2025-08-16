@@ -244,7 +244,7 @@ const WriteTestimonial: React.FC<WriteTestimonialProps> = ({
               <Button
                 type='submit'
                 disabled={isLoading}
-                className='flex-1 bg-blue-600 hover:bg-blue-700 text-white'
+                className='flex-1 bg-gray-600 hover:bg-orange-500 text-white'
               >
                 {isLoading ? (
                   <>
