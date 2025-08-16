@@ -34,7 +34,6 @@ const SeeBlogs: React.FC = () => {
     ? blogPosts.filter(
         (post) =>
           post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          post.excerpt.toLowerCase().includes(searchTerm.toLowerCase()) ||
           getBlogCategoryName(post.category)
             .toLowerCase()
             .includes(searchTerm.toLowerCase())

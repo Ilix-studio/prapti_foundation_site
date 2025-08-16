@@ -60,13 +60,13 @@ import { BackNavigation } from "@/config/navigation/BackNavigation";
 
 interface CategoryFormData {
   name: string;
-  type: "photo" | "video" | "press";
+  type: "photo" | "video" | "blogs";
 }
 
 const CategoryManager: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [filterType, setFilterType] = useState<
-    "all" | "photo" | "video" | "press"
+    "all" | "photo" | "video" | "blogs"
   >("all");
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [showEditDialog, setShowEditDialog] = useState(false);
@@ -146,7 +146,7 @@ const CategoryManager: React.FC = () => {
     setSelectedCategory(category);
     setFormData({
       name: category.name,
-      type: category.type as "photo" | "video",
+      type: category.type as "photo" | "video" | "blogs",
     });
     setShowEditDialog(true);
   };
@@ -470,7 +470,7 @@ const CategoryManager: React.FC = () => {
                     <Label htmlFor='type'>Type</Label>
                     <Select
                       value={formData.type}
-                      onValueChange={(value: "photo" | "video" | "press") =>
+                      onValueChange={(value: "photo" | "video" | "blogs") =>
                         setFormData({ ...formData, type: value })
                       }
                     >

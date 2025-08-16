@@ -8,20 +8,24 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { PawPrint, Save, ArrowLeft, Loader2 } from "lucide-react";
+  PawPrint,
+  Save,
+  ArrowLeft,
+  Loader2,
+  Plus,
+  Check,
+  X,
+} from "lucide-react";
 import { selectIsAdmin } from "@/redux-store/slices/authSlice";
 import {
   useCreateBlogPostMutation,
   useGetBlogPostByIdQuery,
   useUpdateBlogPostMutation,
 } from "@/redux-store/services/blogApi";
-import { useGetCategoriesByTypeQuery } from "@/redux-store/services/categoryApi";
+import {
+  useGetCategoriesByTypeQuery,
+  useCreateCategoryMutation,
+} from "@/redux-store/services/categoryApi";
 import { useDeleteImageMutation } from "@/redux-store/services/cloudinaryApi";
 import cloudinaryService from "@/redux-store/slices/cloudinaryService";
 import { getBlogCategoryId } from "@/types/blogs.types";
@@ -39,6 +43,8 @@ const AddBlogForm: React.FC = () => {
   const [updateBlogPost, { isLoading: isUpdating }] =
     useUpdateBlogPostMutation();
   const [deleteImage] = useDeleteImageMutation();
+  const [createCategory, { isLoading: creatingCategory }] =
+    useCreateCategoryMutation();
   const { data: existingPost, isLoading: isFetching } = useGetBlogPostByIdQuery(
     id!,
     {
@@ -47,16 +53,22 @@ const AddBlogForm: React.FC = () => {
   );
 
   // Fetch blog categories
-  const { data: categories = [], isLoading: isCategoriesLoading } =
-    useGetCategoriesByTypeQuery("blogs");
+  const {
+    data: categories = [],
+    isLoading: isCategoriesLoading,
+    error: categoriesError,
+  } = useGetCategoriesByTypeQuery("blogs");
 
   const [title, setTitle] = useState("");
-  const [excerpt, setExcerpt] = useState("");
   const [content, setContent] = useState("");
   const [category, setCategory] = useState("");
   const [image, setImage] = useState("");
   const [previousImage, setPreviousImage] = useState("");
   const [error, setError] = useState<string | null>(null);
+
+  // Category management state
+  const [showAddCategory, setShowAddCategory] = useState(false);
+  const [newCategoryName, setNewCategoryName] = useState("");
 
   // If not an admin, redirect to login
   if (!isAdmin) {
@@ -67,7 +79,6 @@ const AddBlogForm: React.FC = () => {
   useEffect(() => {
     if (isEditMode && existingPost) {
       setTitle(existingPost.title);
-      setExcerpt(existingPost.excerpt);
       setContent(existingPost.content);
       setCategory(getBlogCategoryId(existingPost.category));
       setImage(existingPost.image);
@@ -80,14 +91,13 @@ const AddBlogForm: React.FC = () => {
     setError(null);
 
     try {
-      if (!title || !excerpt || !content || !category) {
+      if (!title || !content || !category) {
         setError("All fields are required");
         return;
       }
 
       const blogData = {
         title,
-        excerpt,
         content,
         category,
         image,
@@ -122,6 +132,33 @@ const AddBlogForm: React.FC = () => {
         err.data?.message || "Failed to save blog post. Please try again."
       );
       console.error("Error saving blog post:", err);
+    }
+  };
+
+  // Create new category
+  const handleCreateCategory = async () => {
+    if (!newCategoryName.trim()) {
+      setError("Please enter a category name");
+      return;
+    }
+
+    try {
+      const result = await createCategory({
+        name: newCategoryName.trim(),
+        type: "blogs",
+      }).unwrap();
+
+      console.log("Created category:", result);
+      setNewCategoryName("");
+      setShowAddCategory(false);
+
+      // Auto-select the newly created category
+      setCategory(result._id);
+    } catch (error: any) {
+      console.error("Create category error:", error);
+      setError(
+        error?.data?.message || error?.message || "Failed to create category"
+      );
     }
   };
 
@@ -183,46 +220,92 @@ const AddBlogForm: React.FC = () => {
 
               <div className='space-y-2'>
                 <Label htmlFor='category'>Category</Label>
-                <Select value={category} onValueChange={setCategory}>
-                  <SelectTrigger>
-                    <SelectValue placeholder='Select a category' />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {isCategoriesLoading ? (
-                      <SelectItem value='' disabled>
-                        Loading categories...
-                      </SelectItem>
-                    ) : categories.length === 0 ? (
-                      <SelectItem value='' disabled>
-                        No blog categories found
-                      </SelectItem>
-                    ) : (
+                <div className='flex gap-2'>
+                  <select
+                    id='category'
+                    name='category'
+                    value={category}
+                    onChange={(e) => setCategory(e.target.value)}
+                    className='flex-1 h-10 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50'
+                    required
+                    disabled={isCategoriesLoading}
+                  >
+                    <option value=''>
+                      {isCategoriesLoading
+                        ? "Loading categories..."
+                        : categories.length === 0
+                        ? "No categories available"
+                        : "Select category"}
+                    </option>
+                    {!isCategoriesLoading &&
                       categories.map((cat) => (
-                        <SelectItem key={cat._id} value={cat._id}>
+                        <option key={cat._id} value={cat._id}>
                           {cat.name}
-                        </SelectItem>
-                      ))
-                    )}
-                  </SelectContent>
-                </Select>
+                        </option>
+                      ))}
+                  </select>
+                  <Button
+                    type='button'
+                    onClick={() => setShowAddCategory(!showAddCategory)}
+                    className='px-3 py-2 bg-green-600 text-white hover:bg-green-700 transition-colors flex items-center gap-1'
+                    title='Add new category'
+                  >
+                    <Plus className='w-4 h-4' />
+                  </Button>
+                </div>
+
+                {/* Add Category Input */}
+                {showAddCategory && (
+                  <div className='mt-2 p-3 bg-gray-50 rounded-lg border'>
+                    <div className='flex gap-2'>
+                      <Input
+                        type='text'
+                        value={newCategoryName}
+                        onChange={(e) => setNewCategoryName(e.target.value)}
+                        placeholder='Enter category name'
+                        className='flex-1'
+                        onKeyPress={(e) =>
+                          e.key === "Enter" && handleCreateCategory()
+                        }
+                      />
+                      <Button
+                        type='button'
+                        onClick={handleCreateCategory}
+                        disabled={creatingCategory}
+                        className='px-3 py-2 bg-green-600 text-white hover:bg-green-700 transition-colors disabled:opacity-50 flex items-center gap-1'
+                      >
+                        {creatingCategory ? (
+                          <Loader2 className='w-4 h-4 animate-spin' />
+                        ) : (
+                          <Check className='w-4 h-4' />
+                        )}
+                      </Button>
+                      <Button
+                        type='button'
+                        onClick={() => {
+                          setShowAddCategory(false);
+                          setNewCategoryName("");
+                        }}
+                        className='px-3 py-2 bg-gray-500 text-white hover:bg-gray-600 transition-colors'
+                      >
+                        <X className='w-4 h-4' />
+                      </Button>
+                    </div>
+                  </div>
+                )}
+
+                {categoriesError && (
+                  <p className='text-sm text-red-500 mt-1'>
+                    Failed to load categories. Please refresh and try again.
+                  </p>
+                )}
+
                 {!isCategoriesLoading && categories.length === 0 && (
                   <p className='text-sm text-gray-500'>
                     No blog categories available. Please create some categories
                     first.
                   </p>
                 )}
-              </div>
-
-              <div className='space-y-2'>
-                <Label htmlFor='excerpt'>Excerpt</Label>
-                <Textarea
-                  id='excerpt'
-                  value={excerpt}
-                  onChange={(e) => setExcerpt(e.target.value)}
-                  placeholder='Enter a brief summary of the blog post'
-                  rows={3}
-                  required
-                />
               </div>
 
               {/* Replace file input with our new ImageUpload component */}
@@ -276,10 +359,7 @@ const AddBlogForm: React.FC = () => {
                 • <strong>Title:</strong> Make it engaging and specific (include
                 pet names when possible)
               </li>
-              <li>
-                • <strong>Excerpt:</strong> Summarize the main story in 1-2
-                sentences
-              </li>
+
               <li>
                 • <strong>Content:</strong> Use subheadings, tell a complete
                 story, include emotional moments

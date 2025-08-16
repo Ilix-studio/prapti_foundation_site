@@ -179,9 +179,6 @@ const BlogsDash: React.FC = () => {
                           <div className='text-base font-semibold text-gray-900 truncate'>
                             {post.title}
                           </div>
-                          <div className='text-sm text-gray-600 mt-1 line-clamp-2'>
-                            {post.excerpt}
-                          </div>
                         </div>
                       </td>
                       <td className='px-8 py-6'>

@@ -302,19 +302,6 @@ const NewDashAdmin: React.FC = () => {
                       Live
                     </Badge>
                   </div>
-                  {/* Reset Counter Button */}
-                  {/* <Button
-                    onClick={handleResetVisitorCounter}
-                    variant='outline'
-                    size='sm'
-                    className='text-red-600 border-red-300 hover:bg-red-50'
-                    disabled={isResetting}
-                  >
-                    {isResetting ? (
-                      <Loader2 className='w-4 h-4 animate-spin mr-1' />
-                    ) : null}
-                    Reset Counter
-                  </Button> */}
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -548,7 +535,7 @@ const NewDashAdmin: React.FC = () => {
             </Card>
           </div>
         </div>
-
+        <br />
         <TotalImpactDashboard />
       </div>
     </div>

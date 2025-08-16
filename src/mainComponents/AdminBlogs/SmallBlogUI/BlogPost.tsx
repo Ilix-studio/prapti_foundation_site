@@ -139,8 +139,6 @@ const BlogPostPage: React.FC = () => {
             </div>
 
             <div className='prose prose-gray max-w-none'>
-              <p className='font-medium text-lg'>{post.excerpt}</p>
-
               {/* Render content - in a real app, you might want to use a rich text renderer */}
               <div
                 dangerouslySetInnerHTML={{

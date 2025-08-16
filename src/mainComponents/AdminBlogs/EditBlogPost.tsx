@@ -51,7 +51,7 @@ const EditBlogPost: React.FC = () => {
 
   // Form state
   const [title, setTitle] = useState("");
-  const [excerpt, setExcerpt] = useState("");
+
   const [content, setContent] = useState("");
   const [category, setCategory] = useState("");
   const [image, setImage] = useState("");
@@ -73,7 +73,6 @@ const EditBlogPost: React.FC = () => {
   useEffect(() => {
     if (existingPost) {
       setTitle(existingPost.title);
-      setExcerpt(existingPost.excerpt);
       setContent(existingPost.content);
       setCategory(getBlogCategoryId(existingPost.category));
       setImage(existingPost.image);
@@ -91,14 +90,13 @@ const EditBlogPost: React.FC = () => {
     }
 
     try {
-      if (!title || !excerpt || !content || !category) {
+      if (!title || !content || !category) {
         setError("All fields are required");
         return;
       }
 
       const blogData = {
         title,
-        excerpt,
         content,
         category,
         image,
@@ -282,19 +280,6 @@ const EditBlogPost: React.FC = () => {
                 )}
               </div>
 
-              <div className='space-y-2'>
-                <Label htmlFor='excerpt'>Excerpt</Label>
-                <Textarea
-                  id='excerpt'
-                  value={excerpt}
-                  onChange={(e) => setExcerpt(e.target.value)}
-                  placeholder='Enter a brief summary of the blog post'
-                  rows={3}
-                  required
-                  disabled={isLoading}
-                />
-              </div>
-
               <ImageUpload
                 currentImageUrl={image}
                 onImageUploaded={handleImageUploaded}
@@ -346,10 +331,7 @@ const EditBlogPost: React.FC = () => {
                 • <strong>Title:</strong> Make it engaging and specific (include
                 pet names when possible)
               </li>
-              <li>
-                • <strong>Excerpt:</strong> Summarize the main story in 1-2
-                sentences
-              </li>
+
               <li>
                 • <strong>Content:</strong> Use subheadings, tell a complete
                 story, include emotional moments

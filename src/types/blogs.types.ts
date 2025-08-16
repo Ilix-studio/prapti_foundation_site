@@ -1,7 +1,6 @@
 // Form data for creating/updating blog posts
 export interface BlogFormData {
   title: string;
-  excerpt: string;
   content: string;
   category: string; // Category ID or name
   image?: string;
@@ -11,7 +10,6 @@ export interface BlogFormData {
 export interface BlogPost {
   _id: string;
   title: string;
-  excerpt: string;
   content: string;
   category: string | { _id: string; name: string; type: string };
   image: string;
@@ -23,7 +21,6 @@ export interface BlogPost {
 // Form data for creating/updating blog posts
 export interface BlogFormData {
   title: string;
-  excerpt: string;
   content: string;
   category: string; // Category ID or name
   image?: string;

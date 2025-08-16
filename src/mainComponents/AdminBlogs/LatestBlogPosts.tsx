@@ -52,9 +52,6 @@ const LatestBlogPosts: React.FC = () => {
                     <h3 className='font-semibold text-lg group-hover:text-orange-500'>
                       {post.title}
                     </h3>
-                    <p className='text-sm text-gray-500 line-clamp-2'>
-                      {post.excerpt}
-                    </p>
                   </div>
                 </div>
               </Link>

@@ -65,9 +65,7 @@ const BlogCard: React.FC<BlogCardProps> = ({ post, compact = false }) => {
         <h2 className='text-xl font-bold group-hover:text-orange-500 transition-colors'>
           <Link to={`/blog/${post._id}`}>{post.title}</Link>
         </h2>
-        {post.excerpt && (
-          <p className='text-gray-600 line-clamp-2'>{post.excerpt}</p>
-        )}
+
         <Link
           to={`/blog/${post._id}`}
           className='inline-block text-sm font-medium text-orange-500 hover:text-orange-600 mt-2'

@@ -1,10 +1,3 @@
-// Base Category interface
-// export interface Category {
-//   _id: string;
-//   name: string;
-//   type: "photo" | "video" | "press";
-//   createdAt: Date;
-// }
 export interface Category {
   createdAt: string | number | Date;
   _id: string;
@@ -15,7 +8,7 @@ export interface Category {
 
 export interface CategoryCreateData {
   name: string;
-  type: "photo" | "video" | "press";
+  type: "photo" | "video" | "blogs";
 }
 
 export interface CategoryUpdateData {
@@ -24,7 +17,7 @@ export interface CategoryUpdateData {
 // Category create data interface
 export interface CategoryCreateData {
   name: string;
-  type: "photo" | "video" | "press";
+  type: "photo" | "video" | "blogs";
 }
 
 // Category update data interface
