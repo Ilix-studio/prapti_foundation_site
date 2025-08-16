@@ -10,6 +10,9 @@ const ContactUs = lazy(() => import("@/mainComponents/ContactUs/ContactUs"));
 const LoginUser = lazy(() => import("../mainComponents/Admin/LoginUser"));
 // Public Routes
 const GalleryPage = lazy(() => import("@/mainComponents/Gallery/GalleryPage"));
+const ViewPhotoId = lazy(() => import("@/mainComponents/Gallery/ViewPhotoId"));
+const ViewVideoId = lazy(() => import("@/mainComponents/Gallery/ViewVideoId"));
+
 const AdoptionForm = lazy(() => import("@/mainComponents/Adopt/AdoptionForm"));
 const ReportPage = lazy(
   () => import("@/mainComponents/ReportAbout/ReportPage")
@@ -95,12 +98,9 @@ export const immediateRouteTwo = [
 ];
 
 export const publicRoutes = [
-  // { path: "/photo-gallery", component: PhotoGallery },
-  // { path: "/video-gallery", component: VideoGallery },
-  // { path: "/view/photo/:id", component: ViewPhotoId },
-  // { path: "/view/video/:id", component: ViewVideoId },
-
   { path: "/gallery", component: GalleryPage },
+  { path: "/view/photo/:id", component: ViewPhotoId },
+  { path: "/view/video/:id", component: ViewVideoId },
   { path: "/adopt", component: AdoptionForm },
   { path: "/report", component: ReportPage },
   { path: "/support", component: SupportUs },
