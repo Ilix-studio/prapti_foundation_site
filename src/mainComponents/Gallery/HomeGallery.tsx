@@ -424,10 +424,9 @@ const HomeGallery = () => {
   // Header Component
   const GalleryHeader = () => (
     <div className='text-center max-w-3xl mx-auto mb-10 md:mb-12'>
-      <div className='inline-block px-4 py-1.5 rounded-full bg-[#138808]/10 text-[#138808] font-medium text-sm mb-4'>
+      <div className='inline-block rounded-lg bg-orange-100 px-3 py-1 text-sm'>
         {selectedCategory ? "Gallery" : "Our Pawfect Moments"}
       </div>
-
       <p className='text-muted-foreground mt-4 px-2'>
         {selectedCategory
           ? `${
