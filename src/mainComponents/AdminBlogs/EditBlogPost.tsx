@@ -14,18 +14,22 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { PawPrint, Save, ArrowLeft, Loader2, Trash2 } from "lucide-react";
+import { Save, Loader2, Trash2, Plus, Check, X } from "lucide-react";
 import { selectIsAdmin } from "@/redux-store/slices/authSlice";
 import {
   useGetBlogPostByIdQuery,
   useUpdateBlogPostMutation,
   useDeleteBlogPostMutation,
 } from "@/redux-store/services/blogApi";
-import { useGetCategoriesByTypeQuery } from "@/redux-store/services/categoryApi";
+import {
+  useGetCategoriesByTypeQuery,
+  useCreateCategoryMutation,
+} from "@/redux-store/services/categoryApi";
 import { useDeleteImageMutation } from "@/redux-store/services/cloudinaryApi";
 import cloudinaryService from "@/redux-store/slices/cloudinaryService";
 import { getBlogCategoryId } from "@/types/blogs.types";
 import ImageUpload from "./ImageUpload";
+import { BackNavigation } from "@/config/navigation/BackNavigation";
 
 const EditBlogPost: React.FC = () => {
   const navigate = useNavigate();
@@ -38,6 +42,8 @@ const EditBlogPost: React.FC = () => {
   const [deleteBlogPost, { isLoading: isDeleting }] =
     useDeleteBlogPostMutation();
   const [deleteImage] = useDeleteImageMutation();
+  const [createCategory, { isLoading: creatingCategory }] =
+    useCreateCategoryMutation();
 
   const {
     data: existingPost,
@@ -46,18 +52,24 @@ const EditBlogPost: React.FC = () => {
   } = useGetBlogPostByIdQuery(id!, { skip: !id });
 
   // Fetch blog categories
-  const { data: categories = [], isLoading: isCategoriesLoading } =
-    useGetCategoriesByTypeQuery("blogs");
+  const {
+    data: categories = [],
+    isLoading: isCategoriesLoading,
+    error: categoriesError,
+  } = useGetCategoriesByTypeQuery("blogs");
 
   // Form state
   const [title, setTitle] = useState("");
-
   const [content, setContent] = useState("");
   const [category, setCategory] = useState("");
   const [image, setImage] = useState("");
   const [previousImage, setPreviousImage] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+
+  // Category management state
+  const [showAddCategory, setShowAddCategory] = useState(false);
+  const [newCategoryName, setNewCategoryName] = useState("");
 
   // Redirect if not admin
   if (!isAdmin) {
@@ -79,6 +91,34 @@ const EditBlogPost: React.FC = () => {
       setPreviousImage(existingPost.image);
     }
   }, [existingPost]);
+
+  // Create new category
+  const handleCreateCategory = async () => {
+    if (!newCategoryName.trim()) {
+      setError("Please enter a category name");
+      return;
+    }
+
+    try {
+      const result = await createCategory({
+        name: newCategoryName.trim(),
+        type: "blogs",
+      }).unwrap();
+
+      console.log("Created category:", result);
+      setNewCategoryName("");
+      setShowAddCategory(false);
+
+      // Auto-select the newly created category
+      setCategory(result._id);
+      setError(null);
+    } catch (error: any) {
+      console.error("Create category error:", error);
+      setError(
+        error?.data?.message || error?.message || "Failed to create category"
+      );
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -183,146 +223,197 @@ const EditBlogPost: React.FC = () => {
   }
 
   return (
-    <div className='min-h-screen bg-gray-50'>
-      {/* Admin Header */}
-      <header className='bg-white border-b shadow-sm'>
-        <div className='container mx-auto px-4 py-4 flex items-center justify-between'>
-          <div className='flex items-center gap-2'>
-            <PawPrint className='h-8 w-8 text-orange-500' />
-            <h1 className='text-xl font-bold'>Edit Blog Post</h1>
-          </div>
+    <>
+      <BackNavigation />
 
-          <div className='flex items-center gap-2'>
-            <Button
-              variant='outline'
-              onClick={() => setShowDeleteConfirm(true)}
-              className='text-red-600 hover:text-red-700 hover:bg-red-50'
-              disabled={isLoading}
-            >
-              <Trash2 className='h-4 w-4 mr-2' />
-              Delete Post
-            </Button>
-
-            <Button
-              variant='ghost'
-              onClick={() => navigate("/admin/blogsDashboard")}
-              className='text-gray-600'
-              disabled={isLoading}
-            >
-              <ArrowLeft className='h-4 w-4 mr-2' />
-              Back to Blogs
-            </Button>
+      <div className='container mx-auto p-6 space-y-6'>
+        {/* Header */}
+        <div className='flex justify-between items-center'>
+          <div>
+            <h1 className='text-2xl font-bold text-gray-900'>Edit Blog Post</h1>
+            <p className='text-gray-600'>
+              Update your blog post content and settings
+            </p>
           </div>
+          <Button
+            variant='outline'
+            onClick={() => setShowDeleteConfirm(true)}
+            className='text-red-600 hover:text-red-700 hover:bg-red-50'
+            disabled={isLoading}
+          >
+            <Trash2 className='h-4 w-4 mr-2' />
+            Delete Post
+          </Button>
         </div>
-      </header>
 
-      {/* Main Content */}
-      <main className='container mx-auto px-4 py-8'>
-        <div className='max-w-3xl mx-auto bg-white rounded-lg shadow p-6'>
-          {isFetching ? (
-            <div className='flex justify-center items-center py-20'>
-              <Loader2 className='h-8 w-8 text-orange-500 animate-spin' />
-              <span className='ml-2'>Loading post data...</span>
-            </div>
-          ) : (
-            <form onSubmit={handleSubmit} className='space-y-6'>
-              {error && (
-                <div className='bg-red-50 text-red-500 p-3 rounded-md text-sm'>
-                  {error}
-                </div>
-              )}
-
-              <div className='space-y-2'>
-                <Label htmlFor='title'>Title</Label>
-                <Input
-                  id='title'
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
-                  placeholder='Enter blog post title'
-                  required
-                  disabled={isLoading}
-                />
+        {/* Main Content */}
+        <div className='max-w-3xl mx-auto space-y-6'>
+          <div className='bg-white rounded-lg shadow p-6'>
+            {isFetching ? (
+              <div className='flex justify-center items-center py-20'>
+                <Loader2 className='h-8 w-8 text-orange-500 animate-spin' />
+                <span className='ml-2'>Loading post data...</span>
               </div>
-
-              <div className='space-y-2'>
-                <Label htmlFor='category'>Category</Label>
-                <Select
-                  value={category}
-                  onValueChange={setCategory}
-                  disabled={isLoading}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder='Select a category' />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {isCategoriesLoading ? (
-                      <SelectItem value='' disabled>
-                        Loading categories...
-                      </SelectItem>
-                    ) : categories.length === 0 ? (
-                      <SelectItem value='' disabled>
-                        No blog categories found
-                      </SelectItem>
-                    ) : (
-                      categories.map((cat) => (
-                        <SelectItem key={cat._id} value={cat._id}>
-                          {cat.name}
-                        </SelectItem>
-                      ))
-                    )}
-                  </SelectContent>
-                </Select>
-                {!isCategoriesLoading && categories.length === 0 && (
-                  <p className='text-sm text-gray-500'>
-                    No blog categories available. Please create some categories
-                    first.
-                  </p>
+            ) : (
+              <form onSubmit={handleSubmit} className='space-y-6'>
+                {error && (
+                  <div className='bg-red-50 text-red-500 p-3 rounded-md text-sm'>
+                    {error}
+                  </div>
                 )}
-              </div>
 
-              <ImageUpload
-                currentImageUrl={image}
-                onImageUploaded={handleImageUploaded}
-                label='Featured Image'
-              />
+                <div className='space-y-2'>
+                  <Label htmlFor='title'>Title</Label>
+                  <Input
+                    id='title'
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                    placeholder='Enter blog post title'
+                    required
+                    disabled={isLoading}
+                  />
+                </div>
 
-              <div className='space-y-2'>
-                <Label htmlFor='content'>Content</Label>
-                <Textarea
-                  id='content'
-                  value={content}
-                  onChange={(e) => setContent(e.target.value)}
-                  placeholder='Write your blog post content here...'
-                  rows={12}
-                  required
-                  disabled={isLoading}
-                />
-              </div>
+                <div className='space-y-2'>
+                  <Label htmlFor='category'>Category</Label>
+                  <div className='flex gap-2'>
+                    <Select
+                      value={category}
+                      onValueChange={setCategory}
+                      disabled={isLoading}
+                    >
+                      <SelectTrigger className='flex-1'>
+                        <SelectValue placeholder='Select a category' />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {isCategoriesLoading ? (
+                          <SelectItem value='' disabled>
+                            Loading categories...
+                          </SelectItem>
+                        ) : categories.length === 0 ? (
+                          <SelectItem value='' disabled>
+                            No blog categories found
+                          </SelectItem>
+                        ) : (
+                          categories.map((cat) => (
+                            <SelectItem key={cat._id} value={cat._id}>
+                              {cat.name}
+                            </SelectItem>
+                          ))
+                        )}
+                      </SelectContent>
+                    </Select>
+                    <Button
+                      type='button'
+                      onClick={() => setShowAddCategory(!showAddCategory)}
+                      className='px-3 py-2 bg-green-600 text-white hover:bg-green-700 transition-colors flex items-center gap-1'
+                      title='Add new category'
+                      disabled={isLoading}
+                    >
+                      <Plus className='w-4 h-4' />
+                    </Button>
+                  </div>
 
-              <div className='flex justify-end'>
-                <Button
-                  type='submit'
-                  className='bg-orange-500 hover:bg-orange-600'
-                  disabled={isLoading || categories.length === 0}
-                >
-                  {isUpdating ? (
-                    <span className='flex items-center gap-2'>
-                      <Loader2 className='h-4 w-4 animate-spin' />
-                      Updating...
-                    </span>
-                  ) : (
-                    <>
-                      <Save className='h-4 w-4 mr-2' />
-                      Update Blog Post
-                    </>
+                  {/* Add Category Input */}
+                  {showAddCategory && (
+                    <div className='mt-2 p-3 bg-gray-50 rounded-lg border'>
+                      <div className='flex gap-2'>
+                        <Input
+                          type='text'
+                          value={newCategoryName}
+                          onChange={(e) => setNewCategoryName(e.target.value)}
+                          placeholder='Enter category name'
+                          className='flex-1'
+                          onKeyPress={(e) =>
+                            e.key === "Enter" && handleCreateCategory()
+                          }
+                          disabled={isLoading}
+                        />
+                        <Button
+                          type='button'
+                          onClick={handleCreateCategory}
+                          disabled={creatingCategory || isLoading}
+                          className='px-3 py-2 bg-green-600 text-white hover:bg-green-700 transition-colors disabled:opacity-50 flex items-center gap-1'
+                        >
+                          {creatingCategory ? (
+                            <Loader2 className='w-4 h-4 animate-spin' />
+                          ) : (
+                            <Check className='w-4 h-4' />
+                          )}
+                        </Button>
+                        <Button
+                          type='button'
+                          onClick={() => {
+                            setShowAddCategory(false);
+                            setNewCategoryName("");
+                          }}
+                          className='px-3 py-2 bg-gray-500 text-white hover:bg-gray-600 transition-colors'
+                          disabled={isLoading}
+                        >
+                          <X className='w-4 h-4' />
+                        </Button>
+                      </div>
+                    </div>
                   )}
-                </Button>
-              </div>
-            </form>
-          )}
+
+                  {categoriesError && (
+                    <p className='text-sm text-red-500 mt-1'>
+                      Failed to load categories. Please refresh and try again.
+                    </p>
+                  )}
+
+                  {!isCategoriesLoading && categories.length === 0 && (
+                    <p className='text-sm text-gray-500'>
+                      No blog categories available. Please create some
+                      categories first.
+                    </p>
+                  )}
+                </div>
+
+                <ImageUpload
+                  currentImageUrl={image}
+                  onImageUploaded={handleImageUploaded}
+                  label='Featured Image'
+                />
+
+                <div className='space-y-2'>
+                  <Label htmlFor='content'>Content</Label>
+                  <Textarea
+                    id='content'
+                    value={content}
+                    onChange={(e) => setContent(e.target.value)}
+                    placeholder='Write your blog post content here...'
+                    rows={12}
+                    required
+                    disabled={isLoading}
+                  />
+                </div>
+
+                <div className='flex justify-end'>
+                  <Button
+                    type='submit'
+                    className='bg-gray-500 hover:bg-orange-600'
+                    disabled={isLoading || categories.length === 0}
+                  >
+                    {isUpdating ? (
+                      <span className='flex items-center gap-2'>
+                        <Loader2 className='h-4 w-4 animate-spin' />
+                        Updating...
+                      </span>
+                    ) : (
+                      <>
+                        <Save className='h-4 w-4 mr-2' />
+                        Update Blog Post
+                      </>
+                    )}
+                  </Button>
+                </div>
+              </form>
+            )}
+          </div>
 
           {/* Writing Guidelines */}
-          <div className='border-t pt-4 mt-6'>
+          <div className='bg-white rounded-lg shadow p-6'>
             <h4 className='font-semibold text-gray-800 mb-3'>
               Writing Guidelines:
             </h4>
@@ -331,7 +422,6 @@ const EditBlogPost: React.FC = () => {
                 • <strong>Title:</strong> Make it engaging and specific (include
                 pet names when possible)
               </li>
-
               <li>
                 • <strong>Content:</strong> Use subheadings, tell a complete
                 story, include emotional moments
@@ -351,50 +441,50 @@ const EditBlogPost: React.FC = () => {
             </ul>
           </div>
         </div>
-      </main>
 
-      {/* Delete Confirmation Modal */}
-      {showDeleteConfirm && (
-        <div className='fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50'>
-          <div className='bg-white rounded-lg p-6 max-w-md w-full mx-4'>
-            <h3 className='text-lg font-semibold mb-4 text-gray-900'>
-              Delete Blog Post
-            </h3>
-            <p className='text-gray-600 mb-6'>
-              Are you sure you want to delete this blog post? This action cannot
-              be undone.
-            </p>
-            <div className='flex justify-end gap-3'>
-              <Button
-                variant='outline'
-                onClick={() => setShowDeleteConfirm(false)}
-                disabled={isDeleting}
-              >
-                Cancel
-              </Button>
-              <Button
-                variant='destructive'
-                onClick={handleDelete}
-                disabled={isDeleting}
-                className='bg-red-600 hover:bg-red-700'
-              >
-                {isDeleting ? (
-                  <span className='flex items-center gap-2'>
-                    <Loader2 className='h-4 w-4 animate-spin' />
-                    Deleting...
-                  </span>
-                ) : (
-                  <>
-                    <Trash2 className='h-4 w-4 mr-2' />
-                    Delete
-                  </>
-                )}
-              </Button>
+        {/* Delete Confirmation Modal */}
+        {showDeleteConfirm && (
+          <div className='fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50'>
+            <div className='bg-white rounded-lg p-6 max-w-md w-full mx-4'>
+              <h3 className='text-lg font-semibold mb-4 text-gray-900'>
+                Delete Blog Post
+              </h3>
+              <p className='text-gray-600 mb-6'>
+                Are you sure you want to delete this blog post? This action
+                cannot be undone.
+              </p>
+              <div className='flex justify-end gap-3'>
+                <Button
+                  variant='outline'
+                  onClick={() => setShowDeleteConfirm(false)}
+                  disabled={isDeleting}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  variant='destructive'
+                  onClick={handleDelete}
+                  disabled={isDeleting}
+                  className='bg-red-600 hover:bg-red-700'
+                >
+                  {isDeleting ? (
+                    <span className='flex items-center gap-2'>
+                      <Loader2 className='h-4 w-4 animate-spin' />
+                      Deleting...
+                    </span>
+                  ) : (
+                    <>
+                      <Trash2 className='h-4 w-4 mr-2' />
+                      Delete
+                    </>
+                  )}
+                </Button>
+              </div>
             </div>
           </div>
-        </div>
-      )}
-    </div>
+        )}
+      </div>
+    </>
   );
 };
 

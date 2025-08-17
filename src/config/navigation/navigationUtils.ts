@@ -27,7 +27,7 @@ export const getPageType = (path: string): string => {
   if (path.startsWith("/admin/dashboard")) return "admin-dashboard";
   if (path.startsWith("/admin/videoDashboard")) return "video-dashboard";
   if (path.startsWith("/admin/photoDashboard")) return "photo-dashboard";
-  if (path.startsWith("/admin/pressDashboard")) return "press-dashboard";
+  if (path.startsWith("/admin/blogsDashboard")) return "blogs-dashboard";
   if (path.startsWith("/admin/messages")) return "admin-messages";
   if (path.startsWith("/admin/categories")) return "admin-categories";
 
@@ -47,11 +47,11 @@ export const getPageType = (path: string): string => {
     return "photo-specific";
   }
   if (
-    path.startsWith("/admin/addPress") ||
+    path.startsWith("/admin/blog/new") ||
     path.startsWith("/admin/read/") ||
-    path.startsWith("/admin/editPress/")
+    path.startsWith("/admin/blog/edit/")
   ) {
-    return "press-specific";
+    return "blogs-specific";
   }
 
   if (path.startsWith("/admin/")) return "admin-general";
@@ -77,7 +77,7 @@ export const getPageTitle = (path: string): string => {
     "admin-dashboard": "Dashboard",
     "video-dashboard": "Videos",
     "photo-dashboard": "Photos",
-    "press-dashboard": "Press",
+    "blogs-dashboard": "Blogss",
     "admin-messages": "Messages",
     "video-specific": "Videos", // Will show "Videos" as back button label
     "photo-specific": "Photos", // Will show "Photos" as back button label

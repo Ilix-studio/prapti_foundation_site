@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 
@@ -40,13 +40,15 @@ import { useGetContactMessagesQuery } from "../../redux-store/services/contactAp
 
 import { useGetPhotosQuery } from "@/redux-store/services/photoApi";
 import { useGetVideosQuery } from "@/redux-store/services/videoApi";
+import { useGetAllTotalImpactQuery } from "@/redux-store/services/impactApi";
+import { useGetTestimonialsQuery } from "@/redux-store/services/testimonialApi";
 
 const NewDashAdmin: React.FC = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { isAuthenticated } = useSelector(selectAuth);
   const isAdmin = useSelector(selectIsAdmin);
-
+  const [currentPage] = useState(1);
   // API hooks
   const {
     data: blogPosts,
@@ -68,7 +70,7 @@ const NewDashAdmin: React.FC = () => {
     refetch: refetchMessages,
   } = useGetContactMessagesQuery({
     page: 1,
-    limit: 2,
+    limit: 3,
   });
 
   // Visitor API hooks
@@ -87,7 +89,15 @@ const NewDashAdmin: React.FC = () => {
 
   const { data: videosData } = useGetVideosQuery({
     page: "1",
-    limit: "1", // We only need the count
+    limit: "1",
+  });
+  const { data: impactData } = useGetAllTotalImpactQuery({
+    page: 1,
+    limit: 1,
+  });
+  const { data: testimonialData } = useGetTestimonialsQuery({
+    page: currentPage,
+    limit: 10,
   });
 
   if (!isAuthenticated || !isAdmin) {
@@ -131,7 +141,7 @@ const NewDashAdmin: React.FC = () => {
       action: () => navigate("/admin/blogsDashboard"),
     },
     {
-      title: "Total Gallery Photos",
+      title: "Total  Photos",
       value: photosData?.data?.pagination?.total?.toString() || "0",
       icon: Images,
       color: "text-purple-600",
@@ -140,7 +150,7 @@ const NewDashAdmin: React.FC = () => {
       action: () => navigate("/admin/photoDashboard"),
     },
     {
-      title: "Total Gallery Videos",
+      title: "Total  Videos",
       value: videosData?.data?.pagination?.totalVideos?.toString() || "0",
       icon: Video,
       color: "text-green-600",
@@ -160,7 +170,7 @@ const NewDashAdmin: React.FC = () => {
     },
     {
       title: "Total Impact Data",
-      value: volunteerData?.pagination?.total?.toString() || "0",
+      value: impactData?.pagination?.total?.toString() || "0",
       icon: DatabaseZap,
       color: "text-yellow-400",
       bgColor: "bg-gray-100",
@@ -169,13 +179,13 @@ const NewDashAdmin: React.FC = () => {
       action: () => navigate("/admin/impact"),
     },
     {
-      title: "Total Testimonials ",
-      value: volunteerData?.pagination?.total?.toString() || "0",
+      title: "Total Testimonials",
+      value: testimonialData?.pagination?.totalItems?.toString() || "0",
       icon: PenLine,
-      color: "text-oklch(39.8% 0.195 277.366)",
-      bgColor: "bg-red-50",
-      loading: volunteersLoading,
-      error: volunteersError,
+      color: "text-purple-600",
+      bgColor: "bg-purple-50",
+      loading: false,
+      error: false,
       action: () => navigate("/admin/testimonials"),
     },
   ];
@@ -203,7 +213,7 @@ const NewDashAdmin: React.FC = () => {
       title: "Add Category",
       icon: FileText,
       color: "bg-orange-600",
-      action: () => navigate("/admin/addCategory"),
+      action: () => navigate("/admin/categories"),
     },
   ];
 
@@ -510,14 +520,14 @@ const NewDashAdmin: React.FC = () => {
               <CardHeader>
                 <CardTitle className='flex items-center gap-2'>
                   <Calendar className='w-5 h-5 text-cyan-600' />
-                  Site Status
+                  Application Status
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className='space-y-4'>
                   <div className='flex items-center justify-between'>
                     <span className='text-sm font-medium text-gray-700'>
-                      Website Status
+                      Frontend
                     </span>
                     <Badge className='bg-green-100 text-green-800 border-green-200'>
                       <div className='w-2 h-2 bg-green-500 rounded-full mr-1 animate-pulse'></div>

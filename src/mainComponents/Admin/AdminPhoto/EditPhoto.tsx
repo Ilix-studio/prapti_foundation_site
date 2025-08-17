@@ -716,7 +716,7 @@ const EditPhoto: React.FC = () => {
                   <Button
                     type='submit'
                     disabled={isUpdating || isUploading}
-                    className='flex-1 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800'
+                    className='flex-1 bg-gray-500 hover:bg-orange-500'
                   >
                     {isUpdating || isUploading ? (
                       <>

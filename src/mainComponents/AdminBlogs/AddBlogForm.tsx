@@ -7,15 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  PawPrint,
-  Save,
-  ArrowLeft,
-  Loader2,
-  Plus,
-  Check,
-  X,
-} from "lucide-react";
+import { Save, Loader2, Plus, Check, X } from "lucide-react";
 import { selectIsAdmin } from "@/redux-store/slices/authSlice";
 import {
   useCreateBlogPostMutation,
@@ -30,6 +22,7 @@ import { useDeleteImageMutation } from "@/redux-store/services/cloudinaryApi";
 import cloudinaryService from "@/redux-store/slices/cloudinaryService";
 import { getBlogCategoryId } from "@/types/blogs.types";
 import ImageUpload from "./ImageUpload";
+import { BackNavigation } from "@/config/navigation/BackNavigation";
 
 const AddBlogForm: React.FC = () => {
   const navigate = useNavigate();
@@ -169,218 +162,208 @@ const AddBlogForm: React.FC = () => {
   const isLoading = isCreating || isUpdating || isFetching;
 
   return (
-    <div className='min-h-screen bg-gray-50'>
-      {/* Admin Header */}
-      <header className='bg-white border-b shadow-sm'>
-        <div className='container mx-auto px-4 py-4 flex items-center justify-between'>
-          <div className='flex items-center gap-2'>
-            <PawPrint className='h-8 w-8 text-orange-500' />
-            <h1 className='text-xl font-bold'>
-              {isEditMode ? "Edit Blog Post" : "Add New Blog Post"}
-            </h1>
-          </div>
-
-          <Button
-            variant='ghost'
-            onClick={() => navigate("/admin/blogsDashboard")}
-            className='text-gray-600'
-          >
-            <ArrowLeft className='h-4 w-4 mr-2' />
-            Back to Blogs
-          </Button>
-        </div>
-      </header>
-
-      {/* Main Content */}
-      <main className='container mx-auto px-4 py-8'>
-        <div className='max-w-3xl mx-auto bg-white rounded-lg shadow p-6'>
-          {isFetching ? (
-            <div className='flex justify-center items-center py-20'>
-              <Loader2 className='h-8 w-8 text-orange-500 animate-spin' />
-              <span className='ml-2'>Loading post data...</span>
+    <>
+      <BackNavigation />
+      <div className='min-h-screen bg-gray-50'>
+        <div className='bg-white'>
+          <div className='container mx-auto px-22 py-2 flex'>
+            <div className='flex items-center gap-2'>
+              <h1 className='text-xl font-bold'>Add New Blog Post</h1>
             </div>
-          ) : (
-            <form onSubmit={handleSubmit} className='space-y-6'>
-              {error && (
-                <div className='bg-red-50 text-red-500 p-3 rounded-md text-sm'>
-                  {error}
-                </div>
-              )}
+          </div>
+        </div>
 
-              <div className='space-y-2'>
-                <Label htmlFor='title'>Title</Label>
-                <Input
-                  id='title'
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
-                  placeholder='Enter blog post title'
-                  required
-                />
+        {/* Main Content */}
+        <main className='container mx-auto px-4 py-8'>
+          <div className='max-w-3xl mx-auto bg-white rounded-lg shadow p-6'>
+            {isFetching ? (
+              <div className='flex justify-center items-center py-20'>
+                <Loader2 className='h-8 w-8 text-orange-500 animate-spin' />
+                <span className='ml-2'>Loading post data...</span>
               </div>
-
-              <div className='space-y-2'>
-                <Label htmlFor='category'>Category</Label>
-                <div className='flex gap-2'>
-                  <select
-                    id='category'
-                    name='category'
-                    value={category}
-                    onChange={(e) => setCategory(e.target.value)}
-                    className='flex-1 h-10 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50'
-                    required
-                    disabled={isCategoriesLoading}
-                  >
-                    <option value=''>
-                      {isCategoriesLoading
-                        ? "Loading categories..."
-                        : categories.length === 0
-                        ? "No categories available"
-                        : "Select category"}
-                    </option>
-                    {!isCategoriesLoading &&
-                      categories.map((cat) => (
-                        <option key={cat._id} value={cat._id}>
-                          {cat.name}
-                        </option>
-                      ))}
-                  </select>
-                  <Button
-                    type='button'
-                    onClick={() => setShowAddCategory(!showAddCategory)}
-                    className='px-3 py-2 bg-green-600 text-white hover:bg-green-700 transition-colors flex items-center gap-1'
-                    title='Add new category'
-                  >
-                    <Plus className='w-4 h-4' />
-                  </Button>
-                </div>
-
-                {/* Add Category Input */}
-                {showAddCategory && (
-                  <div className='mt-2 p-3 bg-gray-50 rounded-lg border'>
-                    <div className='flex gap-2'>
-                      <Input
-                        type='text'
-                        value={newCategoryName}
-                        onChange={(e) => setNewCategoryName(e.target.value)}
-                        placeholder='Enter category name'
-                        className='flex-1'
-                        onKeyPress={(e) =>
-                          e.key === "Enter" && handleCreateCategory()
-                        }
-                      />
-                      <Button
-                        type='button'
-                        onClick={handleCreateCategory}
-                        disabled={creatingCategory}
-                        className='px-3 py-2 bg-green-600 text-white hover:bg-green-700 transition-colors disabled:opacity-50 flex items-center gap-1'
-                      >
-                        {creatingCategory ? (
-                          <Loader2 className='w-4 h-4 animate-spin' />
-                        ) : (
-                          <Check className='w-4 h-4' />
-                        )}
-                      </Button>
-                      <Button
-                        type='button'
-                        onClick={() => {
-                          setShowAddCategory(false);
-                          setNewCategoryName("");
-                        }}
-                        className='px-3 py-2 bg-gray-500 text-white hover:bg-gray-600 transition-colors'
-                      >
-                        <X className='w-4 h-4' />
-                      </Button>
-                    </div>
+            ) : (
+              <form onSubmit={handleSubmit} className='space-y-6'>
+                {error && (
+                  <div className='bg-red-50 text-red-500 p-3 rounded-md text-sm'>
+                    {error}
                   </div>
                 )}
 
-                {categoriesError && (
-                  <p className='text-sm text-red-500 mt-1'>
-                    Failed to load categories. Please refresh and try again.
-                  </p>
-                )}
+                <div className='space-y-2'>
+                  <Label htmlFor='title'>Title</Label>
+                  <Input
+                    id='title'
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                    placeholder='Enter blog post title'
+                    required
+                  />
+                </div>
 
-                {!isCategoriesLoading && categories.length === 0 && (
-                  <p className='text-sm text-gray-500'>
-                    No blog categories available. Please create some categories
-                    first.
-                  </p>
-                )}
-              </div>
+                <div className='space-y-2'>
+                  <Label htmlFor='category'>Category</Label>
+                  <div className='flex gap-2'>
+                    <select
+                      id='category'
+                      name='category'
+                      value={category}
+                      onChange={(e) => setCategory(e.target.value)}
+                      className='flex-1 h-10 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50'
+                      required
+                      disabled={isCategoriesLoading}
+                    >
+                      <option value=''>
+                        {isCategoriesLoading
+                          ? "Loading categories..."
+                          : categories.length === 0
+                          ? "No categories available"
+                          : "Select category"}
+                      </option>
+                      {!isCategoriesLoading &&
+                        categories.map((cat) => (
+                          <option key={cat._id} value={cat._id}>
+                            {cat.name}
+                          </option>
+                        ))}
+                    </select>
+                    <Button
+                      type='button'
+                      onClick={() => setShowAddCategory(!showAddCategory)}
+                      className='px-3 py-2 bg-green-600 text-white hover:bg-green-700 transition-colors flex items-center gap-1'
+                      title='Add new category'
+                    >
+                      <Plus className='w-4 h-4' />
+                    </Button>
+                  </div>
 
-              {/* Replace file input with our new ImageUpload component */}
-              <ImageUpload
-                currentImageUrl={image}
-                onImageUploaded={handleImageUploaded}
-                label='Featured Image'
-              />
-
-              <div className='space-y-2'>
-                <Label htmlFor='content'>Content</Label>
-                <Textarea
-                  id='content'
-                  value={content}
-                  onChange={(e) => setContent(e.target.value)}
-                  placeholder='Write your blog post content here...'
-                  rows={12}
-                  required
-                />
-              </div>
-
-              <div className='flex justify-end'>
-                <Button
-                  type='submit'
-                  className='bg-orange-500 hover:bg-orange-600'
-                  disabled={isLoading || categories.length === 0}
-                >
-                  {isLoading ? (
-                    <span className='flex items-center gap-2'>
-                      <Loader2 className='h-4 w-4 animate-spin' />
-                      {isEditMode ? "Updating..." : "Saving..."}
-                    </span>
-                  ) : (
-                    <>
-                      <Save className='h-4 w-4 mr-2' />
-                      {isEditMode ? "Update Blog Post" : "Save Blog Post"}
-                    </>
+                  {/* Add Category Input */}
+                  {showAddCategory && (
+                    <div className='mt-2 p-3 bg-gray-50 rounded-lg border'>
+                      <div className='flex gap-2'>
+                        <Input
+                          type='text'
+                          value={newCategoryName}
+                          onChange={(e) => setNewCategoryName(e.target.value)}
+                          placeholder='Enter category name'
+                          className='flex-1'
+                          onKeyPress={(e) =>
+                            e.key === "Enter" && handleCreateCategory()
+                          }
+                        />
+                        <Button
+                          type='button'
+                          onClick={handleCreateCategory}
+                          disabled={creatingCategory}
+                          className='px-3 py-2 bg-green-600 text-white hover:bg-green-700 transition-colors disabled:opacity-50 flex items-center gap-1'
+                        >
+                          {creatingCategory ? (
+                            <Loader2 className='w-4 h-4 animate-spin' />
+                          ) : (
+                            <Check className='w-4 h-4' />
+                          )}
+                        </Button>
+                        <Button
+                          type='button'
+                          onClick={() => {
+                            setShowAddCategory(false);
+                            setNewCategoryName("");
+                          }}
+                          className='px-3 py-2 bg-gray-500 text-white hover:bg-gray-600 transition-colors'
+                        >
+                          <X className='w-4 h-4' />
+                        </Button>
+                      </div>
+                    </div>
                   )}
-                </Button>
-              </div>
-            </form>
-          )}
 
-          {/* Writing Guidelines */}
-          <div className='border-t pt-4 mt-6'>
-            <h4 className='font-semibold text-gray-800 mb-3'>
-              Writing Guidelines:
-            </h4>
-            <ul className='space-y-2 text-xs text-gray-600'>
-              <li>
-                • <strong>Title:</strong> Make it engaging and specific (include
-                pet names when possible)
-              </li>
+                  {categoriesError && (
+                    <p className='text-sm text-red-500 mt-1'>
+                      Failed to load categories. Please refresh and try again.
+                    </p>
+                  )}
 
-              <li>
-                • <strong>Content:</strong> Use subheadings, tell a complete
-                story, include emotional moments
-              </li>
-              <li>
-                • <strong>Length:</strong> Aim for 300-800 words depending on
-                the story
-              </li>
-              <li>
-                • <strong>Images:</strong> Include high-quality photos of the
-                pets mentioned
-              </li>
-              <li>
-                • <strong>Call to Action:</strong> End with how readers can help
-                or get involved
-              </li>
-            </ul>
+                  {!isCategoriesLoading && categories.length === 0 && (
+                    <p className='text-sm text-gray-500'>
+                      No blog categories available. Please create some
+                      categories first.
+                    </p>
+                  )}
+                </div>
+
+                {/* Replace file input with our new ImageUpload component */}
+                <ImageUpload
+                  currentImageUrl={image}
+                  onImageUploaded={handleImageUploaded}
+                  label='Featured Image'
+                />
+
+                <div className='space-y-2'>
+                  <Label htmlFor='content'>Content</Label>
+                  <Textarea
+                    id='content'
+                    value={content}
+                    onChange={(e) => setContent(e.target.value)}
+                    placeholder='Write your blog post content here...'
+                    rows={12}
+                    required
+                  />
+                </div>
+
+                <div className='flex justify-end'>
+                  <Button
+                    type='submit'
+                    className='bg-gray-500 hover:bg-orange-500'
+                    disabled={isLoading || categories.length === 0}
+                  >
+                    {isLoading ? (
+                      <span className='flex items-center gap-2'>
+                        <Loader2 className='h-4 w-4 animate-spin' />
+                        {isEditMode ? "Updating..." : "Saving..."}
+                      </span>
+                    ) : (
+                      <>
+                        <Save className='h-4 w-4 mr-2' />
+                        {isEditMode ? "Update Blog Post" : "Save Blog Post"}
+                      </>
+                    )}
+                  </Button>
+                </div>
+              </form>
+            )}
+
+            {/* Writing Guidelines */}
+            <div className='border-t pt-4 mt-6'>
+              <h4 className='font-semibold text-gray-800 mb-3'>
+                Writing Guidelines:
+              </h4>
+              <ul className='space-y-2 text-xs text-gray-600'>
+                <li>
+                  • <strong>Title:</strong> Make it engaging and specific
+                  (include pet names when possible)
+                </li>
+
+                <li>
+                  • <strong>Content:</strong> Use subheadings, tell a complete
+                  story, include emotional moments
+                </li>
+                <li>
+                  • <strong>Length:</strong> Aim for 300-800 words depending on
+                  the story
+                </li>
+                <li>
+                  • <strong>Images:</strong> Include high-quality photos of the
+                  pets mentioned
+                </li>
+                <li>
+                  • <strong>Call to Action:</strong> End with how readers can
+                  help or get involved
+                </li>
+              </ul>
+            </div>
           </div>
-        </div>
-      </main>
-    </div>
+        </main>
+      </div>
+    </>
   );
 };
 

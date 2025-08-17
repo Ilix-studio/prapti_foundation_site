@@ -1,60 +1,13 @@
 // src/redux-store/services/totalImpactApi.ts
 import { createApi } from "@reduxjs/toolkit/query/react";
 import { baseQuery, handleApiError } from "../../constants/apiConfig";
-
-export interface TotalImpact {
-  _id: string;
-  dogsRescued: number;
-  dogsAdopted: number;
-  volunteers: number;
-  isActive: boolean;
-  adoptionRate: number;
-  createdAt: string;
-  updatedAt: string;
-}
-
-export interface CreateTotalImpactRequest {
-  dogsRescued: number;
-  dogsAdopted: number;
-  volunteers: number;
-}
-
-export interface UpdateTotalImpactRequest {
-  dogsRescued?: number;
-  dogsAdopted?: number;
-  volunteers?: number;
-  isActive?: boolean;
-}
-
-export interface TotalImpactResponse {
-  success: boolean;
-  message: string;
-  data: TotalImpact;
-}
-
-export interface TotalImpactListResponse {
-  success: boolean;
-  data: TotalImpact[];
-  pagination: {
-    current: number;
-    pages: number;
-    total: number;
-    limit: number;
-  };
-}
-
-export interface ImpactStatistics {
-  totalDogsRescued: number;
-  totalDogsAdopted: number;
-  totalVolunteers: number;
-  avgAdoptionRate: number;
-  recordCount: number;
-}
-
-export interface ImpactStatsResponse {
-  success: boolean;
-  data: ImpactStatistics;
-}
+import {
+  CreateTotalImpactRequest,
+  ImpactStatsResponse,
+  TotalImpactListResponse,
+  TotalImpactResponse,
+  UpdateTotalImpactRequest,
+} from "@/types/Impact.types";
 
 export const totalImpactApi = createApi({
   reducerPath: "totalImpactApi",

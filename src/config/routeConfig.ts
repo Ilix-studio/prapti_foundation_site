@@ -51,6 +51,7 @@ const WriteTestimonial = lazy(
 );
 
 import NotFound from "../mainComponents/NotFound";
+import AdminSeeBlog from "@/mainComponents/AdminBlogs/SmallBlogUI/AdminSeeBlog";
 
 // Admin components (lazy loaded)
 const NewDashAdmin = lazy(() => import("../mainComponents/Admin/NewDashAdmin"));
@@ -123,7 +124,6 @@ export const adminRoutes = [
   { path: "/admin/impact", component: TotalImpactDashboard },
   { path: "/admin/testimonials", component: TestimonialDash },
   { path: "/admin/messages", component: ViewAllMessage },
-  { path: "/admin/messages/:id", component: ViewMessage },
 ];
 
 // NEW: Admin specific routes with dashboard mapping
@@ -175,10 +175,16 @@ export const adSpecificRoutes: AdSpecificRoute[] = [
     category: "video",
   },
 
-  // Blogs specific routes - go back to pressDashboard
+  // Blogs specific routes - go back to Blogs Dashboard
   {
     path: "/admin/blog/new",
     component: AddBlogPost,
+    parentDashboard: "/admin/blogsDashboard",
+    category: "blogs",
+  },
+  {
+    path: "/admin/blog/:id",
+    component: AdminSeeBlog,
     parentDashboard: "/admin/blogsDashboard",
     category: "blogs",
   },
@@ -189,11 +195,19 @@ export const adSpecificRoutes: AdSpecificRoute[] = [
     parentDashboard: "/admin/blogsDashboard",
     category: "blogs",
   },
+  // Volunteer specific routes - go back to Volunteer Dashboard
   {
     path: "/admin/volunteer/:id",
     component: VolunteerDetail,
     parentDashboard: "/admin/volunteerDashboard",
     category: "volunteer",
+  },
+  //Message specific routes - go back to message Dashboard
+  {
+    path: "/admin/messages/:id",
+    component: ViewMessage,
+    parentDashboard: "/admin/messages",
+    category: "message",
   },
 ];
 

@@ -291,14 +291,13 @@ const VideoDash: React.FC = () => {
         <div className='flex justify-between items-center'>
           <div>
             <h1 className='text-2xl font-bold text-gray-900 flex items-center gap-2'>
-              <VideoIcon className='w-8 h-8 text-blue-600' />
               Video Dashboard
             </h1>
             <p className='text-gray-600'>Manage your video content</p>
           </div>
           <Button
             onClick={() => navigate("/admin/addVideo")}
-            className='bg-blue-600 hover:bg-blue-700'
+            className='bg-gray-600 hover:bg-orange-500'
           >
             <Plus className='w-4 h-4 mr-2' />
             Add Video

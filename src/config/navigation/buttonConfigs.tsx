@@ -1,15 +1,5 @@
-import {
-  Share2,
-  LogOut,
-  ImagePlus,
-  FileText,
-  Home,
-  Settings,
-  Users,
-  Lock,
-} from "lucide-react";
+import { Share2, LogOut, Home, Settings, Lock } from "lucide-react";
 import { ContextualButton, NavigationContext } from "./navigationUtils";
-import { IconVideoPlus } from "@tabler/icons-react";
 
 // Utility functions that will be passed to button configs
 interface ButtonActions {
@@ -54,30 +44,6 @@ export const getContextualButtonsForPage = (
 
       return homeButtons;
 
-    case "about":
-      return [
-        {
-          icon: <Share2 className='w-4 h-4' />,
-          label: "Share",
-          onClick: () => handleShare("About - Biswajit Phukan"),
-          variant: "outline",
-          priority: 2,
-          showOnMobile: false,
-        },
-      ];
-
-    case "contact":
-      return [
-        {
-          icon: <Share2 className='w-4 h-4' />,
-          label: "Share",
-          onClick: () => handleShare("Contact - Biswajit Phukan"),
-          variant: "outline",
-          priority: 1,
-          showOnMobile: true,
-        },
-      ];
-
     case "admin-login":
       return [
         {
@@ -109,14 +75,6 @@ export const getContextualButtonsForPage = (
 
       return [
         {
-          icon: <IconVideoPlus className='w-4 h-4' />,
-          label: "Add Video",
-          onClick: () => safeNavigate("/admin/addVideo"),
-          variant: "default",
-          priority: 1,
-          showOnMobile: true,
-        },
-        {
           icon: <LogOut className='w-4 h-4' />,
           label: "Logout",
           onClick: handleLogout,
@@ -131,14 +89,6 @@ export const getContextualButtonsForPage = (
 
       return [
         {
-          icon: <ImagePlus className='w-4 h-4' />,
-          label: "Add Photo",
-          onClick: () => safeNavigate("/admin/addPhoto"),
-          variant: "default",
-          priority: 1,
-          showOnMobile: true,
-        },
-        {
           icon: <LogOut className='w-4 h-4' />,
           label: "Logout",
           onClick: handleLogout,
@@ -148,18 +98,10 @@ export const getContextualButtonsForPage = (
         },
       ];
 
-    case "press-dashboard":
+    case "blogs-dashboard":
       if (!isAuthenticated || !isAdmin) return [];
 
       return [
-        {
-          icon: <FileText className='w-4 h-4' />,
-          label: "Add Article",
-          onClick: () => safeNavigate("/admin/addPress"),
-          variant: "default",
-          priority: 1,
-          showOnMobile: true,
-        },
         {
           icon: <LogOut className='w-4 h-4' />,
           label: "Logout",
@@ -206,12 +148,12 @@ export const getContextualButtonsForPage = (
 
       return photoButtons;
 
-    case "press-specific":
+    case "blogs-specific":
       if (!isAuthenticated || !isAdmin) return [];
 
       const pressButtons: ContextualButton[] = [];
 
-      if (currentPath.includes("/editPress/"))
+      if (currentPath.includes("/admin/blog/edit/"))
         pressButtons.push({
           icon: <LogOut className='w-4 h-4' />,
           label: "Logout",
@@ -228,14 +170,6 @@ export const getContextualButtonsForPage = (
 
       return [
         {
-          icon: <Users className='w-4 h-4' />,
-          label: "All Messages",
-          onClick: () => safeNavigate("/admin/messages"),
-          variant: "outline",
-          priority: 2,
-          showOnMobile: false,
-        },
-        {
           icon: <LogOut className='w-4 h-4' />,
           label: "Logout",
           onClick: handleLogout,
@@ -249,7 +183,7 @@ export const getContextualButtonsForPage = (
     case "video-gallery":
     case "view-photo":
     case "view-video":
-    case "press-article":
+    case "view-blog":
       const galleryButtons: ContextualButton[] = [
         {
           icon: <Share2 className='w-4 h-4' />,
@@ -268,8 +202,8 @@ export const getContextualButtonsForPage = (
         if (pageType.includes("photo")) dashboardPath = "/admin/photoDashboard";
         else if (pageType.includes("video"))
           dashboardPath = "/admin/videoDashboard";
-        else if (pageType.includes("press"))
-          dashboardPath = "/admin/pressDashboard";
+        else if (pageType.includes("blogs"))
+          dashboardPath = "/admin/blogsDashboard";
 
         galleryButtons.push({
           icon: <Settings className='w-4 h-4' />,

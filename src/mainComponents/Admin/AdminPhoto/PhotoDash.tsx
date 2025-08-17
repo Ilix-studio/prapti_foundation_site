@@ -253,291 +253,271 @@ const PhotoDash: React.FC = () => {
   return (
     <>
       <BackNavigation />
-      <div className='min-h-screen bg-gradient-to-br from-slate-50 to-white p-4'>
-        <div className='max-w-7xl mx-auto space-y-6'>
-          <div className='flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4'>
-            <h1 className='text-2xl font-bold text-slate-800'>
+      <div className='container mx-auto p-6 space-y-6'>
+        {/* Header */}
+        <div className='flex justify-between items-center'>
+          <div>
+            <h1 className='text-2xl font-bold text-gray-900'>
               Photo Dashboard
             </h1>
+            <p className='text-gray-600'>Manage photos and media content</p>
+          </div>
+          <div className='flex items-center gap-3'>
+            <Button onClick={handleAddPhoto} variant='outline'>
+              <Plus className='w-4 h-4 mr-2' />
+              Add Photo
+            </Button>
+            <Button
+              variant='outline'
+              size='sm'
+              onClick={() => setViewMode(viewMode === "grid" ? "list" : "grid")}
+              disabled={isLoadingPhotos}
+            >
+              {viewMode === "grid" ? (
+                <List className='w-4 h-4' />
+              ) : (
+                <Grid3X3 className='w-4 h-4' />
+              )}
+            </Button>
+          </div>
+        </div>
 
-            <div className='flex items-center gap-3'>
+        {/* Stats Card */}
+        <Card>
+          <CardContent className='p-6'>
+            <div className='grid grid-cols-1 md:grid-cols-3 gap-6'>
+              <div className='text-center'>
+                <h3 className='text-2xl font-bold text-blue-600'>
+                  {photosData?.data.pagination.total || 0}
+                </h3>
+                <p className='text-sm text-gray-600'>Total Photos</p>
+              </div>
+              <div className='text-center'>
+                <h3 className='text-2xl font-bold text-green-600'>
+                  {categories.length}
+                </h3>
+                <p className='text-sm text-gray-600'>Categories</p>
+              </div>
+              <div className='text-center'>
+                <h3 className='text-2xl font-bold text-purple-600'>
+                  {photosData?.data.pagination.pages || 0}
+                </h3>
+                <p className='text-sm text-gray-600'>Pages</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Filters */}
+        <Card>
+          <CardContent className='p-6'>
+            <div className='flex flex-col sm:flex-row gap-4'>
+              <div className='flex-1'>
+                <div className='relative'>
+                  <Search className='absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400' />
+                  <Input
+                    placeholder='Search photos...'
+                    value={queryParams.search || ""}
+                    onChange={(e) => handleSearch(e.target.value)}
+                    className='pl-10'
+                    disabled={isLoadingPhotos}
+                  />
+                </div>
+              </div>
+              <select
+                className='w-48 px-3 py-2 border rounded-md text-sm'
+                value={queryParams.category || "all"}
+                onChange={(e) => handleCategoryFilter(e.target.value)}
+                disabled={isLoadingPhotos || isLoadingCategories}
+              >
+                <option value='all'>All Categories</option>
+                {categories.map((cat) => (
+                  <option key={cat._id} value={cat._id}>
+                    {cat.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Photos Grid/List with Skeleton Loading */}
+        {isLoadingPhotos ? (
+          <PhotoGridSkeleton viewMode={viewMode} />
+        ) : photosData?.data.photos.length === 0 ? (
+          <Card>
+            <CardContent className='text-center py-12'>
+              <p className='text-gray-500 mb-4'>No photos found.</p>
+              <Button onClick={handleAddPhoto} variant='outline'>
+                <Plus className='w-4 h-4 mr-2' />
+                Add Your First Photo
+              </Button>
+            </CardContent>
+          </Card>
+        ) : (
+          <div
+            className={`grid gap-6 ${
+              viewMode === "grid"
+                ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+                : "grid-cols-1"
+            }`}
+          >
+            {photosData?.data.photos.map((photo) => (
+              <PhotoCard
+                key={photo._id}
+                photo={convertPhotoForCard(photo)}
+                viewMode={viewMode}
+                onView={handleViewPhoto}
+                onEdit={handleEditPhoto}
+                showEditButton={true}
+              />
+            ))}
+          </div>
+        )}
+
+        {/* Pagination */}
+        {!isLoadingPhotos &&
+          photosData?.data.pagination &&
+          photosData.data.pagination.pages > 1 && (
+            <div className='flex justify-center gap-2'>
               <Button
                 variant='outline'
-                size='sm'
-                onClick={() =>
-                  setViewMode(viewMode === "grid" ? "list" : "grid")
-                }
-                disabled={isLoadingPhotos}
+                disabled={!photosData.data.pagination.hasPrev}
+                onClick={() => handlePageChange(queryParams.page! - 1)}
               >
-                {viewMode === "grid" ? (
-                  <List className='w-4 h-4' />
-                ) : (
-                  <Grid3X3 className='w-4 h-4' />
-                )}
+                Previous
               </Button>
-            </div>
-          </div>
-
-          {/* Stats Card */}
-          <Card>
-            <CardContent className='pt-1'>
-              <div className='grid grid-cols-3 md:grid-cols-3 gap-3 text-center'>
-                <div>
-                  <h3 className='text-2xl font-bold text-blue-600'>
-                    {photosData?.data.pagination.total || 0}
-                  </h3>
-                  <p className='text-sm text-gray-600'>Total Photos</p>
-                </div>
-                <div>
-                  <h3 className='text-2xl font-bold text-green-600'>
-                    {categories.length}
-                  </h3>
-                  <p className='text-sm text-gray-600'>Categories</p>
-                </div>
-                <div>
-                  <h3 className='text-2xl font-bold text-purple-600'>
-                    {photosData?.data.pagination.pages || 0}
-                  </h3>
-                  <p className='text-sm text-gray-600'>Pages</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Filters */}
-          <Card>
-            <CardContent className='pt-1'>
-              <div className='flex flex-col sm:flex-row gap-4'>
-                <div className='flex-1'>
-                  <div className='relative'>
-                    <Search className='absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400' />
-                    <Input
-                      placeholder='Search photos...'
-                      value={queryParams.search || ""}
-                      onChange={(e) => handleSearch(e.target.value)}
-                      className='pl-10'
-                      disabled={isLoadingPhotos}
-                    />
-                  </div>
-                </div>
-                <select
-                  className='w-48 px-3 py-2 border rounded-md text-sm'
-                  value={queryParams.category || "all"}
-                  onChange={(e) => handleCategoryFilter(e.target.value)}
-                  disabled={isLoadingPhotos || isLoadingCategories}
-                >
-                  <option value='all'>All Categories</option>
-                  {categories.map((cat) => (
-                    <option key={cat._id} value={cat._id}>
-                      {cat.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Photos Grid/List with Skeleton Loading */}
-          {isLoadingPhotos ? (
-            <PhotoGridSkeleton viewMode={viewMode} />
-          ) : photosData?.data.photos.length === 0 ? (
-            <Card>
-              <CardContent className='text-center py-12'>
-                <p className='text-gray-500 mb-4'>No photos found.</p>
-                <Button onClick={handleAddPhoto} variant='outline'>
-                  <Plus className='w-4 h-4 mr-2' />
-                  Add Your First Photo
-                </Button>
-              </CardContent>
-            </Card>
-          ) : (
-            <div
-              className={`grid gap-6 ${
-                viewMode === "grid"
-                  ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
-                  : "grid-cols-1"
-              }`}
-            >
-              {photosData?.data.photos.map((photo) => (
-                <PhotoCard
-                  key={photo._id}
-                  photo={convertPhotoForCard(photo)}
-                  viewMode={viewMode}
-                  onView={handleViewPhoto}
-                  onEdit={handleEditPhoto}
-                  showEditButton={true}
-                />
-              ))}
+              <span className='flex items-center px-4'>
+                Page {queryParams.page} of {photosData.data.pagination.pages}
+              </span>
+              <Button
+                variant='outline'
+                disabled={!photosData.data.pagination.hasNext}
+                onClick={() => handlePageChange(queryParams.page! + 1)}
+              >
+                Next
+              </Button>
             </div>
           )}
 
-          {/* Pagination */}
-          {!isLoadingPhotos &&
-            photosData?.data.pagination &&
-            photosData.data.pagination.pages > 1 && (
-              <div className='flex justify-center space-x-2'>
-                <Button
-                  variant='outline'
-                  size='sm'
-                  onClick={() => handlePageChange(queryParams.page! - 1)}
-                  disabled={!photosData.data.pagination.hasPrev}
-                >
-                  Previous
-                </Button>
-
-                {Array.from(
-                  { length: Math.min(photosData.data.pagination.pages, 5) },
-                  (_, i) => {
-                    const page = i + 1;
-                    return (
-                      <Button
-                        key={page}
-                        variant={
-                          queryParams.page === page ? "default" : "outline"
-                        }
-                        size='sm'
-                        onClick={() => handlePageChange(page)}
-                      >
-                        {page}
-                      </Button>
-                    );
-                  }
-                )}
-
-                <Button
-                  variant='outline'
-                  size='sm'
-                  onClick={() => handlePageChange(queryParams.page! + 1)}
-                  disabled={!photosData.data.pagination.hasNext}
-                >
-                  Next
-                </Button>
-              </div>
-            )}
-
-          {/* Edit Photo Dialog */}
-          <Dialog
-            open={!!editingPhoto}
-            onOpenChange={() => setEditingPhoto(null)}
-          >
-            <DialogContent className='max-w-2xl max-h-[80vh] overflow-y-auto'>
-              {editingPhoto && (
-                <>
-                  <DialogHeader>
-                    <DialogTitle>Edit Photo</DialogTitle>
-                  </DialogHeader>
-                  <form onSubmit={handleEditSubmit} className='space-y-4'>
-                    <div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
-                      <div>
-                        <label className='text-sm font-medium'>Title</label>
-                        <Input
-                          value={editingPhoto.title}
-                          onChange={(e) =>
-                            setEditingPhoto((prev) =>
-                              prev ? { ...prev, title: e.target.value } : null
-                            )
-                          }
-                          required
-                        />
-                      </div>
-                      <div>
-                        <label className='text-sm font-medium'>Category</label>
-                        <Select
-                          value={getCategoryId(editingPhoto.category)}
-                          onValueChange={(value) =>
-                            setEditingPhoto((prev) =>
-                              prev
-                                ? {
-                                    ...prev,
-                                    category:
-                                      categories.find(
-                                        (cat) => cat._id === value
-                                      ) || value,
-                                  }
-                                : null
-                            )
-                          }
-                        >
-                          <SelectTrigger>
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {categories.map((cat) => (
-                              <SelectItem key={cat._id} value={cat._id}>
-                                {cat.name}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </div>
-                      <div>
-                        <label className='text-sm font-medium'>Date</label>
-                        <Input
-                          type='date'
-                          value={editingPhoto.date.toString().split("T")[0]}
-                          onChange={(e) =>
-                            setEditingPhoto((prev) =>
-                              prev
-                                ? { ...prev, date: new Date(e.target.value) }
-                                : null
-                            )
-                          }
-                        />
-                      </div>
-                      <div>
-                        <label className='text-sm font-medium'>Location</label>
-                        <Input
-                          value={editingPhoto.location || ""}
-                          onChange={(e) =>
-                            setEditingPhoto((prev) =>
-                              prev
-                                ? { ...prev, location: e.target.value }
-                                : null
-                            )
-                          }
-                        />
-                      </div>
-                    </div>
-
+        {/* Edit Photo Dialog */}
+        <Dialog
+          open={!!editingPhoto}
+          onOpenChange={() => setEditingPhoto(null)}
+        >
+          <DialogContent className='max-w-2xl max-h-[80vh] overflow-y-auto'>
+            {editingPhoto && (
+              <>
+                <DialogHeader>
+                  <DialogTitle>Edit Photo</DialogTitle>
+                </DialogHeader>
+                <form onSubmit={handleEditSubmit} className='space-y-4'>
+                  <div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
                     <div>
-                      <label className='text-sm font-medium'>Description</label>
-                      <textarea
-                        className='w-full p-2 border rounded-md'
-                        rows={3}
-                        value={editingPhoto.description || ""}
+                      <label className='text-sm font-medium'>Title</label>
+                      <Input
+                        value={editingPhoto.title}
+                        onChange={(e) =>
+                          setEditingPhoto((prev) =>
+                            prev ? { ...prev, title: e.target.value } : null
+                          )
+                        }
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label className='text-sm font-medium'>Category</label>
+                      <Select
+                        value={getCategoryId(editingPhoto.category)}
+                        onValueChange={(value) =>
+                          setEditingPhoto((prev) =>
+                            prev
+                              ? {
+                                  ...prev,
+                                  category:
+                                    categories.find(
+                                      (cat) => cat._id === value
+                                    ) || value,
+                                }
+                              : null
+                          )
+                        }
+                      >
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {categories.map((cat) => (
+                            <SelectItem key={cat._id} value={cat._id}>
+                              {cat.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <label className='text-sm font-medium'>Date</label>
+                      <Input
+                        type='date'
+                        value={editingPhoto.date.toString().split("T")[0]}
                         onChange={(e) =>
                           setEditingPhoto((prev) =>
                             prev
-                              ? { ...prev, description: e.target.value }
+                              ? { ...prev, date: new Date(e.target.value) }
                               : null
                           )
                         }
                       />
                     </div>
-
-                    <div className='flex gap-3'>
-                      <Button
-                        type='button'
-                        variant='outline'
-                        onClick={() => setEditingPhoto(null)}
-                        className='flex-1'
-                      >
-                        Cancel
-                      </Button>
-                      <Button
-                        type='submit'
-                        disabled={isUpdating}
-                        className='flex-1'
-                      >
-                        {isUpdating ? "Updating..." : "Update Photo"}
-                      </Button>
+                    <div>
+                      <label className='text-sm font-medium'>Location</label>
+                      <Input
+                        value={editingPhoto.location || ""}
+                        onChange={(e) =>
+                          setEditingPhoto((prev) =>
+                            prev ? { ...prev, location: e.target.value } : null
+                          )
+                        }
+                      />
                     </div>
-                  </form>
-                </>
-              )}
-            </DialogContent>
-          </Dialog>
-        </div>
+                  </div>
+
+                  <div>
+                    <label className='text-sm font-medium'>Description</label>
+                    <textarea
+                      className='w-full p-2 border rounded-md'
+                      rows={3}
+                      value={editingPhoto.description || ""}
+                      onChange={(e) =>
+                        setEditingPhoto((prev) =>
+                          prev ? { ...prev, description: e.target.value } : null
+                        )
+                      }
+                    />
+                  </div>
+
+                  <div className='flex gap-3'>
+                    <Button
+                      type='button'
+                      variant='outline'
+                      onClick={() => setEditingPhoto(null)}
+                      className='flex-1'
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      type='submit'
+                      disabled={isUpdating}
+                      className='flex-1'
+                    >
+                      {isUpdating ? "Updating..." : "Update Photo"}
+                    </Button>
+                  </div>
+                </form>
+              </>
+            )}
+          </DialogContent>
+        </Dialog>
       </div>
     </>
   );

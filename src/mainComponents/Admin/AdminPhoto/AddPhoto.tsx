@@ -11,8 +11,11 @@ import {
   FileText,
   Tag,
   Check,
+  AlertCircle,
 } from "lucide-react";
 import toast from "react-hot-toast";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 
 // Import API hooks
 import {
@@ -70,18 +73,6 @@ const AddPhoto: React.FC = () => {
 
   const isUploading = uploadingSingle || uploadingMultiple;
 
-  // Debug logging
-  console.log("Categories from API:", categories);
-  console.log("Categories loading:", categoriesLoading);
-  console.log("Categories error:", categoriesError);
-  console.log("Form data category:", formData.category);
-
-  // Check if categories are properly loaded
-  const selectedCategory = categories.find(
-    (cat) => cat._id === formData.category
-  );
-  console.log("Selected category object:", selectedCategory);
-
   // Handle file selection
   const handleFileSelect = useCallback(
     (files: FileList) => {
@@ -131,7 +122,6 @@ const AddPhoto: React.FC = () => {
   const removeFile = (index: number) => {
     setSelectedFiles((prev) => {
       const updated = prev.filter((_, i) => i !== index);
-      // Clean up object URL
       URL.revokeObjectURL(prev[index].preview);
       return updated;
     });
@@ -167,15 +157,11 @@ const AddPhoto: React.FC = () => {
         type: "photo",
       }).unwrap();
 
-      console.log("Created category:", result);
       toast.success("Category created successfully");
       setNewCategoryName("");
       setShowAddCategory(false);
-
-      // Auto-select the newly created category
       setFormData((prev) => ({ ...prev, category: result._id }));
     } catch (error: any) {
-      console.error("Create category error:", error);
       toast.error(
         error?.data?.message || error?.message || "Failed to create category"
       );
@@ -201,55 +187,38 @@ const AddPhoto: React.FC = () => {
       return;
     }
 
-    // DEBUG: Log all the data being sent
-    console.log("=== DEBUGGING FORM SUBMISSION ===");
-    console.log("Form data:", formData);
-    console.log("Selected files:", selectedFiles);
-    console.log("Selected category ID:", formData.category);
-    console.log("Category type:", typeof formData.category);
-    console.log("All categories:", categories);
-    console.log("Selected category object:", selectedCategory);
-
     try {
       if (uploadMode === "single") {
         const uploadData: SinglePhotoUploadData = {
           title: formData.title,
-          category: formData.category, // This should be the ObjectId
+          category: formData.category,
           date: formData.date || undefined,
           location: formData.location || undefined,
           description: formData.description || undefined,
           alt: selectedFiles[0].altText || formData.title,
         };
 
-        console.log("Single upload data being sent:", uploadData);
-
-        const result = await uploadPhoto({
+        await uploadPhoto({
           file: selectedFiles[0].file,
           data: uploadData,
         }).unwrap();
 
-        console.log("Upload result:", result);
         toast.success("Photo uploaded successfully!");
       } else {
         const uploadData: MultiplePhotosUploadData = {
           title: formData.title,
-          category: formData.category, // This should be the ObjectId
+          category: formData.category,
           date: formData.date || undefined,
           location: formData.location || undefined,
           description: formData.description || undefined,
           altTexts: selectedFiles.map((f) => f.altText),
         };
 
-        console.log("Multiple upload data being sent:", uploadData);
-
         const result = await uploadMultiplePhotos({
           files: selectedFiles.map((f) => f.file),
           data: uploadData,
         }).unwrap();
 
-        console.log("Upload result:", result);
-
-        // Check if the response has the expected structure
         if (isUploadResponse(result.data)) {
           toast.success(
             `${result.data.imagesCount} photos uploaded successfully!`
@@ -259,44 +228,42 @@ const AddPhoto: React.FC = () => {
         }
       }
 
-      // Clean up and navigate
       selectedFiles.forEach((file) => URL.revokeObjectURL(file.preview));
       navigate("/admin/photoDashboard");
     } catch (error: any) {
-      console.error("Upload error:", error);
-      console.error("Error details:", {
-        message: error?.message,
-        data: error?.data,
-        status: error?.status,
-      });
       toast.error(error?.data?.message || error?.message || "Upload failed");
     }
   };
 
-  // Show loading state while categories are loading
   if (categoriesLoading) {
     return (
-      <div className='min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 p-4 flex items-center justify-center'>
-        <div className='flex items-center gap-2'>
-          <Loader2 className='w-6 h-6 animate-spin' />
-          <span>Loading categories...</span>
+      <div className='container mx-auto p-6'>
+        <BackNavigation />
+        <div className='flex items-center justify-center h-64'>
+          <div className='flex items-center gap-2'>
+            <Loader2 className='w-6 h-6 animate-spin' />
+            <span>Loading categories...</span>
+          </div>
         </div>
       </div>
     );
   }
 
-  // Show error state if categories failed to load
   if (categoriesError) {
     return (
-      <div className='min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 p-4 flex items-center justify-center'>
-        <div className='text-center'>
-          <p className='text-red-600 mb-4'>Failed to load categories</p>
-          <button
-            onClick={() => window.location.reload()}
-            className='px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700'
-          >
-            Retry
-          </button>
+      <div className='container mx-auto p-6'>
+        <BackNavigation />
+        <div className='flex items-center justify-center h-64'>
+          <div className='text-center'>
+            <AlertCircle className='w-12 h-12 text-red-500 mx-auto mb-4' />
+            <h3 className='text-lg font-semibold text-gray-900 mb-2'>
+              Error Loading Categories
+            </h3>
+            <p className='text-gray-600 mb-4'>
+              Failed to load categories. Please try again.
+            </p>
+            <Button onClick={() => window.location.reload()}>Retry</Button>
+          </div>
         </div>
       </div>
     );
@@ -305,59 +272,64 @@ const AddPhoto: React.FC = () => {
   return (
     <>
       <BackNavigation />
+      <div className='container mx-auto p-6 space-y-6'>
+        {/* Header */}
+        <div className='flex justify-between items-center'>
+          <div>
+            <h1 className='text-2xl font-bold text-gray-900 flex items-center gap-2'>
+              Add New Photo{uploadMode === "multiple" ? "s" : ""}
+            </h1>
+            <p className='text-gray-600'>
+              Upload and manage your photo gallery
+            </p>
+          </div>
+        </div>
 
-      <div className='min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 p-2'>
-        <div className='max-w-4xl mx-auto'>
-          <div className='bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden'>
-            {/* Header */}
-            <div className='bg-gradient-to-r from-[#ffffff] to-[#ffffff] p-5'>
-              <h1 className='text-2xl font-bold text-black flex items-center gap-2'>
-                <ImagePlus className='w-6 h-6' />
-                Add New Photo{uploadMode === "multiple" ? "s" : ""}
-              </h1>
-              <p className='text-black/90 mt-1'>
-                Upload and manage your photo gallery
-              </p>
+        {/* Upload Mode Toggle */}
+        <Card>
+          <CardContent className='p-6'>
+            <div className='flex gap-2 p-1 bg-gray-100 rounded-lg w-fit'>
+              <button
+                type='button'
+                onClick={() => {
+                  setUploadMode("single");
+                  setSelectedFiles([]);
+                }}
+                className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                  uploadMode === "single"
+                    ? "bg-white text-gray-900 shadow-sm"
+                    : "text-gray-600 hover:text-gray-900"
+                }`}
+              >
+                Single Photo
+              </button>
+              <button
+                type='button'
+                onClick={() => {
+                  setUploadMode("multiple");
+                  setSelectedFiles([]);
+                }}
+                className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                  uploadMode === "multiple"
+                    ? "bg-white text-gray-900 shadow-sm"
+                    : "text-gray-600 hover:text-gray-900"
+                }`}
+              >
+                Multiple Photos
+              </button>
             </div>
+          </CardContent>
+        </Card>
 
-            <form onSubmit={handleSubmit} className='p-6 space-y-6'>
-              {/* Upload Mode Toggle */}
-              <div className='flex gap-2 p-1 bg-gray-100 rounded-lg w-fit'>
-                <button
-                  type='button'
-                  onClick={() => {
-                    setUploadMode("single");
-                    setSelectedFiles([]);
-                  }}
-                  className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
-                    uploadMode === "single"
-                      ? "bg-white text-gray-900 shadow-sm"
-                      : "text-gray-600 hover:text-gray-900"
-                  }`}
-                >
-                  Single Photo
-                </button>
-                <button
-                  type='button'
-                  onClick={() => {
-                    setUploadMode("multiple");
-                    setSelectedFiles([]);
-                  }}
-                  className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
-                    uploadMode === "multiple"
-                      ? "bg-white text-gray-900 shadow-sm"
-                      : "text-gray-600 hover:text-gray-900"
-                  }`}
-                >
-                  Multiple Photos
-                </button>
-              </div>
-
+        {/* Upload Form */}
+        <Card>
+          <CardContent className='p-6'>
+            <form onSubmit={handleSubmit} className='space-y-6'>
               {/* File Upload Area */}
               <div
                 onDrop={handleDrop}
                 onDragOver={(e) => e.preventDefault()}
-                className='border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-[#FF9933] transition-colors'
+                className='border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-orange-500 transition-colors'
               >
                 <Upload className='w-12 h-12 text-gray-400 mx-auto mb-4' />
                 <div className='space-y-2'>
@@ -366,13 +338,13 @@ const AddPhoto: React.FC = () => {
                   </p>
                   <p className='text-sm text-gray-500'>
                     {uploadMode === "single"
-                      ? "Only One Image can be select"
+                      ? "Only one image can be selected"
                       : "Select up to 10 images"}
                   </p>
                   <button
                     type='button'
                     onClick={() => fileInputRef.current?.click()}
-                    className='inline-flex items-center gap-2 px-4 py-2 bg-[#FF9933] text-white rounded-lg hover:bg-[#e8842e] transition-colors'
+                    className='inline-flex items-center gap-2 px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors'
                   >
                     <ImagePlus className='w-4 h-4' />
                     Choose Files
@@ -420,7 +392,7 @@ const AddPhoto: React.FC = () => {
                               updateAltText(index, e.target.value)
                             }
                             placeholder='Alt text'
-                            className='w-full text-xs border rounded px-2 py-1 focus:ring-1 focus:ring-[#FF9933] focus:border-[#FF9933]'
+                            className='w-full text-xs border rounded px-2 py-1 focus:ring-1 focus:ring-orange-500 focus:border-orange-500'
                           />
                         </div>
                       </div>
@@ -443,12 +415,12 @@ const AddPhoto: React.FC = () => {
                     value={formData.title}
                     onChange={handleInputChange}
                     required
-                    className='w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FF9933] focus:border-transparent'
+                    className='w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent'
                     placeholder='Enter photo title'
                   />
                 </div>
 
-                {/* Category with Add Button */}
+                {/* Category */}
                 <div>
                   <label className='block text-sm font-medium text-gray-700 mb-2'>
                     <Tag className='w-4 h-4 inline mr-1' />
@@ -461,7 +433,7 @@ const AddPhoto: React.FC = () => {
                       onChange={handleInputChange}
                       required
                       disabled={categoriesLoading}
-                      className='flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FF9933] focus:border-transparent'
+                      className='flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent'
                     >
                       <option value=''>Select Category</option>
                       {categories.map((category) => (
@@ -532,7 +504,7 @@ const AddPhoto: React.FC = () => {
                     name='date'
                     value={formData.date}
                     onChange={handleInputChange}
-                    className='w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FF9933] focus:border-transparent'
+                    className='w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent'
                   />
                 </div>
 
@@ -547,7 +519,7 @@ const AddPhoto: React.FC = () => {
                     name='location'
                     value={formData.location}
                     onChange={handleInputChange}
-                    className='w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FF9933] focus:border-transparent'
+                    className='w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent'
                     placeholder='Enter location'
                   />
                 </div>
@@ -562,7 +534,7 @@ const AddPhoto: React.FC = () => {
                     value={formData.description}
                     onChange={handleInputChange}
                     rows={3}
-                    className='w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FF9933] focus:border-transparent'
+                    className='w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent'
                     placeholder='Enter description (optional)'
                   />
                 </div>
@@ -573,7 +545,7 @@ const AddPhoto: React.FC = () => {
                 <button
                   type='submit'
                   disabled={isUploading || selectedFiles.length === 0}
-                  className='flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-[#FF9933] to-[#138808] text-white rounded-lg hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed'
+                  className='flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-orange-500 to-green-600 text-white rounded-lg hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed'
                 >
                   {isUploading ? (
                     <>
@@ -597,8 +569,8 @@ const AddPhoto: React.FC = () => {
                 </button>
               </div>
             </form>
-          </div>
-        </div>
+          </CardContent>
+        </Card>
       </div>
     </>
   );
