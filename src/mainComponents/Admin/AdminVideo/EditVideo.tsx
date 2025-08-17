@@ -19,6 +19,9 @@ import {
   AlertCircle,
   Upload,
   Trash2,
+  Plus,
+  Check,
+  X,
 } from "lucide-react";
 import { useSelector } from "react-redux";
 import { selectAuth, selectIsAdmin } from "@/redux-store/slices/authSlice";
@@ -27,7 +30,10 @@ import {
   useGetVideoQuery,
   useUpdateVideoMutation,
 } from "@/redux-store/services/videoApi";
-import { useGetCategoriesByTypeQuery } from "@/redux-store/services/categoryApi";
+import {
+  useGetCategoriesByTypeQuery,
+  useCreateCategoryMutation,
+} from "@/redux-store/services/categoryApi";
 import { VideoUpdateData } from "@/types/video.types";
 import { BackNavigation } from "@/config/navigation/BackNavigation";
 
@@ -41,8 +47,17 @@ const EditVideo = () => {
   const thumbnailFileRef = useRef<HTMLInputElement>(null);
 
   // Fetch video categories
-  const { data: categories = [], isLoading: categoriesLoading } =
-    useGetCategoriesByTypeQuery("video");
+  const {
+    data: categories = [],
+    isLoading: categoriesLoading,
+    error: categoriesError,
+  } = useGetCategoriesByTypeQuery("video");
+
+  // Category management
+  const [createCategory, { isLoading: creatingCategory }] =
+    useCreateCategoryMutation();
+  const [showAddCategory, setShowAddCategory] = useState(false);
+  const [newCategoryName, setNewCategoryName] = useState("");
 
   // Form state
   const [formData, setFormData] = useState<VideoUpdateData>({
@@ -104,6 +119,43 @@ const EditVideo = () => {
       setVideoPreview(video.videoUrl);
     }
   }, [video]);
+
+  // Create new category
+  const handleCreateCategory = async () => {
+    if (!newCategoryName.trim()) {
+      setErrors((prev) => ({
+        ...prev,
+        category: "Please enter a category name",
+      }));
+      return;
+    }
+
+    try {
+      const result = await createCategory({
+        name: newCategoryName.trim(),
+        type: "video",
+      }).unwrap();
+
+      console.log("Created category:", result);
+      setNewCategoryName("");
+      setShowAddCategory(false);
+
+      // Auto-select the newly created category
+      handleInputChange("category", result._id);
+
+      // Clear category error if it exists
+      if (errors.category) {
+        setErrors((prev) => ({ ...prev, category: "" }));
+      }
+    } catch (error: any) {
+      console.error("Create category error:", error);
+      setErrors((prev) => ({
+        ...prev,
+        category:
+          error?.data?.message || error?.message || "Failed to create category",
+      }));
+    }
+  };
 
   const handleInputChange = (field: keyof VideoUpdateData, value: any) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -428,31 +480,102 @@ const EditVideo = () => {
                     <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
                       <div>
                         <Label htmlFor='category'>Category *</Label>
-                        <select
-                          id='category'
-                          value={formData.category}
-                          onChange={(e) =>
-                            handleInputChange("category", e.target.value)
-                          }
-                          className={`flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 ${
-                            errors.category ? "border-red-500" : ""
-                          }`}
-                        >
-                          <option value='' disabled>
-                            Select category
-                          </option>
-                          {categoriesLoading ? (
+                        <div className='flex gap-2'>
+                          <select
+                            id='category'
+                            value={formData.category}
+                            onChange={(e) =>
+                              handleInputChange("category", e.target.value)
+                            }
+                            className={`flex-1 h-10 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 ${
+                              errors.category ? "border-red-500" : ""
+                            }`}
+                            disabled={updating}
+                          >
                             <option value='' disabled>
-                              Loading categories...
+                              Select category
                             </option>
-                          ) : (
-                            categories.map((category) => (
-                              <option key={category._id} value={category._id}>
-                                {category.name}
+                            {categoriesLoading ? (
+                              <option value='' disabled>
+                                Loading categories...
                               </option>
-                            ))
-                          )}
-                        </select>
+                            ) : (
+                              categories.map((category) => (
+                                <option key={category._id} value={category._id}>
+                                  {category.name}
+                                </option>
+                              ))
+                            )}
+                          </select>
+                          <Button
+                            type='button'
+                            onClick={() => setShowAddCategory(!showAddCategory)}
+                            className='px-3 py-2 bg-green-600 text-white hover:bg-green-700 transition-colors flex items-center gap-1'
+                            title='Add new category'
+                            disabled={updating}
+                          >
+                            <Plus className='w-4 h-4' />
+                          </Button>
+                        </div>
+
+                        {/* Add Category Input */}
+                        {showAddCategory && (
+                          <div className='mt-2 p-3 bg-gray-50 rounded-lg border'>
+                            <div className='flex gap-2'>
+                              <Input
+                                type='text'
+                                value={newCategoryName}
+                                onChange={(e) =>
+                                  setNewCategoryName(e.target.value)
+                                }
+                                placeholder='Enter category name'
+                                className='flex-1'
+                                onKeyPress={(e) =>
+                                  e.key === "Enter" && handleCreateCategory()
+                                }
+                                disabled={updating}
+                              />
+                              <Button
+                                type='button'
+                                onClick={handleCreateCategory}
+                                disabled={creatingCategory || updating}
+                                className='px-3 py-2 bg-green-600 text-white hover:bg-green-700 transition-colors disabled:opacity-50 flex items-center gap-1'
+                              >
+                                {creatingCategory ? (
+                                  <Loader2 className='w-4 h-4 animate-spin' />
+                                ) : (
+                                  <Check className='w-4 h-4' />
+                                )}
+                              </Button>
+                              <Button
+                                type='button'
+                                onClick={() => {
+                                  setShowAddCategory(false);
+                                  setNewCategoryName("");
+                                }}
+                                className='px-3 py-2 bg-gray-500 text-white hover:bg-gray-600 transition-colors'
+                                disabled={updating}
+                              >
+                                <X className='w-4 h-4' />
+                              </Button>
+                            </div>
+                          </div>
+                        )}
+
+                        {categoriesError && (
+                          <p className='text-sm text-red-500 mt-1'>
+                            Failed to load categories. Please refresh and try
+                            again.
+                          </p>
+                        )}
+
+                        {!categoriesLoading && categories.length === 0 && (
+                          <p className='text-sm text-gray-500 mt-1'>
+                            No video categories available. Please create some
+                            categories first.
+                          </p>
+                        )}
+
                         {errors.category && (
                           <p className='text-sm text-red-600 mt-1'>
                             {errors.category}
