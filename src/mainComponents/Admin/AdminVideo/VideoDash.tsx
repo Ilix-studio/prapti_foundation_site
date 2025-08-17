@@ -164,7 +164,7 @@ const VideoDash: React.FC = () => {
 
   if (!isAdmin) {
     return (
-      <div className='min-h-screen bg-gradient-to-br from-slate-50 to-white p-4'>
+      <div className='container mx-auto p-6'>
         <BackNavigation />
         <Alert className='max-w-md mx-auto mt-8'>
           <AlertCircle className='h-4 w-4' />
@@ -177,7 +177,7 @@ const VideoDash: React.FC = () => {
   // Handle error state
   if (videosError) {
     return (
-      <div className='min-h-screen bg-gradient-to-br from-slate-50 to-white p-4'>
+      <div className='container mx-auto p-6'>
         <BackNavigation />
         <Alert className='max-w-md mx-auto mt-8' variant='destructive'>
           <AlertCircle className='h-4 w-4' />
@@ -286,138 +286,145 @@ const VideoDash: React.FC = () => {
   return (
     <>
       <BackNavigation />
-      <div className='min-h-screen bg-gradient-to-br from-slate-50 to-white'>
-        <div className='container py-3 px-4 sm:px-6 max-w-7xl mx-auto'>
-          {/* Header */}
-          <div className='flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-3'>
-            <div>
-              <h1 className='text-2xl font-bold text-slate-900 flex items-center gap-2'>
-                <VideoIcon className='w-8 h-8 text-blue-600' />
-                Video Dashboard
-              </h1>
-              <p className='text-slate-600 mt-1'>Manage your video content</p>
-            </div>
+      <div className='container mx-auto p-6 space-y-6'>
+        {/* Header */}
+        <div className='flex justify-between items-center'>
+          <div>
+            <h1 className='text-2xl font-bold text-gray-900 flex items-center gap-2'>
+              <VideoIcon className='w-8 h-8 text-blue-600' />
+              Video Dashboard
+            </h1>
+            <p className='text-gray-600'>Manage your video content</p>
           </div>
+          <Button
+            onClick={() => navigate("/admin/addVideo")}
+            className='bg-blue-600 hover:bg-blue-700'
+          >
+            <Plus className='w-4 h-4 mr-2' />
+            Add Video
+          </Button>
+        </div>
 
-          {/* Stats Card */}
-          <Card>
-            <CardContent className='pt-1'>
-              <div className='grid grid-cols-3 md:grid-cols-3 gap-3 text-center'>
-                <div>
-                  <h3 className='text-2xl font-bold text-blue-600'>
-                    {pagination?.totalVideos || 0}
-                  </h3>
-                  <p className='text-sm text-gray-600'>Total Videos</p>
-                </div>
-                <div>
-                  <h3 className='text-2xl font-bold text-green-600'>
-                    {categories.length}
-                  </h3>
-                  <p className='text-sm text-gray-600'>Categories</p>
-                </div>
-                <div>
-                  <h3 className='text-2xl font-bold text-purple-600'>
-                    {pagination?.totalPages || 0}
-                  </h3>
-                  <p className='text-sm text-gray-600'>Pages</p>
+        {/* Stats Card */}
+        <Card>
+          <CardContent className='p-6'>
+            <div className='grid grid-cols-3 md:grid-cols-3 gap-6 text-center'>
+              <div>
+                <h3 className='text-2xl font-bold text-blue-600'>
+                  {pagination?.totalVideos || 0}
+                </h3>
+                <p className='text-sm text-gray-600'>Total Videos</p>
+              </div>
+              <div>
+                <h3 className='text-2xl font-bold text-green-600'>
+                  {categories.length}
+                </h3>
+                <p className='text-sm text-gray-600'>Categories</p>
+              </div>
+              <div>
+                <h3 className='text-2xl font-bold text-purple-600'>
+                  {pagination?.totalPages || 0}
+                </h3>
+                <p className='text-sm text-gray-600'>Pages</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Filters and Controls */}
+        <Card>
+          <CardContent className='p-6'>
+            <div className='flex flex-col sm:flex-row gap-4'>
+              <div className='flex-1'>
+                <div className='relative'>
+                  <Search className='absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-4 h-4' />
+                  <Input
+                    placeholder='Search videos...'
+                    value={queryParams.search || ""}
+                    onChange={(e) => handleSearch(e.target.value)}
+                    className='pl-10'
+                    disabled={isLoadingVideos}
+                  />
                 </div>
               </div>
-            </CardContent>
-          </Card>
 
-          {/* Filters and Controls - Improved layout following PhotoDash */}
-          <Card>
-            <CardContent className='pt-1'>
-              <div className='flex flex-col sm:flex-row gap-4'>
-                <div className='flex-1'>
-                  <div className='relative'>
-                    <Search className='absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-4 h-4' />
-                    <Input
-                      placeholder='Search videos...'
-                      value={queryParams.search || ""}
-                      onChange={(e) => handleSearch(e.target.value)}
-                      className='pl-10'
-                      disabled={isLoadingVideos}
-                    />
-                  </div>
-                </div>
+              {/* Category Filter */}
+              <select
+                className='w-48 px-3 py-2 border rounded-md text-sm'
+                value={queryParams.category || "all"}
+                onChange={(e) => handleCategoryFilter(e.target.value)}
+                disabled={isLoadingVideos || isLoadingCategories}
+              >
+                <option value='all'>All Categories</option>
+                {categories.map((cat) => (
+                  <option key={cat._id} value={cat._id}>
+                    {cat.name}
+                  </option>
+                ))}
+              </select>
 
-                {/* Category Filter - Using native select like PhotoDash */}
-                <select
-                  className='w-48 px-3 py-2 border rounded-md text-sm'
-                  value={queryParams.category || "all"}
-                  onChange={(e) => handleCategoryFilter(e.target.value)}
-                  disabled={isLoadingVideos || isLoadingCategories}
-                >
-                  <option value='all'>All Categories</option>
-                  {categories.map((cat) => (
-                    <option key={cat._id} value={cat._id}>
-                      {cat.name}
-                    </option>
+              {/* Sort */}
+              <Select
+                value={`${queryParams.sortBy}-${queryParams.sortOrder}`}
+                onValueChange={handleSortChange}
+              >
+                <SelectTrigger className='w-48'>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {VIDEO_SORT_OPTIONS.map((option) => (
+                    <SelectItem key={option.value} value={option.value}>
+                      {option.label}
+                    </SelectItem>
                   ))}
-                </select>
-
-                {/* Sort - Keep the Select component for this */}
-                <Select
-                  value={`${queryParams.sortBy}-${queryParams.sortOrder}`}
-                  onValueChange={handleSortChange}
-                >
-                  <SelectTrigger className='w-48'>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {VIDEO_SORT_OPTIONS.map((option) => (
-                      <SelectItem key={option.value} value={option.value}>
-                        {option.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* View Mode Toggle */}
-          <div className='flex justify-between items-center mb-6'>
-            <div className='text-sm text-slate-600'>
-              {pagination && (
-                <>
-                  Showing {videos.length} of {pagination.totalVideos} videos
-                  {queryParams.category && categories.length > 0 && (
-                    <span className='ml-2'>
-                      in{" "}
-                      {
-                        categories.find((c) => c._id === queryParams.category)
-                          ?.name
-                      }
-                    </span>
-                  )}
-                </>
-              )}
+                </SelectContent>
+              </Select>
             </div>
-            <div className='flex items-center gap-2'>
-              <Button
-                variant={viewMode === "grid" ? "default" : "outline"}
-                size='sm'
-                onClick={() => setViewMode("grid")}
-              >
-                <Grid3X3 className='w-4 h-4' />
-              </Button>
-              <Button
-                variant={viewMode === "list" ? "default" : "outline"}
-                size='sm'
-                onClick={() => setViewMode("list")}
-              >
-                <List className='w-4 h-4' />
-              </Button>
-            </div>
+          </CardContent>
+        </Card>
+
+        {/* View Mode Toggle and Info */}
+        <div className='flex justify-between items-center'>
+          <div className='text-sm text-slate-600'>
+            {pagination && (
+              <>
+                Showing {videos.length} of {pagination.totalVideos} videos
+                {queryParams.category && categories.length > 0 && (
+                  <span className='ml-2'>
+                    in{" "}
+                    {
+                      categories.find((c) => c._id === queryParams.category)
+                        ?.name
+                    }
+                  </span>
+                )}
+              </>
+            )}
           </div>
+          <div className='flex items-center gap-2'>
+            <Button
+              variant={viewMode === "grid" ? "default" : "outline"}
+              size='sm'
+              onClick={() => setViewMode("grid")}
+            >
+              <Grid3X3 className='w-4 h-4' />
+            </Button>
+            <Button
+              variant={viewMode === "list" ? "default" : "outline"}
+              size='sm'
+              onClick={() => setViewMode("list")}
+            >
+              <List className='w-4 h-4' />
+            </Button>
+          </div>
+        </div>
 
-          {/* Content */}
-          {isLoadingVideos ? (
-            <VideoGridSkeleton viewMode={viewMode} />
-          ) : videos.length === 0 ? (
-            <Card className='p-12 text-center'>
+        {/* Content */}
+        {isLoadingVideos ? (
+          <VideoGridSkeleton viewMode={viewMode} />
+        ) : videos.length === 0 ? (
+          <Card>
+            <CardContent className='p-12 text-center'>
               <VideoIcon className='w-12 h-12 text-slate-400 mx-auto mb-4' />
               <h3 className='text-lg font-semibold text-slate-900 mb-2'>
                 No videos found
@@ -434,185 +441,174 @@ const VideoDash: React.FC = () => {
                 <Plus className='w-4 h-4 mr-2' />
                 Add Video
               </Button>
-            </Card>
-          ) : (
-            <div
-              className={`grid gap-6 ${
-                viewMode === "grid"
-                  ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
-                  : "grid-cols-1"
-              }`}
-            >
-              {videos.map((video) => (
-                <VideoCard
-                  key={video._id}
-                  video={video}
-                  showActions={true}
-                  viewMode={viewMode}
-                  onEdit={handleEditVideo}
-                  onDelete={handleDeleteVideo}
-                  onView={handleViewVideo}
-                  isDeleting={deletingVideoId === video._id}
-                />
-              ))}
-            </div>
-          )}
-
-          {/* Pagination */}
-          {pagination && pagination.totalPages > 1 && (
-            <div className='flex justify-center mt-8'>
-              <div className='flex items-center gap-2'>
-                <Button
-                  variant='outline'
-                  onClick={() => handlePageChange(pagination.currentPage - 1)}
-                  disabled={!pagination.hasPrevPage}
-                >
-                  Previous
-                </Button>
-                <span className='text-sm text-slate-600 px-4'>
-                  Page {pagination.currentPage} of {pagination.totalPages}
-                </span>
-                <Button
-                  variant='outline'
-                  onClick={() => handlePageChange(pagination.currentPage + 1)}
-                  disabled={!pagination.hasNextPage}
-                >
-                  Next
-                </Button>
-              </div>
-            </div>
-          )}
-
-          {/* Edit Dialog */}
-          <Dialog
-            open={editingVideo !== null}
-            onOpenChange={() => setEditingVideo(null)}
+            </CardContent>
+          </Card>
+        ) : (
+          <div
+            className={`grid gap-6 ${
+              viewMode === "grid"
+                ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+                : "grid-cols-1"
+            }`}
           >
-            <DialogContent className='max-w-2xl'>
-              <DialogHeader>
-                <DialogTitle>Edit Video</DialogTitle>
-              </DialogHeader>
-              {editingVideo && (
-                <>
-                  <form onSubmit={handleUpdateVideo} className='space-y-4'>
-                    <div>
-                      <label className='text-sm font-medium'>Title</label>
-                      <Input
-                        value={editingVideo.title}
-                        onChange={(e) =>
-                          setEditingVideo((prev) =>
-                            prev ? { ...prev, title: e.target.value } : null
-                          )
-                        }
-                      />
-                    </div>
+            {videos.map((video) => (
+              <VideoCard
+                key={video._id}
+                video={video}
+                showActions={true}
+                viewMode={viewMode}
+                onEdit={handleEditVideo}
+                onDelete={handleDeleteVideo}
+                onView={handleViewVideo}
+                isDeleting={deletingVideoId === video._id}
+              />
+            ))}
+          </div>
+        )}
 
-                    <div>
-                      <label className='text-sm font-medium'>Description</label>
-                      <textarea
-                        className='w-full p-2 border rounded-md'
-                        rows={3}
-                        value={editingVideo.description}
-                        onChange={(e) =>
-                          setEditingVideo((prev) =>
-                            prev
-                              ? { ...prev, description: e.target.value }
-                              : null
-                          )
-                        }
-                      />
-                    </div>
+        {/* Pagination */}
+        {pagination && pagination.totalPages > 1 && (
+          <div className='flex justify-center gap-2'>
+            <Button
+              variant='outline'
+              onClick={() => handlePageChange(pagination.currentPage - 1)}
+              disabled={!pagination.hasPrevPage}
+            >
+              Previous
+            </Button>
+            <span className='flex items-center px-4'>
+              Page {pagination.currentPage} of {pagination.totalPages}
+            </span>
+            <Button
+              variant='outline'
+              onClick={() => handlePageChange(pagination.currentPage + 1)}
+              disabled={!pagination.hasNextPage}
+            >
+              Next
+            </Button>
+          </div>
+        )}
 
-                    <div className='grid grid-cols-2 gap-4'>
-                      <div>
-                        <label className='text-sm font-medium'>Category</label>
-                        <Select
-                          value={
-                            typeof editingVideo.category === "string"
-                              ? editingVideo.category
-                              : editingVideo.category._id
-                          }
-                          onValueChange={(value) =>
-                            setEditingVideo((prev) =>
-                              prev ? { ...prev, category: value } : null
-                            )
-                          }
-                        >
-                          <SelectTrigger>
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {categories.map((category) => (
-                              <SelectItem
-                                key={category._id}
-                                value={category._id}
-                              >
-                                {category.name}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </div>
-                      <div>
-                        <label className='text-sm font-medium'>Duration</label>
-                        <Input
-                          value={editingVideo.duration}
-                          onChange={(e) =>
-                            setEditingVideo((prev) =>
-                              prev
-                                ? { ...prev, duration: e.target.value }
-                                : null
-                            )
-                          }
-                          placeholder='e.g., 5:30'
-                        />
-                      </div>
-                    </div>
+        {/* Edit Dialog */}
+        <Dialog
+          open={editingVideo !== null}
+          onOpenChange={() => setEditingVideo(null)}
+        >
+          <DialogContent className='max-w-2xl'>
+            <DialogHeader>
+              <DialogTitle>Edit Video</DialogTitle>
+            </DialogHeader>
+            {editingVideo && (
+              <form onSubmit={handleUpdateVideo} className='space-y-4'>
+                <div>
+                  <label className='text-sm font-medium'>Title</label>
+                  <Input
+                    value={editingVideo.title}
+                    onChange={(e) =>
+                      setEditingVideo((prev) =>
+                        prev ? { ...prev, title: e.target.value } : null
+                      )
+                    }
+                  />
+                </div>
 
-                    <div>
-                      <label className='text-sm font-medium'>Date</label>
-                      <Input
-                        type='date'
-                        value={
-                          editingVideo.date instanceof Date
-                            ? editingVideo.date.toISOString().split("T")[0]
-                            : new Date(editingVideo.date)
-                                .toISOString()
-                                .split("T")[0]
-                        }
-                        onChange={(e) =>
-                          setEditingVideo((prev) =>
-                            prev
-                              ? { ...prev, date: new Date(e.target.value) }
-                              : null
-                          )
-                        }
-                      />
-                    </div>
+                <div>
+                  <label className='text-sm font-medium'>Description</label>
+                  <textarea
+                    className='w-full p-2 border rounded-md'
+                    rows={3}
+                    value={editingVideo.description}
+                    onChange={(e) =>
+                      setEditingVideo((prev) =>
+                        prev ? { ...prev, description: e.target.value } : null
+                      )
+                    }
+                  />
+                </div>
 
-                    <div className='flex gap-3'>
-                      <Button
-                        type='button'
-                        variant='outline'
-                        onClick={() => setEditingVideo(null)}
-                        className='flex-1'
-                      >
-                        Cancel
-                      </Button>
-                      <Button
-                        type='submit'
-                        disabled={isUpdating}
-                        className='flex-1'
-                      >
-                        {isUpdating ? "Updating..." : "Update Video"}
-                      </Button>
-                    </div>
-                  </form>
-                </>
-              )}
-            </DialogContent>
-          </Dialog>
-        </div>
+                <div className='grid grid-cols-2 gap-4'>
+                  <div>
+                    <label className='text-sm font-medium'>Category</label>
+                    <Select
+                      value={
+                        typeof editingVideo.category === "string"
+                          ? editingVideo.category
+                          : editingVideo.category._id
+                      }
+                      onValueChange={(value) =>
+                        setEditingVideo((prev) =>
+                          prev ? { ...prev, category: value } : null
+                        )
+                      }
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {categories.map((category) => (
+                          <SelectItem key={category._id} value={category._id}>
+                            {category.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <label className='text-sm font-medium'>Duration</label>
+                    <Input
+                      value={editingVideo.duration}
+                      onChange={(e) =>
+                        setEditingVideo((prev) =>
+                          prev ? { ...prev, duration: e.target.value } : null
+                        )
+                      }
+                      placeholder='e.g., 5:30'
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className='text-sm font-medium'>Date</label>
+                  <Input
+                    type='date'
+                    value={
+                      editingVideo.date instanceof Date
+                        ? editingVideo.date.toISOString().split("T")[0]
+                        : new Date(editingVideo.date)
+                            .toISOString()
+                            .split("T")[0]
+                    }
+                    onChange={(e) =>
+                      setEditingVideo((prev) =>
+                        prev
+                          ? { ...prev, date: new Date(e.target.value) }
+                          : null
+                      )
+                    }
+                  />
+                </div>
+
+                <div className='flex gap-3'>
+                  <Button
+                    type='button'
+                    variant='outline'
+                    onClick={() => setEditingVideo(null)}
+                    className='flex-1'
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    type='submit'
+                    disabled={isUpdating}
+                    className='flex-1'
+                  >
+                    {isUpdating ? "Updating..." : "Update Video"}
+                  </Button>
+                </div>
+              </form>
+            )}
+          </DialogContent>
+        </Dialog>
       </div>
     </>
   );

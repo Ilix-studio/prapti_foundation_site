@@ -49,8 +49,8 @@ const BlogsDash = lazy(
 const WriteTestimonial = lazy(
   () => import("@/mainComponents/Testimonials/WriteTestimonial")
 );
+
 import NotFound from "../mainComponents/NotFound";
-import ViewAllMessage from "@/mainComponents/Admin/AdminMessage/ViewAllMessage";
 
 // Admin components (lazy loaded)
 const NewDashAdmin = lazy(() => import("../mainComponents/Admin/NewDashAdmin"));
@@ -82,6 +82,15 @@ const EditVideo = lazy(
 const CategoryManager = lazy(
   () => import("../mainComponents/Admin/AdminCategory/CategoryManager")
 );
+const TotalImpactDashboard = lazy(
+  () => import("@/mainComponents/Admin/AdminImpact/Impact")
+);
+const TestimonialDash = lazy(
+  () => import("@/mainComponents/Testimonials/TestimonialDash")
+);
+const ViewAllMessage = lazy(
+  () => import("@/mainComponents/Admin/AdminMessage/ViewAllMessage")
+);
 
 // Route configuration
 export const immediateRoute = [{ path: "/", component: Home }];
@@ -106,13 +115,15 @@ export const publicRoutes = [
 
 export const adminRoutes = [
   { path: "/admin/dashboard", component: NewDashAdmin },
+  { path: "/admin/categories", component: CategoryManager },
   { path: "/admin/photoDashboard", component: PhotoDash },
   { path: "/admin/videoDashboard", component: VideoDash },
   { path: "/admin/blogsDashboard", component: BlogsDash },
   { path: "/admin/volunteerDashboard", component: VolunteerDash },
+  { path: "/admin/impact", component: TotalImpactDashboard },
+  { path: "/admin/testimonials", component: TestimonialDash },
   { path: "/admin/messages", component: ViewAllMessage },
   { path: "/admin/messages/:id", component: ViewMessage },
-  { path: "/admin/categories", component: CategoryManager },
 ];
 
 // NEW: Admin specific routes with dashboard mapping
@@ -124,7 +135,7 @@ export interface AdSpecificRoute {
 }
 
 export const adSpecificRoutes: AdSpecificRoute[] = [
-  // Photo specific routes - go back to photoDashboard
+  // Specific routes - go back to Specific Dash
   {
     path: "/admin/addPhoto",
     component: AddPhoto,

@@ -56,3 +56,8 @@ export interface GetMessagesParams {
   limit?: number;
   read?: boolean;
 }
+export interface FilterState {
+  search: string;
+  readStatus: "all" | "read" | "unread";
+  sortBy: "newest" | "oldest" | "name" | "subject";
+}

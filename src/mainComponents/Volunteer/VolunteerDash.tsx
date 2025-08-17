@@ -12,7 +12,6 @@ import {
   Loader2,
   Calendar,
   MapPin,
-  Mail,
   Download,
   Plus,
   Search,
@@ -27,8 +26,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Badge } from "@/components/ui/badge";
-import Footer from "../Footer";
+
 import { BackNavigation } from "@/config/navigation/BackNavigation";
 
 const VolunteerDash = () => {
@@ -151,116 +149,109 @@ const VolunteerDash = () => {
   return (
     <>
       <BackNavigation />
-      <div className='min-h-screen bg-gray-50'>
-        <div className='container mx-auto px-4 py-8 max-w-7xl'>
-          <div className='flex items-center justify-between mb-6'>
-            <div className='flex items-center gap-4'>
-              <div>
-                <h1 className='text-3xl font-bold text-gray-900 flex items-center gap-3'>
-                  <Users className='h-8 w-8 text-orange-500' />
-                  Volunteer Applications
-                </h1>
-                <p className='text-gray-600 mt-1'>
-                  Manage and review volunteer applications
-                </p>
-              </div>
-            </div>
-            <div className='flex gap-3'>
-              <Button
-                variant='outline'
-                onClick={handleExportData}
-                className='flex items-center gap-2'
-              >
-                <Download className='h-4 w-4' />
-                Export Data
-              </Button>
-              <Link to='/volunteer'>
-                <Button className='bg-orange-500 hover:bg-orange-600 flex items-center gap-2'>
-                  <Plus className='h-4 w-4' />
-                  View Application Form
-                </Button>
-              </Link>
-            </div>
+      <div className='container mx-auto p-6 space-y-6'>
+        {/* Header */}
+        <div className='flex items-center justify-between'>
+          <div>
+            <h1 className='text-2xl font-bold text-gray-900 flex items-center gap-3'>
+              <Users className='h-8 w-8 text-orange-500' />
+              Volunteer Applications
+            </h1>
+            <p className='text-gray-600 mt-1'>
+              Manage and review volunteer applications
+            </p>
           </div>
-
-          {/* Statistics Cards */}
-          <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8'>
-            <Card>
-              <CardContent className='p-6'>
-                <div className='flex items-center justify-between'>
-                  <div>
-                    <p className='text-sm font-medium text-gray-600'>
-                      Total Applications
-                    </p>
-                    <p className='text-2xl font-bold text-gray-900'>
-                      {stats.total}
-                    </p>
-                  </div>
-                  <div className='h-12 w-12 bg-blue-100 rounded-lg flex items-center justify-center'>
-                    <Users className='h-6 w-6 text-blue-600' />
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardContent className='p-6'>
-                <div className='flex items-center justify-between'>
-                  <div>
-                    <p className='text-sm font-medium text-gray-600'>
-                      This Week
-                    </p>
-                    <p className='text-2xl font-bold text-gray-900'>
-                      {stats.recent}
-                    </p>
-                  </div>
-                  <div className='h-12 w-12 bg-green-100 rounded-lg flex items-center justify-center'>
-                    <Calendar className='h-6 w-6 text-green-600' />
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardContent className='p-6'>
-                <div className='flex items-center justify-between'>
-                  <div>
-                    <p className='text-sm font-medium text-gray-600'>
-                      Pending Review
-                    </p>
-                    <p className='text-2xl font-bold text-gray-900'>
-                      {stats.pending}
-                    </p>
-                  </div>
-                  <div className='h-12 w-12 bg-orange-100 rounded-lg flex items-center justify-center'>
-                    <AlertCircle className='h-6 w-6 text-orange-600' />
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardContent className='p-6'>
-                <div className='flex items-center justify-between'>
-                  <div>
-                    <p className='text-sm font-medium text-gray-600'>
-                      Approved
-                    </p>
-                    <p className='text-2xl font-bold text-gray-900'>
-                      {stats.approved}
-                    </p>
-                  </div>
-                  <div className='h-12 w-12 bg-purple-100 rounded-lg flex items-center justify-center'>
-                    <Users className='h-6 w-6 text-purple-600' />
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+          <div className='flex gap-3'>
+            <Button
+              variant='outline'
+              onClick={handleExportData}
+              className='flex items-center gap-2'
+            >
+              <Download className='h-4 w-4' />
+              Export Data
+            </Button>
+            <Link to='/volunteer'>
+              <Button className='bg-orange-500 hover:bg-orange-600 flex items-center gap-2'>
+                <Plus className='h-4 w-4' />
+                View Application Form
+              </Button>
+            </Link>
           </div>
         </div>
 
+        {/* Statistics Cards */}
+        <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6'>
+          <Card>
+            <CardContent className='p-6'>
+              <div className='flex items-center justify-between'>
+                <div>
+                  <p className='text-sm font-medium text-gray-600'>
+                    Total Applications
+                  </p>
+                  <p className='text-2xl font-bold text-gray-900'>
+                    {stats.total}
+                  </p>
+                </div>
+                <div className='h-12 w-12 bg-blue-100 rounded-lg flex items-center justify-center'>
+                  <Users className='h-6 w-6 text-blue-600' />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className='p-6'>
+              <div className='flex items-center justify-between'>
+                <div>
+                  <p className='text-sm font-medium text-gray-600'>This Week</p>
+                  <p className='text-2xl font-bold text-gray-900'>
+                    {stats.recent}
+                  </p>
+                </div>
+                <div className='h-12 w-12 bg-green-100 rounded-lg flex items-center justify-center'>
+                  <Calendar className='h-6 w-6 text-green-600' />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className='p-6'>
+              <div className='flex items-center justify-between'>
+                <div>
+                  <p className='text-sm font-medium text-gray-600'>
+                    Pending Review
+                  </p>
+                  <p className='text-2xl font-bold text-gray-900'>
+                    {stats.pending}
+                  </p>
+                </div>
+                <div className='h-12 w-12 bg-orange-100 rounded-lg flex items-center justify-center'>
+                  <AlertCircle className='h-6 w-6 text-orange-600' />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className='p-6'>
+              <div className='flex items-center justify-between'>
+                <div>
+                  <p className='text-sm font-medium text-gray-600'>Approved</p>
+                  <p className='text-2xl font-bold text-gray-900'>
+                    {stats.approved}
+                  </p>
+                </div>
+                <div className='h-12 w-12 bg-purple-100 rounded-lg flex items-center justify-center'>
+                  <Users className='h-6 w-6 text-purple-600' />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
         {/* Search and Filter Section */}
-        <Card className='mb-6'>
+        <Card>
           <CardHeader>
             <CardTitle className='text-lg font-semibold'>
               Filter & Search
@@ -301,7 +292,7 @@ const VolunteerDash = () => {
 
         {/* Error Alert */}
         {volunteerDeleteError && (
-          <div className='mb-6 p-4 rounded-lg bg-red-50 border border-red-200 text-red-600 flex items-center gap-3'>
+          <div className='p-4 rounded-lg bg-red-50 border border-red-200 text-red-600 flex items-center gap-3'>
             <AlertCircle className='h-5 w-5 flex-shrink-0' />
             <span>{volunteerDeleteError}</span>
           </div>
@@ -338,15 +329,11 @@ const VolunteerDash = () => {
                       <th className='px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider'>
                         Volunteer
                       </th>
-                      <th className='px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider'>
-                        Contact
-                      </th>
+
                       <th className='px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider'>
                         Location
                       </th>
-                      <th className='px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider'>
-                        Interests
-                      </th>
+
                       <th className='px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider'>
                         Submitted
                       </th>
@@ -376,12 +363,7 @@ const VolunteerDash = () => {
                             </div>
                           </div>
                         </td>
-                        <td className='px-6 py-4 whitespace-nowrap'>
-                          <div className='text-sm text-gray-900 flex items-center gap-2'>
-                            <Mail className='h-4 w-4 text-gray-400' />
-                            {volunteer.email}
-                          </div>
-                        </td>
+
                         <td className='px-6 py-4 whitespace-nowrap'>
                           <div className='text-sm text-gray-900 flex items-center gap-2'>
                             <MapPin className='h-4 w-4 text-gray-400' />
@@ -391,7 +373,7 @@ const VolunteerDash = () => {
                             {volunteer.state} - {volunteer.pincode}
                           </div>
                         </td>
-                        <td className='px-6 py-4'>
+                        {/* <td className='px-6 py-4'>
                           <div className='flex flex-wrap gap-1 max-w-48'>
                             {volunteer.interests
                               .slice(0, 2)
@@ -410,7 +392,7 @@ const VolunteerDash = () => {
                               </Badge>
                             )}
                           </div>
-                        </td>
+                        </td> */}
                         <td className='px-6 py-4 whitespace-nowrap'>
                           <div className='text-sm text-gray-900'>
                             {new Date(volunteer.submittedAt).toLocaleDateString(
@@ -524,7 +506,7 @@ const VolunteerDash = () => {
 
         {/* Pagination */}
         {totalPages > 1 && (
-          <div className='mt-6 flex items-center justify-between'>
+          <div className='flex items-center justify-between'>
             <div className='text-sm text-gray-700'>
               Showing {startItem} to {endItem} of {totalItems} results
             </div>
@@ -575,8 +557,6 @@ const VolunteerDash = () => {
           </div>
         )}
       </div>
-
-      <Footer />
     </>
   );
 };

@@ -51,6 +51,7 @@ import {
   TrendingUp,
   Loader2,
   AlertCircle,
+  Eye,
 } from "lucide-react";
 import { toast } from "react-hot-toast";
 import { BackNavigation } from "@/config/navigation/BackNavigation";
@@ -66,6 +67,7 @@ const TotalImpactDashboard: React.FC = () => {
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [showEditDialog, setShowEditDialog] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [showViewDialog, setShowViewDialog] = useState(false);
   const [selectedImpact, setSelectedImpact] = useState<TotalImpact | null>(
     null
   );
@@ -81,6 +83,7 @@ const TotalImpactDashboard: React.FC = () => {
     data: impactData,
     isLoading,
     error,
+    refetch,
   } = useGetAllTotalImpactQuery({
     page: currentPage,
     limit: 10,
@@ -142,12 +145,13 @@ const TotalImpactDashboard: React.FC = () => {
       toast.success("Total impact record created successfully");
       setShowCreateDialog(false);
       resetForm();
+      refetch();
     } catch (error: any) {
-      toast.error(error || "Failed to create record");
+      toast.error(error?.data?.message || "Failed to create record");
     }
   };
 
-  const handleEdit = (impact: TotalImpact) => {
+  const openEditDialog = (impact: TotalImpact) => {
     setSelectedImpact(impact);
     setFormData({
       dogsRescued: impact.dogsRescued.toString(),
@@ -174,9 +178,15 @@ const TotalImpactDashboard: React.FC = () => {
       toast.success("Record updated successfully");
       setShowEditDialog(false);
       resetForm();
+      refetch();
     } catch (error: any) {
-      toast.error(error || "Failed to update record");
+      toast.error(error?.data?.message || "Failed to update record");
     }
+  };
+
+  const openDeleteDialog = (impact: TotalImpact) => {
+    setSelectedImpact(impact);
+    setShowDeleteDialog(true);
   };
 
   const handleDelete = async () => {
@@ -187,24 +197,62 @@ const TotalImpactDashboard: React.FC = () => {
       toast.success("Record deleted successfully");
       setShowDeleteDialog(false);
       setSelectedImpact(null);
+      refetch();
     } catch (error: any) {
-      toast.error(error || "Failed to delete record");
+      toast.error(error?.data?.message || "Failed to delete record");
     }
   };
 
+  const openViewDialog = (impact: TotalImpact) => {
+    setSelectedImpact(impact);
+    setShowViewDialog(true);
+  };
+
+  // Statistics cards data
+  const statsCards = [
+    {
+      title: "Total Dogs Rescued",
+      value: statsData?.data.totalDogsRescued || 0,
+      icon: Heart,
+      color: "bg-orange-500",
+    },
+    {
+      title: "Total Dogs Adopted",
+      value: statsData?.data.totalDogsAdopted || 0,
+      icon: Home,
+      color: "bg-green-500",
+    },
+    {
+      title: "Total Volunteers",
+      value: statsData?.data.totalVolunteers || 0,
+      icon: Users,
+      color: "bg-blue-500",
+    },
+    {
+      title: "Avg Adoption Rate",
+      value: statsData?.data.avgAdoptionRate
+        ? `${statsData.data.avgAdoptionRate.toFixed(1)}%`
+        : "0.0%",
+      icon: TrendingUp,
+      color: "bg-purple-500",
+    },
+  ];
+
   if (error) {
     return (
-      <div className='min-h-screen bg-gradient-to-br from-slate-50 to-white p-4'>
+      <div className='container mx-auto p-6'>
         <BackNavigation />
-        <div className='max-w-6xl mx-auto mt-8'>
-          <Card className='border-red-200'>
-            <CardContent className='p-6'>
-              <div className='flex items-center gap-2 text-red-600'>
-                <AlertCircle className='w-5 h-5' />
-                <p>Failed to load impact data</p>
-              </div>
-            </CardContent>
-          </Card>
+        <div className='flex items-center justify-center h-64'>
+          <div className='text-center'>
+            <AlertCircle className='w-12 h-12 text-red-500 mx-auto mb-4' />
+            <h3 className='text-lg font-semibold text-gray-900 mb-2'>
+              Error Loading Impact Data
+            </h3>
+            <p className='text-gray-600 mb-4'>
+              Failed to load impact data. Please try again.
+            </p>
+            <Button onClick={() => refetch()}>Retry</Button>
+          </div>
         </div>
       </div>
     );
@@ -212,178 +260,168 @@ const TotalImpactDashboard: React.FC = () => {
 
   return (
     <>
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className='mb-8'
-      >
-        <h1 className='text-2xl font-bold text-gray-900 mb-2'>
-          Total Impact stats
-        </h1>
-        <p className='text-gray-600'>Manage foundation impact records</p>
-      </motion.div>
+      <BackNavigation />
+      <div className='container mx-auto p-6 space-y-6'>
+        {/* Header */}
+        <div className='flex justify-between items-center'>
+          <div>
+            <h1 className='text-2xl font-bold text-gray-900'>
+              Total Impact Management
+            </h1>
+            <p className='text-gray-600'>
+              Manage foundation impact records and statistics
+            </p>
+          </div>
+          <Button onClick={() => setShowCreateDialog(true)}>
+            <Plus className='w-4 h-4 mr-2' />
+            Add Record
+          </Button>
+        </div>
 
-      {/* Statistics Cards */}
-      {statsData && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-          className='grid grid-cols-1 md:grid-cols-4 gap-6 mb-8'
-        >
-          <Card className='bg-white  border-l-4 border-l-orange-500'>
-            <CardContent className='p-6'>
-              <div className='flex items-center'>
-                <Heart className='w-8 h-8 text-orange-600' />
-                <div className='ml-4'>
-                  <p className='text-2xl font-bold text-orange-600'>
-                    {statsData.data.totalDogsRescued}
-                  </p>
-                  <p className='text-xs text-gray-600'>Total Dogs Rescued</p>
-                </div>
+        {/* Statistics Cards */}
+        <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6'>
+          {statsCards.map((stat, index) => (
+            <motion.div
+              key={stat.title}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.1 }}
+            >
+              <Card>
+                <CardContent className='p-6'>
+                  <div className='flex items-center'>
+                    <div className={`${stat.color} p-2 rounded-lg`}>
+                      <stat.icon className='w-4 h-4 text-white' />
+                    </div>
+                    <div className='ml-4'>
+                      <p className='text-sm font-medium text-gray-600'>
+                        {stat.title}
+                      </p>
+                      <p className='text-xl font-bold text-gray-900'>
+                        {stat.value}
+                      </p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
+          ))}
+        </div>
+
+        {/* Records Table */}
+        <Card>
+          <CardContent className='p-0'>
+            {isLoading ? (
+              <div className='flex items-center justify-center h-64'>
+                <Loader2 className='w-8 h-8 animate-spin' />
               </div>
-            </CardContent>
-          </Card>
-
-          <Card className='bg-white  border-l-4 border-l-orange-500'>
-            <CardContent className='p-6'>
-              <div className='flex items-center'>
-                <Home className='w-8 h-8 text-green-600' />
-                <div className='ml-4'>
-                  <p className='text-2xl font-bold text-green-600'>
-                    {statsData.data.totalDogsAdopted}
-                  </p>
-                  <p className='text-xs text-gray-600'>Total Dogs Adopted</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className='bg-white  border-l-4 border-l-orange-500'>
-            <CardContent className='p-6'>
-              <div className='flex items-center'>
-                <Users className='w-8 h-8 text-blue-600' />
-                <div className='ml-4'>
-                  <p className='text-2xl font-bold text-blue-600'>
-                    {statsData.data.totalVolunteers}
-                  </p>
-                  <p className='text-xs text-gray-600'>Total Volunteers</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className='bg-white  border-l-4 border-l-orange-500'>
-            <CardContent className='p-6'>
-              <div className='flex items-center'>
-                <TrendingUp className='w-8 h-8 text-purple-600' />
-                <div className='ml-4'>
-                  <p className='text-2xl font-bold text-purple-600'>
-                    {statsData.data.avgAdoptionRate.toFixed(1)}%
-                  </p>
-                  <p className='text-xs text-gray-600'>Avg Adoption Rate</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </motion.div>
-      )}
-
-      {/* Actions */}
-      <div className='flex justify-between items-center mb-6'>
-        <h2 className='text-xl font-semibold text-gray-900'>Impact Records</h2>
-        <Button
-          onClick={() => setShowCreateDialog(true)}
-          className='bg-gray-600 hover:bg-blue-700'
-        >
-          <Plus className='w-4 h-4 mr-2' />
-          Add Record
-        </Button>
-      </div>
-
-      {/* Records Table */}
-      <Card>
-        <CardContent className='p-0'>
-          {isLoading ? (
-            <div className='flex items-center justify-center p-8'>
-              <Loader2 className='w-6 h-6 animate-spin' />
-              <span className='ml-2'>Loading records...</span>
-            </div>
-          ) : (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Dogs Rescued</TableHead>
-                  <TableHead>Dogs Adopted</TableHead>
-                  <TableHead>Volunteers</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Created</TableHead>
-                  <TableHead>Actions</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {impactData?.data.map((impact) => (
-                  <TableRow key={impact._id}>
-                    <TableCell>{impact.dogsRescued}</TableCell>
-                    <TableCell>{impact.dogsAdopted}</TableCell>
-                    <TableCell>{impact.volunteers}</TableCell>
-                    <TableCell>{impact.adoptionRate}%</TableCell>
-                    <TableCell>
-                      <Badge
-                        variant={impact.isActive ? "default" : "secondary"}
-                      >
-                        {impact.isActive ? "Active" : "Inactive"}
-                      </Badge>
-                    </TableCell>
-                    <TableCell>
-                      {new Date(impact.createdAt).toLocaleDateString()}
-                    </TableCell>
-                    <TableCell>
-                      <div className='flex gap-2'>
-                        <Button
-                          variant='outline'
-                          size='sm'
-                          onClick={() => handleEdit(impact)}
-                        >
-                          <Edit2 className='w-4 h-4' />
-                        </Button>
-                        <Button
-                          variant='outline'
-                          size='sm'
-                          onClick={() => {
-                            setSelectedImpact(impact);
-                            setShowDeleteDialog(true);
-                          }}
-                        >
-                          <Trash2 className='w-4 h-4' />
-                        </Button>
-                      </div>
-                    </TableCell>
+            ) : (
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Dogs Rescued</TableHead>
+                    <TableHead>Dogs Adopted</TableHead>
+                    <TableHead>Volunteers</TableHead>
+                    <TableHead>Adoption Rate</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>Created</TableHead>
+                    <TableHead>Actions</TableHead>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          )}
-        </CardContent>
-      </Card>
+                </TableHeader>
+                <TableBody>
+                  {impactData?.data.map((impact) => (
+                    <TableRow key={impact._id}>
+                      <TableCell className='font-medium'>
+                        {impact.dogsRescued}
+                      </TableCell>
+                      <TableCell>{impact.dogsAdopted}</TableCell>
+                      <TableCell>{impact.volunteers}</TableCell>
+                      <TableCell>{impact.adoptionRate}%</TableCell>
+                      <TableCell>
+                        <Badge
+                          variant={impact.isActive ? "default" : "secondary"}
+                        >
+                          {impact.isActive ? "Active" : "Inactive"}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>
+                        {new Date(impact.createdAt).toLocaleDateString()}
+                      </TableCell>
+                      <TableCell>
+                        <div className='flex items-center gap-2'>
+                          <Button
+                            variant='ghost'
+                            size='sm'
+                            onClick={() => openViewDialog(impact)}
+                          >
+                            <Eye className='w-4 h-4' />
+                          </Button>
+                          <Button
+                            variant='ghost'
+                            size='sm'
+                            onClick={() => openEditDialog(impact)}
+                          >
+                            <Edit2 className='w-4 h-4' />
+                          </Button>
+                          <Button
+                            variant='ghost'
+                            size='sm'
+                            onClick={() => openDeleteDialog(impact)}
+                          >
+                            <Trash2 className='w-4 h-4' />
+                          </Button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Pagination */}
+        {/* {impactData?.pagination && impactData.pagination.totalPages > 1 && (
+          <div className='flex justify-center gap-2'>
+            <Button
+              variant='outline'
+              disabled={currentPage === 1}
+              onClick={() => setCurrentPage(currentPage - 1)}
+            >
+              Previous
+            </Button>
+            <span className='flex items-center px-4'>
+              Page {currentPage} of {impactData.pagination.totalPages}
+            </span>
+            <Button
+              variant='outline'
+              disabled={currentPage === impactData.pagination.totalPages}
+              onClick={() => setCurrentPage(currentPage + 1)}
+            >
+              Next
+            </Button>
+          </div>
+        )} */}
+      </div>
 
       {/* Create Dialog */}
       <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
-        <DialogContent>
+        <DialogContent className='max-w-2xl'>
           <DialogHeader>
             <DialogTitle>Create Impact Record</DialogTitle>
             <DialogDescription>
-              Add a new total impact record for the foundation
+              Add a new total impact record for the foundation.
             </DialogDescription>
           </DialogHeader>
           <div className='space-y-4'>
             <div className='grid grid-cols-3 gap-4'>
               <div>
-                <Label htmlFor='dogsRescued'>Dogs Rescued</Label>
+                <Label htmlFor='create-dogsRescued'>Dogs Rescued *</Label>
                 <Input
-                  id='dogsRescued'
+                  id='create-dogsRescued'
                   type='number'
                   min='0'
+                  placeholder='Enter number'
                   value={formData.dogsRescued}
                   onChange={(e) =>
                     setFormData((prev) => ({
@@ -394,11 +432,12 @@ const TotalImpactDashboard: React.FC = () => {
                 />
               </div>
               <div>
-                <Label htmlFor='dogsAdopted'>Dogs Adopted</Label>
+                <Label htmlFor='create-dogsAdopted'>Dogs Adopted *</Label>
                 <Input
-                  id='dogsAdopted'
+                  id='create-dogsAdopted'
                   type='number'
                   min='0'
+                  placeholder='Enter number'
                   value={formData.dogsAdopted}
                   onChange={(e) =>
                     setFormData((prev) => ({
@@ -409,11 +448,12 @@ const TotalImpactDashboard: React.FC = () => {
                 />
               </div>
               <div>
-                <Label htmlFor='volunteers'>Volunteers</Label>
+                <Label htmlFor='create-volunteers'>Volunteers *</Label>
                 <Input
-                  id='volunteers'
+                  id='create-volunteers'
                   type='number'
                   min='0'
+                  placeholder='Enter number'
                   value={formData.volunteers}
                   onChange={(e) =>
                     setFormData((prev) => ({
@@ -428,7 +468,10 @@ const TotalImpactDashboard: React.FC = () => {
           <DialogFooter>
             <Button
               variant='outline'
-              onClick={() => setShowCreateDialog(false)}
+              onClick={() => {
+                setShowCreateDialog(false);
+                resetForm();
+              }}
             >
               Cancel
             </Button>
@@ -442,17 +485,17 @@ const TotalImpactDashboard: React.FC = () => {
 
       {/* Edit Dialog */}
       <Dialog open={showEditDialog} onOpenChange={setShowEditDialog}>
-        <DialogContent>
+        <DialogContent className='max-w-2xl'>
           <DialogHeader>
             <DialogTitle>Edit Impact Record</DialogTitle>
             <DialogDescription>
-              Update the impact record details
+              Update the impact record details and settings.
             </DialogDescription>
           </DialogHeader>
           <div className='space-y-4'>
             <div className='grid grid-cols-3 gap-4'>
               <div>
-                <Label htmlFor='edit-dogsRescued'>Dogs Rescued</Label>
+                <Label htmlFor='edit-dogsRescued'>Dogs Rescued *</Label>
                 <Input
                   id='edit-dogsRescued'
                   type='number'
@@ -467,7 +510,7 @@ const TotalImpactDashboard: React.FC = () => {
                 />
               </div>
               <div>
-                <Label htmlFor='edit-dogsAdopted'>Dogs Adopted</Label>
+                <Label htmlFor='edit-dogsAdopted'>Dogs Adopted *</Label>
                 <Input
                   id='edit-dogsAdopted'
                   type='number'
@@ -482,7 +525,7 @@ const TotalImpactDashboard: React.FC = () => {
                 />
               </div>
               <div>
-                <Label htmlFor='edit-volunteers'>Volunteers</Label>
+                <Label htmlFor='edit-volunteers'>Volunteers *</Label>
                 <Input
                   id='edit-volunteers'
                   type='number'
@@ -507,12 +550,104 @@ const TotalImpactDashboard: React.FC = () => {
             </div>
           </div>
           <DialogFooter>
-            <Button variant='outline' onClick={() => setShowEditDialog(false)}>
+            <Button
+              variant='outline'
+              onClick={() => {
+                setShowEditDialog(false);
+                resetForm();
+              }}
+            >
               Cancel
             </Button>
             <Button onClick={handleUpdate} disabled={isUpdating}>
               {isUpdating && <Loader2 className='w-4 h-4 mr-2 animate-spin' />}
               Update
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* View Dialog */}
+      <Dialog open={showViewDialog} onOpenChange={setShowViewDialog}>
+        <DialogContent className='max-w-2xl'>
+          <DialogHeader>
+            <DialogTitle>View Impact Record</DialogTitle>
+            <DialogDescription>
+              Impact record details and statistics
+            </DialogDescription>
+          </DialogHeader>
+          {selectedImpact && (
+            <div className='space-y-4'>
+              <div className='grid grid-cols-3 gap-4'>
+                <div>
+                  <Label className='text-sm font-medium text-gray-600'>
+                    Dogs Rescued
+                  </Label>
+                  <p className='text-2xl font-bold text-orange-600'>
+                    {selectedImpact.dogsRescued}
+                  </p>
+                </div>
+                <div>
+                  <Label className='text-sm font-medium text-gray-600'>
+                    Dogs Adopted
+                  </Label>
+                  <p className='text-2xl font-bold text-green-600'>
+                    {selectedImpact.dogsAdopted}
+                  </p>
+                </div>
+                <div>
+                  <Label className='text-sm font-medium text-gray-600'>
+                    Volunteers
+                  </Label>
+                  <p className='text-2xl font-bold text-blue-600'>
+                    {selectedImpact.volunteers}
+                  </p>
+                </div>
+              </div>
+              <div className='grid grid-cols-2 gap-4'>
+                <div>
+                  <Label className='text-sm font-medium text-gray-600'>
+                    Adoption Rate
+                  </Label>
+                  <p className='text-xl font-bold text-purple-600'>
+                    {selectedImpact.adoptionRate}%
+                  </p>
+                </div>
+                <div>
+                  <Label className='text-sm font-medium text-gray-600'>
+                    Status
+                  </Label>
+                  <Badge
+                    variant={selectedImpact.isActive ? "default" : "secondary"}
+                    className='mt-1'
+                  >
+                    {selectedImpact.isActive ? "Active" : "Inactive"}
+                  </Badge>
+                </div>
+              </div>
+              <div className='grid grid-cols-2 gap-4'>
+                <div>
+                  <Label className='text-sm font-medium text-gray-600'>
+                    Created
+                  </Label>
+                  <p className='text-gray-900'>
+                    {new Date(selectedImpact.createdAt).toLocaleString()}
+                  </p>
+                </div>
+                <div>
+                  <Label className='text-sm font-medium text-gray-600'>
+                    Updated
+                  </Label>
+                  <p className='text-gray-900'>
+                    {new Date(selectedImpact.updatedAt).toLocaleString()}
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+          <DialogFooter>
+            <Button variant='outline' onClick={() => setShowViewDialog(false)}>
+              Close
             </Button>
           </DialogFooter>
         </DialogContent>

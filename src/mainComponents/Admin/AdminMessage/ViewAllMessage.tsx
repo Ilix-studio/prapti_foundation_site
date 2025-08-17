@@ -49,12 +49,7 @@ import {
 } from "@/redux-store/services/contactApi";
 
 import { BackNavigation } from "@/config/navigation/BackNavigation";
-
-interface FilterState {
-  search: string;
-  readStatus: "all" | "read" | "unread";
-  sortBy: "newest" | "oldest" | "name" | "subject";
-}
+import { FilterState } from "@/types/contact.types";
 
 const ViewAllMessage = () => {
   const navigate = useNavigate();

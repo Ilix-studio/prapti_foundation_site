@@ -15,13 +15,15 @@ import {
   AlertCircle,
   Users,
   Eye,
-  Heart,
   MessageCircle,
   Upload,
   FileText,
   Calendar,
   TrendingUp,
   Video,
+  Images,
+  DatabaseZap,
+  PenLine,
 } from "lucide-react";
 
 import {
@@ -35,7 +37,7 @@ import { useGetVolunteerApplicationsQuery } from "../../redux-store/services/vol
 import { useGetVisitorStatsQuery } from "../../redux-store/services/visitorApi";
 // Import contact API hooks
 import { useGetContactMessagesQuery } from "../../redux-store/services/contactApi";
-import TotalImpactDashboard from "./AdminImpact/Impact";
+
 import { useGetPhotosQuery } from "@/redux-store/services/photoApi";
 import { useGetVideosQuery } from "@/redux-store/services/videoApi";
 
@@ -121,7 +123,6 @@ const NewDashAdmin: React.FC = () => {
     {
       title: "Total Blogs",
       value: blogPosts?.length?.toString() || "0",
-      change: "+2",
       icon: BookOpen,
       color: "text-blue-600",
       bgColor: "bg-blue-50",
@@ -132,8 +133,7 @@ const NewDashAdmin: React.FC = () => {
     {
       title: "Total Gallery Photos",
       value: photosData?.data?.pagination?.total?.toString() || "0",
-      change: "+5",
-      icon: Heart,
+      icon: Images,
       color: "text-purple-600",
       bgColor: "bg-purple-50",
       loading: false,
@@ -142,7 +142,6 @@ const NewDashAdmin: React.FC = () => {
     {
       title: "Total Gallery Videos",
       value: videosData?.data?.pagination?.totalVideos?.toString() || "0",
-      change: "+5",
       icon: Video,
       color: "text-green-600",
       bgColor: "bg-green-50",
@@ -152,13 +151,32 @@ const NewDashAdmin: React.FC = () => {
     {
       title: "Total Volunteer Applications",
       value: volunteerData?.pagination?.total?.toString() || "0",
-      change: "+1",
       icon: Users,
       color: "text-orange-600",
       bgColor: "bg-orange-50",
       loading: volunteersLoading,
       error: volunteersError,
       action: () => navigate("/admin/volunteerDashboard"),
+    },
+    {
+      title: "Total Impact Data",
+      value: volunteerData?.pagination?.total?.toString() || "0",
+      icon: DatabaseZap,
+      color: "text-yellow-400",
+      bgColor: "bg-gray-100",
+      loading: volunteersLoading,
+      error: volunteersError,
+      action: () => navigate("/admin/impact"),
+    },
+    {
+      title: "Total Testimonials ",
+      value: volunteerData?.pagination?.total?.toString() || "0",
+      icon: PenLine,
+      color: "text-oklch(39.8% 0.195 277.366)",
+      bgColor: "bg-red-50",
+      loading: volunteersLoading,
+      error: volunteersError,
+      action: () => navigate("/admin/testimonials"),
     },
   ];
 
@@ -244,11 +262,11 @@ const NewDashAdmin: React.FC = () => {
         </div>
 
         {/* Stats Grid */}
-        <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8 animate-in slide-in-from-bottom duration-700'>
+        <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 mb-12 animate-in slide-in-from-bottom duration-700'>
           {stats.map((stat, index) => (
             <Card
               key={index}
-              className='hover:shadow-lg transition-all duration-200 cursor-pointer border-l-4 border-l-orange-500 hover:scale-105'
+              className='hover:shadow-lg transition-all duration-200 cursor-pointer border-l-3 border-l-orange-500 hover:scale-105'
               onClick={stat.action}
             >
               <CardContent className='p-6'>
@@ -270,14 +288,6 @@ const NewDashAdmin: React.FC = () => {
                           stat.value
                         )}
                       </p>
-                      {stat.change && !stat.loading && !stat.error && (
-                        <Badge
-                          variant='secondary'
-                          className='text-green-600 bg-green-50'
-                        >
-                          {stat.change}
-                        </Badge>
-                      )}
                     </div>
                   </div>
                   <div className={`p-3 rounded-full ${stat.bgColor}`}>
@@ -292,7 +302,7 @@ const NewDashAdmin: React.FC = () => {
         {/* Visitor Analytics Section */}
         {visitorStatsData?.data && (
           <div className='mb-8 animate-in slide-in-from-left duration-700'>
-            <Card className='border-l-4 border-l-blue-500 shadow-sm'>
+            <Card className='border-l-3 border-l-blue-500 shadow-sm'>
               <CardHeader>
                 <CardTitle className='flex items-center gap-2 justify-between'>
                   <div className='flex items-center gap-2'>
@@ -388,7 +398,7 @@ const NewDashAdmin: React.FC = () => {
         <div className='grid grid-cols-1 lg:grid-cols-3 gap-6'>
           {/* Recent Messages */}
           <div className='lg:col-span-2 animate-in slide-in-from-left duration-700'>
-            <Card className='border-l-4 border-l-green-500 shadow-sm'>
+            <Card className='border-l-3 border-l-green-500 shadow-sm'>
               <CardHeader>
                 <CardTitle className='flex items-center gap-2'>
                   <MessageCircle className='w-5 h-5 text-green-600' />
@@ -470,7 +480,7 @@ const NewDashAdmin: React.FC = () => {
 
           {/* Quick Actions */}
           <div className='animate-in slide-in-from-right duration-700'>
-            <Card className='mb-6 border-l-4 border-l-purple-500 shadow-sm'>
+            <Card className='mb-6 border-l-3 border-l-purple-500 shadow-sm'>
               <CardHeader>
                 <CardTitle className='flex items-center gap-2'>
                   <TrendingUp className='w-5 h-5 text-purple-600' />
@@ -496,7 +506,7 @@ const NewDashAdmin: React.FC = () => {
             </Card>
 
             {/* Site Status */}
-            <Card className='border-l-4 border-l-cyan-500 shadow-sm'>
+            <Card className='border-l-3 border-l-cyan-500 shadow-sm'>
               <CardHeader>
                 <CardTitle className='flex items-center gap-2'>
                   <Calendar className='w-5 h-5 text-cyan-600' />
@@ -535,8 +545,6 @@ const NewDashAdmin: React.FC = () => {
             </Card>
           </div>
         </div>
-        <br />
-        <TotalImpactDashboard />
       </div>
     </div>
   );
