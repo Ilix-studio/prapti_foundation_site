@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Menu, PawPrint, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -6,7 +6,28 @@ import { Link, useLocation } from "react-router-dom";
 
 export function Header() {
   const [isOpen, setIsOpen] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
+  const [lastScrollY, setLastScrollY] = useState(0);
   const location = useLocation();
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+
+      // Show header when scrolling up, hide when scrolling down
+      if (currentScrollY < lastScrollY || currentScrollY < 10) {
+        setIsVisible(true);
+      } else {
+        setIsVisible(false);
+      }
+
+      setLastScrollY(currentScrollY);
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [lastScrollY]);
 
   const isActive = (path: string) => {
     return location.pathname === path;
@@ -16,8 +37,8 @@ export function Header() {
     <motion.header
       className='sticky top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b'
       initial={{ y: -100 }}
-      animate={{ y: 0 }}
-      transition={{ duration: 0.5 }}
+      animate={{ y: isVisible ? 0 : -100 }}
+      transition={{ duration: 0.5, ease: "easeInOut" }}
     >
       <div className='container flex items-center justify-between h-16 px-4 md:px-6'>
         <Link to='/' className='flex items-center gap-2'>

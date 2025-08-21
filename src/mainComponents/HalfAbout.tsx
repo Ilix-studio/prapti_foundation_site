@@ -14,11 +14,15 @@ const HalfAbout = () => {
             </h2>
             <div className='space-y-4 text-gray-500'>
               <p>
-                Prapti Foundation was established in 2017 by a group of
-                passionate animal lovers who couldn't ignore the plight of stray
-                dogs in Golaghat. What started as informal feeding programs and
-                emergency medical assistance gradually evolved into a formal
-                shelter that now provides comprehensive care for homeless dogs.
+                <strong>
+                  {" "}
+                  Prapti Foundation was established in 2017 by a group of
+                  passionate animal lovers who couldn't ignore the plight of
+                  stray dogs in Golaghat.
+                </strong>{" "}
+                What started as informal feeding programs and emergency medical
+                assistance gradually evolved into a formal shelter that now
+                provides comprehensive care for homeless dogs.
               </p>
               <p>
                 Over the years, we have rescued hundreds of dogs from dire
@@ -33,7 +37,7 @@ const HalfAbout = () => {
               </p>
             </div>
           </div>
-          <div className='relative rounded-lg overflow-hidden'>
+          <div className='relative  overflow-hidden'>
             <img
               src={HeroSectionBgImg}
               alt="Prapti Foundation's journey"

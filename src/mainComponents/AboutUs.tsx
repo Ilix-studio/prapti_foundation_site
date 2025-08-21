@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button";
 import { Mail, Phone, MapPin, Heart, Users, Calendar, Dog } from "lucide-react";
 import { Link } from "react-router-dom";
 import aboutusLogo from "./../assets/aboutUS.png";
-import drPrapti from "./../assets/DrPrapti.png";
 import values from "./../assets/values.png";
 
 const AboutUs: React.FC = () => {
@@ -127,129 +126,6 @@ const AboutUs: React.FC = () => {
               </div>
               <h3 className='text-3xl font-bold'>6</h3>
               <p className='text-gray-500'>Years of Service</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Our Team Section */}
-      <section className='py-12 md:py-24'>
-        <div className='container px-4 md:px-6'>
-          <div className='text-center space-y-4 max-w-3xl mx-auto mb-12'>
-            <div className='inline-block rounded-lg bg-orange-100 px-3 py-1 text-sm'>
-              Our Team
-            </div>
-            <h2 className='text-3xl font-bold tracking-tighter sm:text-4xl'>
-              Meet the People Behind Prapti
-            </h2>
-            <p className='text-gray-500'>
-              Our dedicated team works tirelessly to ensure the well-being of
-              every dog in our care.
-            </p>
-          </div>
-
-          <div className='grid sm:grid-cols-2 lg:grid-cols-3 gap-8'>
-            {/* Team Member 1 */}
-            <div className='bg-white p-6 rounded-lg shadow-sm text-center'>
-              <div className='w-24 h-24 rounded-full overflow-hidden mx-auto mb-4'>
-                <img
-                  src={drPrapti}
-                  alt='Dr Prapti Phukan'
-                  className='w-full h-full object-cover'
-                />
-              </div>
-              <h3 className='text-xl font-semibold'>Dr. Prapti </h3>
-              <p className='text-orange-500 mb-2'>Founder & Director</p>
-              <p className='text-gray-500 text-sm mb-4'>
-                Passionate about animal welfare since childhood, Krishnendu
-                established the foundation to create a safe haven for stray
-                dogs.
-              </p>
-            </div>
-
-            {/* Team Member 2 */}
-            <div className='bg-white p-6 rounded-lg shadow-sm text-center'>
-              <div className='w-24 h-24 rounded-full overflow-hidden mx-auto mb-4'>
-                <img
-                  src='/placeholder.svg?height=96&width=96&text=DR'
-                  alt='Dr. Rajesh Sharma'
-                  className='w-full h-full object-cover'
-                />
-              </div>
-              <h3 className='text-xl font-semibold'>Dr. Rajesh Sharma</h3>
-              <p className='text-orange-500 mb-2'>Veterinarian</p>
-              <p className='text-gray-500 text-sm mb-4'>
-                With over 15 years of experience in veterinary medicine, Dr.
-                Sharma ensures all our dogs receive the best medical care.
-              </p>
-            </div>
-
-            {/* Team Member 3 */}
-            <div className='bg-white p-6 rounded-lg shadow-sm text-center'>
-              <div className='w-24 h-24 rounded-full overflow-hidden mx-auto mb-4'>
-                <img
-                  src='/placeholder.svg?height=96&width=96&text=PB'
-                  alt='Priya Bora'
-                  className='w-full h-full object-cover'
-                />
-              </div>
-              <h3 className='text-xl font-semibold'>Priya Bora</h3>
-              <p className='text-orange-500 mb-2'>Adoption Coordinator</p>
-              <p className='text-gray-500 text-sm mb-4'>
-                Priya works diligently to match our dogs with the perfect
-                forever homes and provides ongoing support to adopters.
-              </p>
-            </div>
-
-            {/* Team Member 4 */}
-            <div className='bg-white p-6 rounded-lg shadow-sm text-center'>
-              <div className='w-24 h-24 rounded-full overflow-hidden mx-auto mb-4'>
-                <img
-                  src='/placeholder.svg?height=96&width=96&text=AK'
-                  alt='Aditya Kumar'
-                  className='w-full h-full object-cover'
-                />
-              </div>
-              <h3 className='text-xl font-semibold'>Aditya Kumar</h3>
-              <p className='text-orange-500 mb-2'>Shelter Manager</p>
-              <p className='text-gray-500 text-sm mb-4'>
-                Aditya oversees the day-to-day operations of our shelter,
-                ensuring all dogs are well-cared for and comfortable.
-              </p>
-            </div>
-
-            {/* Team Member 5 */}
-            <div className='bg-white p-6 rounded-lg shadow-sm text-center'>
-              <div className='w-24 h-24 rounded-full overflow-hidden mx-auto mb-4'>
-                <img
-                  src='/placeholder.svg?height=96&width=96&text=MB'
-                  alt='Meera Baruah'
-                  className='w-full h-full object-cover'
-                />
-              </div>
-              <h3 className='text-xl font-semibold'>Meera Baruah</h3>
-              <p className='text-orange-500 mb-2'>Fundraising Coordinator</p>
-              <p className='text-gray-500 text-sm mb-4'>
-                Meera leads our fundraising efforts, organizing events and
-                campaigns to support our ongoing mission.
-              </p>
-            </div>
-
-            {/* Team Member 6 */}
-            <div className='bg-white p-6 rounded-lg shadow-sm text-center'>
-              <div className='w-24 h-24 rounded-full overflow-hidden mx-auto mb-4'>
-                <img
-                  src='/placeholder.svg?height=96&width=96&text=RD'
-                  alt='Rahul Dutta'
-                  className='w-full h-full object-cover'
-                />
-              </div>
-              <h3 className='text-xl font-semibold'>Rahul Dutta</h3>
-              <p className='text-orange-500 mb-2'>Volunteer Coordinator</p>
-              <p className='text-gray-500 text-sm mb-4'>
-                Rahul manages our volunteer program, training and organizing our
-                dedicated team of animal lovers.
-              </p>
             </div>
           </div>
         </div>

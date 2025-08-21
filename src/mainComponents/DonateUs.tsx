@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { IconBrandGooglePlay } from "@tabler/icons-react";
-import { Heart, Users, Shield, Gift } from "lucide-react";
+import { Heart, Users, Shield, Gift, ArrowRight } from "lucide-react";
 import React from "react";
 import { Link } from "react-router-dom";
 
@@ -109,6 +109,7 @@ const DonateUs: React.FC = () => {
                       className='border-orange-500 text-orange-600 hover:bg-orange-50 px-8 py-3 text-base'
                     >
                       Volunteer With Us
+                      <ArrowRight className='ml-2 h-4 w-4' />
                     </Button>
                   </Link>
                 </div>

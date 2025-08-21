@@ -1,11 +1,12 @@
 import { Button } from "@/components/ui/button";
+import { ArrowRight } from "lucide-react";
 import React from "react";
 import { Link } from "react-router-dom";
 
 const OurMission: React.FC = () => {
   return (
     <>
-      <section className='w-full py-16 md:py-28 lg:py-36'>
+      <section className='w-full py-16 md:py-28 lg:py-36 '>
         <div className='container px-6 md:px-8'>
           <div className='grid gap-16 px-6 md:gap-20 lg:grid-cols-2 lg:px-12'>
             {/* Left Column - Mission Content */}
@@ -18,7 +19,7 @@ const OurMission: React.FC = () => {
                 Helping Dogs Find Loving Homes
               </h2>
 
-              <p className='max-w-[600px] text-gray-500 text-lg md:text-xl leading-relaxed'>
+              <p className='max-w-[600px] text-black-500 text-lg md:text-xl leading-relaxed'>
                 Prapti Foundation is dedicated to rescuing, rehabilitating, and
                 rehoming dogs in need. We believe every dog deserves a loving
                 home and work tirelessly to make perfect matches.
@@ -26,8 +27,9 @@ const OurMission: React.FC = () => {
 
               <div className='pt-4'>
                 <Link to='/about'>
-                  <Button className='bg-gray-500 hover:bg-orange-600 px-8 py-3 text-base'>
+                  <Button className='bg-[#F26649] hover:bg-orange-600 px-8 py-3 text-white font-bold'>
                     About Us
+                    <ArrowRight className='ml-2 h-4 w-4' />
                   </Button>
                 </Link>
               </div>
@@ -41,7 +43,7 @@ const OurMission: React.FC = () => {
                     <h3 className='text-xl font-semibold text-gray-900'>
                       100+ Dogs Adopted
                     </h3>
-                    <p className='text-gray-500 leading-relaxed'>
+                    <p className='text-black leading-relaxed'>
                       We've helped over 100 dogs find their forever homes in the
                       past year alone.
                     </p>
@@ -53,7 +55,7 @@ const OurMission: React.FC = () => {
                     <h3 className='text-xl font-semibold text-gray-900'>
                       Comprehensive Care
                     </h3>
-                    <p className='text-gray-500 leading-relaxed'>
+                    <p className='text-black leading-relaxed'>
                       All our dogs receive medical care, training, and
                       socialization before adoption.
                     </p>
