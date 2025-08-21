@@ -79,7 +79,7 @@ const SmallContactSec = () => {
 
   return (
     <>
-      <div className='min-h-[90vh]'>
+      <div className='min-h-[90vh] bg-gray-50'>
         <section
           className='w-full py-15 md:py-24 lg:py-32 bg-white-50 '
           id='contact'

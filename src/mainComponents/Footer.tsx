@@ -374,15 +374,15 @@ const Footer = () => {
             <div className='flex items-center gap-4 text-xs text-gray-500'>
               <p>© {currentYear} Prapti Foundation. All rights reserved.</p>
             </div>
-            <p className='text-xs text-gray-700'>
+            <p className='text-xs text-black'>
               Paw-crafted with 🧡 by{" "}
               <Link
                 to='https://ilix-hazarika.vercel.app/'
                 target='_blank'
                 rel='noopener noreferrer'
-                className='text-orange-500 hover:underline font-bold'
+                className='text-[#F26649] hover:underline font-bold'
               >
-                Ilix-Studio
+                ILIX_STUDIO
               </Link>
             </p>
           </div>
