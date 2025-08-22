@@ -3,10 +3,9 @@ import { motion } from "framer-motion";
 import { Header } from "@/mainComponents/Header";
 import Footer from "@/mainComponents/Footer";
 import { Button } from "@/components/ui/button";
-import { Mail, Phone, MapPin, Heart, Users, Calendar, Dog } from "lucide-react";
+import { Heart, Users, Calendar, Dog } from "lucide-react";
 import { Link } from "react-router-dom";
 import aboutusLogo from "./../assets/aboutUS.png";
-import values from "./../assets/values.png";
 
 const AboutUs: React.FC = () => {
   return (
@@ -127,113 +126,6 @@ const AboutUs: React.FC = () => {
               <h3 className='text-3xl font-bold'>6</h3>
               <p className='text-gray-500'>Years of Service</p>
             </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Our Values Section */}
-      <section className='py-12 md:py-24 bg-gray-50'>
-        <div className='container px-4 md:px-6'>
-          <div className='grid gap-12 lg:grid-cols-2 lg:gap-16 items-center'>
-            <div className='order-2 lg:order-1 relative rounded-lg overflow-hidden'>
-              <img
-                src={values}
-                alt="Prapti Foundation's values"
-                className='w-full h-full object-cover'
-              />
-            </div>
-            <div className='order-1 lg:order-2 space-y-4'>
-              <div className='inline-block rounded-lg bg-orange-100 px-3 py-1 text-sm'>
-                Our Values
-              </div>
-              <h2 className='text-3xl font-bold tracking-tighter sm:text-4xl'>
-                What We Stand For
-              </h2>
-              <div className='space-y-6'>
-                <div className='space-y-2'>
-                  <h3 className='text-xl font-semibold'>Compassion</h3>
-                  <p className='text-gray-500'>
-                    We treat every animal with kindness and respect, recognizing
-                    their inherent worth and dignity.
-                  </p>
-                </div>
-                <div className='space-y-2'>
-                  <h3 className='text-xl font-semibold'>Dedication</h3>
-                  <p className='text-gray-500'>
-                    We are committed to providing the best possible care for all
-                    dogs in our shelter, no matter their condition.
-                  </p>
-                </div>
-                <div className='space-y-2'>
-                  <h3 className='text-xl font-semibold'>Education</h3>
-                  <p className='text-gray-500'>
-                    We believe in spreading awareness about responsible pet
-                    ownership and the importance of animal welfare.
-                  </p>
-                </div>
-                <div className='space-y-2'>
-                  <h3 className='text-xl font-semibold'>Community</h3>
-                  <p className='text-gray-500'>
-                    We value the support of our community and work together to
-                    create a better world for dogs and humans alike.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Contact Section */}
-      <section className='py-12 md:py-24'>
-        <div className='container px-4 md:px-6'>
-          <div className='text-center space-y-4 max-w-3xl mx-auto mb-12'>
-            <div className='inline-block rounded-lg bg-orange-100 px-3 py-1 text-sm'>
-              Get In Touch
-            </div>
-            <h2 className='text-3xl font-bold tracking-tighter sm:text-4xl'>
-              Contact Us
-            </h2>
-            <p className='text-gray-500'>
-              Have questions or want to learn more about our work? We'd love to
-              hear from you.
-            </p>
-          </div>
-
-          <div className='grid md:grid-cols-3 gap-8'>
-            <div className='bg-white p-6 rounded-lg shadow-sm text-center'>
-              <div className='inline-flex items-center justify-center w-12 h-12 rounded-full bg-orange-100 text-orange-500 mb-4'>
-                <Mail className='h-6 w-6' />
-              </div>
-              <h3 className='text-lg font-semibold mb-2'>Email Us</h3>
-              <p className='text-gray-500'>info@praptifoundation.org</p>
-            </div>
-
-            <div className='bg-white p-6 rounded-lg shadow-sm text-center'>
-              <div className='inline-flex items-center justify-center w-12 h-12 rounded-full bg-orange-100 text-orange-500 mb-4'>
-                <Phone className='h-6 w-6' />
-              </div>
-              <h3 className='text-lg font-semibold mb-2'>Call Us</h3>
-              <p className='text-gray-500'>+91 123 456 7890</p>
-            </div>
-
-            <div className='bg-white p-6 rounded-lg shadow-sm text-center'>
-              <div className='inline-flex items-center justify-center w-12 h-12 rounded-full bg-orange-100 text-orange-500 mb-4'>
-                <MapPin className='h-6 w-6' />
-              </div>
-              <h3 className='text-lg font-semibold mb-2'>Visit Us</h3>
-              <p className='text-gray-500'>
-                Prapti Foundation Shelter, Golaghat, Assam, India
-              </p>
-            </div>
-          </div>
-
-          <div className='mt-12 text-center'>
-            <Link to='/contact'>
-              <Button className='bg-orange-500 hover:bg-orange-600'>
-                Send Us a Message
-              </Button>
-            </Link>
           </div>
         </div>
       </section>

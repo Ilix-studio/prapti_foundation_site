@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { Calendar } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { BlogPost, getBlogCategoryName } from "@/types/blogs.types";
+import { getContentPreview } from "@/constants/helperfn";
 
 interface BlogCardProps {
   post: BlogPost;
@@ -65,6 +66,9 @@ const BlogCard: React.FC<BlogCardProps> = ({ post, compact = false }) => {
         <h2 className='text-xl font-bold group-hover:text-orange-500 transition-colors'>
           <Link to={`/blog/${post._id}`}>{post.title}</Link>
         </h2>
+        <p className='text-gray-600 text-sm line-clamp-2'>
+          {getContentPreview(post.content)}
+        </p>
 
         <Link
           to={`/blog/${post._id}`}
