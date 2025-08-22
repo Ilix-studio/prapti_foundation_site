@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { ArrowRight, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useGetBlogPostsQuery } from "@/redux-store/services/blogApi";
+import { getContentPreview } from "@/constants/helperfn";
 
 const LatestBlogPosts: React.FC = () => {
   const { data: blogPosts, isLoading, error } = useGetBlogPostsQuery();
@@ -17,13 +18,16 @@ const LatestBlogPosts: React.FC = () => {
     : [];
 
   return (
-    <section className='w-full  py-16 md:py-28 lg:py-36 bg-amber-50 flex flex-col justify-center'>
+    <section className='w-full py-16 md:py-28 lg:py-36 bg-amber-50 flex flex-col justify-center'>
       <div className='container px-4 md:px-6'>
         <div className='flex flex-col items-center justify-center space-y-4 text-center mb-12'>
           <div className='space-y-2'>
             <h2 className='text-3xl font-bold tracking-tighter sm:text-4xl'>
               Our Latest rescue stories
             </h2>
+            <p className='max-w-[900px] text-black md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed'>
+              Stories, and updates from our foundation community.
+            </p>
           </div>
         </div>
 
@@ -52,6 +56,10 @@ const LatestBlogPosts: React.FC = () => {
                     <h3 className='font-semibold text-lg group-hover:text-orange-500'>
                       {post.title}
                     </h3>
+                    {/* Show only the first line with five dots */}
+                    <p className='text-gray-600 text-sm line-clamp-2'>
+                      {getContentPreview(post.content)}
+                    </p>
                   </div>
                 </div>
               </Link>
