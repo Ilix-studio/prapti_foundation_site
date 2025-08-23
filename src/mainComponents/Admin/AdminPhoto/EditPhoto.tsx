@@ -1,55 +1,41 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+
 import {
+  Save,
+  Image,
   Loader2,
   Calendar,
   MapPin,
-  FileText,
-  Tag,
-  Save,
-  ArrowLeft,
   AlertCircle,
-  X,
   Upload,
-  ImagePlus,
+  Trash2,
   Plus,
   Check,
+  X,
 } from "lucide-react";
-import toast from "react-hot-toast";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-
-// Import API hooks
+import { useSelector } from "react-redux";
+import { selectAuth, selectIsAdmin } from "@/redux-store/slices/authSlice";
+import { Navigate } from "react-router-dom";
 import {
   useGetPhotoQuery,
   useUpdatePhotoMutation,
-  useUploadPhotoMutation,
+  useUpdatePhotoWithFileMutation,
 } from "@/redux-store/services/photoApi";
 import {
   useGetCategoriesByTypeQuery,
   useCreateCategoryMutation,
 } from "@/redux-store/services/categoryApi";
-import { Photo, PhotoUpdateData } from "@/types/photo.types";
+import { PhotoUpdateData, PhotoImage } from "@/types/photo.types";
 import { BackNavigation } from "@/config/navigation/BackNavigation";
-
-interface EditFormData {
-  title: string;
-  category: string;
-  date: string;
-  location: string;
-  description: string;
-  isActive: boolean;
-}
 
 interface FilePreview {
   file: File;
@@ -57,148 +43,98 @@ interface FilePreview {
   altText: string;
 }
 
-const EditPhoto: React.FC = () => {
+const EditPhoto = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const { isAuthenticated } = useSelector(selectAuth);
+  const isAdmin = useSelector(selectIsAdmin);
 
-  // Form state
-  const [formData, setFormData] = useState<EditFormData>({
-    title: "",
-    category: "",
-    date: "",
-    location: "",
-    description: "",
-    isActive: true,
-  });
+  const imageFileRef = useRef<HTMLInputElement>(null);
 
-  // Image management state
-  const [currentImages, setCurrentImages] = useState<any[]>([]);
-  const [newImages, setNewImages] = useState<FilePreview[]>([]);
-  const [removedImageIndices, setRemovedImageIndices] = useState<Set<number>>(
-    new Set()
-  );
+  // Fetch photo categories
+  const { data: categories = [], isLoading: categoriesLoading } =
+    useGetCategoriesByTypeQuery("photo");
 
-  // Category management state
+  // Category management
+  const [createCategory, { isLoading: creatingCategory }] =
+    useCreateCategoryMutation();
   const [showAddCategory, setShowAddCategory] = useState(false);
   const [newCategoryName, setNewCategoryName] = useState("");
 
-  // API hooks
+  // Form state
+  const [formData, setFormData] = useState<PhotoUpdateData>({
+    title: "",
+    description: "",
+    category: "",
+    date: "",
+    location: "",
+    isActive: true,
+  });
+
+  const [currentImages, setCurrentImages] = useState<PhotoImage[]>([]);
+  const [newImages, setNewImages] = useState<FilePreview[]>([]);
+  const [removedImageIds, setRemovedImageIds] = useState<Set<string>>(
+    new Set()
+  );
+
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [hasChanges, setHasChanges] = useState(false);
+
+  // Redirect if not authenticated or not admin
+  if (!isAuthenticated || !isAdmin) {
+    return <Navigate to='/admin/login' />;
+  }
+
+  // Redirect if no ID provided
+  if (!id) {
+    return <Navigate to='/admin/photoDashboard' />;
+  }
+
   const {
     data: photoData,
-    isLoading: isLoadingPhoto,
+    isLoading: loadingPhoto,
     error: photoError,
-  } = useGetPhotoQuery(id!);
+    refetch,
+  } = useGetPhotoQuery(id);
 
-  const { data: categories = [], isLoading: isLoadingCategories } =
-    useGetCategoriesByTypeQuery("photo");
+  const [updatePhoto, { isLoading: updating }] = useUpdatePhotoMutation();
+  const [updatePhotoWithFile, { isLoading: updatingWithFile }] =
+    useUpdatePhotoWithFileMutation();
 
-  const [updatePhoto, { isLoading: isUpdating }] = useUpdatePhotoMutation();
-  const [uploadPhoto, { isLoading: isUploading }] = useUploadPhotoMutation();
-  const [createCategory, { isLoading: creatingCategory }] =
-    useCreateCategoryMutation();
+  // Extract photo from response
+  const photo = React.useMemo(() => {
+    if (!photoData?.data) return null;
+    return "photo" in photoData.data ? photoData.data.photo : photoData.data;
+  }, [photoData]);
 
-  // Helper functions
-  const getCategoryId = (category: Photo["category"]): string => {
-    if (typeof category === "string") {
-      return category;
-    }
-    return category._id;
-  };
-
-  const formatDateForInput = (date: Date | string): string => {
-    const dateObj = new Date(date);
-    return dateObj.toISOString().split("T")[0];
-  };
-
-  // Initialize form data when photo loads
-  useEffect(() => {
-    if (photoData?.success) {
-      const photo =
-        "photo" in photoData.data ? photoData.data.photo : photoData.data;
+  // Populate form when photo data is loaded
+  React.useEffect(() => {
+    if (photo) {
+      const formattedDate = new Date(photo.date).toISOString().split("T")[0];
 
       setFormData({
         title: photo.title,
-        category: getCategoryId(photo.category),
-        date: formatDateForInput(photo.date),
-        location: photo.location || "",
         description: photo.description || "",
+        category:
+          typeof photo.category === "string"
+            ? photo.category
+            : photo.category._id,
+        date: formattedDate,
+        location: photo.location || "",
         isActive: photo.isActive,
       });
 
-      // Initialize current images
       setCurrentImages(photo.images || []);
     }
-  }, [photoData]);
-
-  // Handle removing current photos
-  const handleRemoveCurrentImage = (index: number) => {
-    setRemovedImageIndices((prev) => new Set([...prev, index]));
-  };
-
-  // Handle restoring removed photos
-  const handleRestoreImage = (index: number) => {
-    setRemovedImageIndices((prev) => {
-      const newSet = new Set(prev);
-      newSet.delete(index);
-      return newSet;
-    });
-  };
-
-  // Handle file selection
-  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(e.target.files || []);
-
-    if (files.length === 0) return;
-
-    // Validate file types
-    const validFiles = files.filter((file) => {
-      if (!file.type.startsWith("image/")) {
-        toast.error(`${file.name} is not a valid image file`);
-        return false;
-      }
-      if (file.size > 10 * 1024 * 1024) {
-        // 10MB limit
-        toast.error(`${file.name} is too large. Maximum size is 10MB`);
-        return false;
-      }
-      return true;
-    });
-
-    // Create previews for valid files
-    validFiles.forEach((file) => {
-      const preview = URL.createObjectURL(file);
-      setNewImages((prev) => [
-        ...prev,
-        {
-          file,
-          preview,
-          altText: file.name.split(".")[0], // Use filename without extension as default alt text
-        },
-      ]);
-    });
-
-    // Reset file input
-    if (fileInputRef.current) {
-      fileInputRef.current.value = "";
-    }
-  };
-
-  // Handle removing new images
-  const handleRemoveNewImage = (index: number) => {
-    setNewImages((prev) => {
-      const newArray = [...prev];
-      // Revoke object URL to prevent memory leaks
-      URL.revokeObjectURL(newArray[index].preview);
-      newArray.splice(index, 1);
-      return newArray;
-    });
-  };
+  }, [photo]);
 
   // Create new category
   const handleCreateCategory = async () => {
     if (!newCategoryName.trim()) {
-      toast.error("Please enter a category name");
+      setErrors((prev) => ({
+        ...prev,
+        category: "Please enter a category name",
+      }));
       return;
     }
 
@@ -208,164 +144,222 @@ const EditPhoto: React.FC = () => {
         type: "photo",
       }).unwrap();
 
-      toast.success("Category created successfully");
       setNewCategoryName("");
       setShowAddCategory(false);
+      handleInputChange("category", result._id);
 
-      // Auto-select the newly created category
-      setFormData((prev) => ({ ...prev, category: result._id }));
+      if (errors.category) {
+        setErrors((prev) => ({ ...prev, category: "" }));
+      }
     } catch (error: any) {
-      console.error("Create category error:", error);
-      toast.error(
-        error?.data?.message || error?.message || "Failed to create category"
-      );
+      setErrors((prev) => ({
+        ...prev,
+        category: error?.data?.message || "Failed to create category",
+      }));
     }
   };
 
-  // Handle form input changes
-  const handleInputChange = (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >
-  ) => {
-    const { name, value, type } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]:
-        type === "checkbox" ? (e.target as HTMLInputElement).checked : value,
-    }));
+  const handleInputChange = (field: keyof PhotoUpdateData, value: any) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
+    setHasChanges(true);
+    if (errors[field]) {
+      setErrors((prev) => ({ ...prev, [field]: "" }));
+    }
+  };
+  const isLoading = updating || updatingWithFile;
+
+  const handleImageFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+
+    files.forEach((file) => {
+      if (file.type.startsWith("image/")) {
+        const preview = URL.createObjectURL(file);
+        const altText = file.name.split(".")[0];
+
+        setNewImages((prev) => [...prev, { file, preview, altText }]);
+        setHasChanges(true);
+      }
+    });
   };
 
-  const handleSelectChange = (name: string, value: string) => {
-    setFormData((prev) => ({ ...prev, [name]: value }));
+  const handleRemoveCurrentImage = (imageId: string) => {
+    setRemovedImageIds((prev) => new Set([...prev, imageId]));
+    setHasChanges(true);
   };
 
-  // Handle form submission
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleRestoreImage = (imageId: string) => {
+    setRemovedImageIds((prev) => {
+      const newSet = new Set(prev);
+      newSet.delete(imageId);
+      return newSet;
+    });
+    setHasChanges(true);
+  };
 
-    if (!formData.title.trim()) {
-      toast.error("Please enter a title");
-      return;
+  const handleRemoveNewImage = (index: number) => {
+    setNewImages((prev) => {
+      const newImages = [...prev];
+      URL.revokeObjectURL(newImages[index].preview);
+      newImages.splice(index, 1);
+      return newImages;
+    });
+    setHasChanges(true);
+  };
+
+  const handleNewImageAltChange = (index: number, altText: string) => {
+    setNewImages((prev) =>
+      prev.map((img, i) => (i === index ? { ...img, altText } : img))
+    );
+    setHasChanges(true);
+  };
+
+  const validateForm = (): boolean => {
+    const newErrors: Record<string, string> = {};
+
+    if (!formData.title?.trim()) {
+      newErrors.title = "Title is required";
     }
 
     if (!formData.category) {
-      toast.error("Please select a category");
-      return;
+      newErrors.category = "Category is required";
     }
 
-    // Check if all images are removed and no new images added
-    const remainingCurrentImages = currentImages.filter(
-      (_, index) => !removedImageIndices.has(index)
+    if (!formData.date) {
+      newErrors.date = "Date is required";
+    }
+
+    // Check if all images are removed
+    const remainingImages = currentImages.filter(
+      (img) => !removedImageIds.has(img.cloudinaryPublicId)
     );
 
-    if (remainingCurrentImages.length === 0 && newImages.length === 0) {
-      toast.error("Please keep at least one image or add new images");
+    if (remainingImages.length === 0 && newImages.length === 0) {
+      newErrors.images = "At least one image is required";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!validateForm()) {
       return;
     }
 
     try {
-      // First upload new images if any
+      // Check if we have new images to upload
       if (newImages.length > 0) {
-        for (const newImage of newImages) {
-          await uploadPhoto({
-            file: newImage.file,
+        // Use the file upload mutation for each new image
+        for (const imageData of newImages) {
+          await updatePhotoWithFile({
+            id: id!,
+            file: imageData.file,
             data: {
               title: formData.title,
               category: formData.category,
               date: formData.date,
               location: formData.location,
               description: formData.description,
-              alt: newImage.altText,
+              isActive: formData.isActive,
+              alt: imageData.altText,
             },
           }).unwrap();
         }
+      } else {
+        // Use regular update mutation for metadata-only changes
+        const updateData: PhotoUpdateData = {
+          title: formData.title,
+          description: formData.description,
+          category: formData.category,
+          date: formData.date,
+          location: formData.location,
+          isActive: formData.isActive,
+        };
+
+        await updatePhoto({
+          id: id!,
+          data: updateData,
+        }).unwrap();
       }
 
-      // Update the main photo data
-      const updateData: PhotoUpdateData = {
-        title: formData.title,
-        category: formData.category,
-        date: formData.date,
-        location: formData.location || undefined,
-        description: formData.description || undefined,
-        isActive: formData.isActive,
-        // Include removed image indices if your API supports it
-        // removedImageIndices: Array.from(removedImageIndices),
-      };
-
-      await updatePhoto({
-        id: id!,
-        data: updateData,
-      }).unwrap();
-
-      toast.success("Photo updated successfully!");
-
-      // Clean up previews
-      newImages.forEach((image) => URL.revokeObjectURL(image.preview));
-
+      // Success - navigate back to dashboard
       navigate("/admin/photoDashboard");
     } catch (error: any) {
-      console.error("Update error:", error);
-      toast.error(error?.data?.message || error?.message || "Update failed");
+      setErrors({
+        submit: error.message || "Failed to update photo. Please try again.",
+      });
     }
   };
 
-  // Calculate if we should show upload input
-  const remainingCurrentImages = currentImages.filter(
-    (_, index) => !removedImageIndices.has(index)
-  );
-  const showUploadInput =
-    remainingCurrentImages.length === 0 || newImages.length > 0;
+  const handleCancel = () => {
+    if (hasChanges) {
+      const confirmed = window.confirm(
+        "You have unsaved changes. Are you sure you want to leave?"
+      );
+      if (!confirmed) return;
+    }
 
-  if (!id) {
-    return (
-      <div className='min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 p-4 flex items-center justify-center'>
-        <Alert variant='destructive' className='max-w-md'>
-          <AlertCircle className='h-4 w-4' />
-          <AlertDescription>Photo ID not found</AlertDescription>
-        </Alert>
-      </div>
-    );
-  }
+    // Clean up object URLs
+    newImages.forEach((img) => URL.revokeObjectURL(img.preview));
+    navigate("/admin/photoDashboard");
+  };
 
-  if (isLoadingPhoto || isLoadingCategories) {
+  // Loading state
+  if (loadingPhoto) {
     return (
-      <div className='min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 p-4'>
+      <div className='min-h-screen bg-gradient-to-br from-slate-50 to-white'>
         <BackNavigation />
-        <div className='max-w-4xl mx-auto space-y-6'>
-          <Skeleton className='h-10 w-48' />
-          <Card>
-            <CardHeader>
-              <Skeleton className='h-8 w-64' />
-            </CardHeader>
-            <CardContent className='space-y-6'>
-              <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
-                <Skeleton className='h-10 w-full' />
-                <Skeleton className='h-10 w-full' />
-                <Skeleton className='h-10 w-full' />
-                <Skeleton className='h-10 w-full' />
-              </div>
-              <Skeleton className='h-20 w-full' />
-              <Skeleton className='h-10 w-full' />
-            </CardContent>
-          </Card>
+        <div className='container py-6 px-4 sm:px-6 max-w-4xl mx-auto'>
+          <Skeleton className='h-8 w-64 mb-6' />
+          <div className='grid grid-cols-1 lg:grid-cols-3 gap-6'>
+            <div className='lg:col-span-2'>
+              <Card>
+                <CardContent className='p-6 space-y-6'>
+                  <Skeleton className='h-10 w-full' />
+                  <Skeleton className='h-32 w-full' />
+                  <div className='grid grid-cols-2 gap-4'>
+                    <Skeleton className='h-10 w-full' />
+                    <Skeleton className='h-10 w-full' />
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+            <div className='space-y-6'>
+              <Card>
+                <CardContent className='p-6'>
+                  <Skeleton className='aspect-square w-full' />
+                </CardContent>
+              </Card>
+            </div>
+          </div>
         </div>
       </div>
     );
   }
 
-  if (photoError || !photoData?.success) {
+  // Error state
+  if (photoError || !photo) {
     return (
-      <div className='min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 p-4'>
+      <div className='min-h-screen bg-gradient-to-br from-slate-50 to-white'>
         <BackNavigation />
-        <div className='flex items-center justify-center min-h-[50vh]'>
-          <Alert variant='destructive' className='max-w-md'>
+        <div className='container py-6 px-4 sm:px-6 max-w-4xl mx-auto'>
+          <Alert variant='destructive' className='max-w-md mx-auto mt-8'>
             <AlertCircle className='h-4 w-4' />
             <AlertDescription>
-              Failed to load photo. Please try again.
+              Photo not found or failed to load. Please try again.
             </AlertDescription>
           </Alert>
+          <div className='flex justify-center mt-4 gap-2'>
+            <Button
+              onClick={() => navigate("/admin/photoDashboard")}
+              variant='outline'
+            >
+              Back to Photos
+            </Button>
+            <Button onClick={refetch}>Try Again</Button>
+          </div>
         </div>
       </div>
     );
@@ -375,375 +369,406 @@ const EditPhoto: React.FC = () => {
     <>
       <BackNavigation />
 
-      <div className='min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 p-4'>
-        <div className='max-w-4xl mx-auto'>
-          <Card className='shadow-lg border border-gray-200 overflow-hidden'>
-            {/* Header */}
-            <CardHeader className='bg-gradient-to-r from-white to-white'>
-              <CardTitle className='text-2xl font-bold text-black flex items-center gap-2'>
-                <FileText className='w-6 h-6' />
-                Edit Photo
-              </CardTitle>
-              <p className='text-black/90'>
-                Update photo information and settings
+      <div className='min-h-screen bg-gradient-to-br from-slate-50 to-white'>
+        <div className='container py-6 px-4 sm:px-6 max-w-4xl mx-auto'>
+          {/* Header */}
+          <motion.div
+            className='mb-6'
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+          >
+            <div>
+              <h1 className='text-3xl font-bold text-slate-900'>Edit Photo</h1>
+              <p className='text-slate-600 mt-1'>
+                Update photo details and manage images
               </p>
-            </CardHeader>
+            </div>
+          </motion.div>
 
-            <CardContent className='p-6'>
-              {/* Current Images Display */}
-              <div className='mb-6'>
-                <h3 className='text-lg font-semibold mb-3'>Current Images</h3>
-                {currentImages.length > 0 ? (
-                  <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4'>
-                    {currentImages.map((image, index) => (
-                      <div key={index} className='relative group'>
-                        <div
-                          className={`relative ${
-                            removedImageIndices.has(index) ? "opacity-50" : ""
-                          }`}
-                        >
-                          <img
-                            src={image.src}
-                            alt={image.alt}
-                            className='w-full h-24 object-cover rounded-lg shadow-md'
-                          />
-                          <div className='absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all rounded-lg' />
-                          <div className='absolute bottom-1 right-1 bg-black/50 text-white px-1 py-0.5 rounded text-xs'>
-                            {index + 1}
-                          </div>
+          <form onSubmit={handleSubmit}>
+            <div className='grid grid-cols-1 lg:grid-cols-3 gap-6'>
+              {/* Main Form */}
+              <motion.div
+                className='lg:col-span-2'
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.2, duration: 0.6 }}
+              >
+                <Card>
+                  <CardHeader>
+                    <CardTitle className='flex items-center gap-2'>
+                      <Image className='w-5 h-5' />
+                      Photo Details
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className='space-y-6'>
+                    {/* Title */}
+                    <div>
+                      <Label htmlFor='title'>Title *</Label>
+                      <Input
+                        id='title'
+                        value={formData.title}
+                        onChange={(e) =>
+                          handleInputChange("title", e.target.value)
+                        }
+                        placeholder='Enter photo title'
+                        className={errors.title ? "border-red-500" : ""}
+                      />
+                      {errors.title && (
+                        <p className='text-sm text-red-600 mt-1'>
+                          {errors.title}
+                        </p>
+                      )}
+                    </div>
+
+                    {/* Description */}
+                    <div>
+                      <Label htmlFor='description'>Description</Label>
+                      <Textarea
+                        id='description'
+                        value={formData.description}
+                        onChange={(e) =>
+                          handleInputChange("description", e.target.value)
+                        }
+                        placeholder='Enter photo description'
+                        className='min-h-[120px]'
+                      />
+                    </div>
+
+                    {/* Category and Date */}
+                    <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+                      <div>
+                        <Label htmlFor='category'>Category *</Label>
+                        <div className='flex gap-2'>
+                          <select
+                            id='category'
+                            value={formData.category}
+                            onChange={(e) =>
+                              handleInputChange("category", e.target.value)
+                            }
+                            className={`flex-1 h-10 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 ${
+                              errors.category ? "border-red-500" : ""
+                            }`}
+                            disabled={updating || updatingWithFile}
+                          >
+                            <option value='' disabled>
+                              Select category
+                            </option>
+                            {categoriesLoading ? (
+                              <option value='' disabled>
+                                Loading categories...
+                              </option>
+                            ) : (
+                              categories.map((category) => (
+                                <option key={category._id} value={category._id}>
+                                  {category.name}
+                                </option>
+                              ))
+                            )}
+                          </select>
+                          <Button
+                            type='button'
+                            onClick={() => setShowAddCategory(!showAddCategory)}
+                            className='px-3 py-2 bg-green-600 text-white hover:bg-green-700 transition-colors flex items-center gap-1'
+                            title='Add new category'
+                            disabled={updating || updatingWithFile}
+                          >
+                            <Plus className='w-4 h-4' />
+                          </Button>
                         </div>
 
-                        {/* Remove/Restore button */}
-                        <div className='absolute top-1 right-1'>
-                          {removedImageIndices.has(index) ? (
-                            <Button
-                              type='button'
-                              size='sm'
-                              variant='secondary'
-                              onClick={() => handleRestoreImage(index)}
-                              className='h-6 w-6 p-0 bg-green-600 hover:bg-green-700 text-white'
-                            >
-                              <Upload className='h-3 w-3' />
-                            </Button>
-                          ) : (
+                        {/* Add Category Input */}
+                        {showAddCategory && (
+                          <div className='mt-2 p-3 bg-gray-50 rounded-lg border'>
+                            <div className='flex gap-2'>
+                              <Input
+                                type='text'
+                                value={newCategoryName}
+                                onChange={(e) =>
+                                  setNewCategoryName(e.target.value)
+                                }
+                                placeholder='Enter category name'
+                                className='flex-1'
+                                onKeyPress={(e) =>
+                                  e.key === "Enter" && handleCreateCategory()
+                                }
+                                disabled={updating || updatingWithFile}
+                              />
+                              <Button
+                                type='button'
+                                onClick={handleCreateCategory}
+                                disabled={
+                                  creatingCategory ||
+                                  updating ||
+                                  updatingWithFile
+                                }
+                                className='px-3 py-2 bg-green-600 text-white hover:bg-green-700 transition-colors disabled:opacity-50 flex items-center gap-1'
+                              >
+                                {creatingCategory ? (
+                                  <Loader2 className='w-4 h-4 animate-spin' />
+                                ) : (
+                                  <Check className='w-4 h-4' />
+                                )}
+                              </Button>
+                              <Button
+                                type='button'
+                                onClick={() => {
+                                  setShowAddCategory(false);
+                                  setNewCategoryName("");
+                                }}
+                                className='px-3 py-2 bg-gray-500 text-white hover:bg-gray-600 transition-colors'
+                                disabled={updating || updatingWithFile}
+                              >
+                                <X className='w-4 h-4' />
+                              </Button>
+                            </div>
+                          </div>
+                        )}
+
+                        {errors.category && (
+                          <p className='text-sm text-red-600 mt-1'>
+                            {errors.category}
+                          </p>
+                        )}
+                      </div>
+
+                      <div>
+                        <Label htmlFor='date'>Date *</Label>
+                        <div className='relative'>
+                          <Calendar className='absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-4 h-4' />
+                          <Input
+                            id='date'
+                            type='date'
+                            value={formData.date}
+                            onChange={(e) =>
+                              handleInputChange("date", e.target.value)
+                            }
+                            className={`pl-10 ${
+                              errors.date ? "border-red-500" : ""
+                            }`}
+                          />
+                        </div>
+                        {errors.date && (
+                          <p className='text-sm text-red-600 mt-1'>
+                            {errors.date}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Location */}
+                    <div>
+                      <Label htmlFor='location'>Location</Label>
+                      <div className='relative'>
+                        <MapPin className='absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-4 h-4' />
+                        <Input
+                          id='location'
+                          value={formData.location}
+                          onChange={(e) =>
+                            handleInputChange("location", e.target.value)
+                          }
+                          placeholder='Enter location'
+                          className='pl-10'
+                        />
+                      </div>
+                    </div>
+
+                    {/* Error Messages */}
+                    {errors.submit && (
+                      <div className='bg-red-50 border border-red-200 rounded-lg p-4'>
+                        <div className='flex items-center gap-2'>
+                          <AlertCircle className='w-5 h-5 text-red-600' />
+                          <p className='text-red-700'>{errors.submit}</p>
+                        </div>
+                      </div>
+                    )}
+
+                    {errors.images && (
+                      <div className='bg-red-50 border border-red-200 rounded-lg p-4'>
+                        <div className='flex items-center gap-2'>
+                          <AlertCircle className='w-5 h-5 text-red-600' />
+                          <p className='text-red-700'>{errors.images}</p>
+                        </div>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              </motion.div>
+
+              {/* Sidebar */}
+              <motion.div
+                className='space-y-6'
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.4, duration: 0.6 }}
+              >
+                {/* Current Images */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle className='flex items-center gap-2'>
+                      <Image className='w-5 h-5' />
+                      Current Images
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className='space-y-4'>
+                      {currentImages.map((image) => {
+                        const isRemoved = removedImageIds.has(
+                          image.cloudinaryPublicId
+                        );
+                        return (
+                          <div
+                            key={image.cloudinaryPublicId}
+                            className={`relative ${
+                              isRemoved ? "opacity-50" : ""
+                            }`}
+                          >
+                            <img
+                              src={image.src}
+                              alt={image.alt}
+                              className='w-full rounded-lg'
+                            />
+                            <div className='absolute top-2 right-2 flex gap-1'>
+                              {isRemoved ? (
+                                <Button
+                                  type='button'
+                                  size='sm'
+                                  onClick={() =>
+                                    handleRestoreImage(image.cloudinaryPublicId)
+                                  }
+                                  className='bg-green-600 hover:bg-green-700'
+                                >
+                                  Restore
+                                </Button>
+                              ) : (
+                                <Button
+                                  type='button'
+                                  size='sm'
+                                  variant='destructive'
+                                  onClick={() =>
+                                    handleRemoveCurrentImage(
+                                      image.cloudinaryPublicId
+                                    )
+                                  }
+                                >
+                                  <Trash2 className='w-4 h-4' />
+                                </Button>
+                              )}
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Add New Images */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle className='flex items-center gap-2'>
+                      <Upload className='w-5 h-5' />
+                      Add New Images
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className='space-y-4'>
+                      <input
+                        ref={imageFileRef}
+                        type='file'
+                        accept='image/*'
+                        multiple
+                        onChange={handleImageFileChange}
+                        className='hidden'
+                      />
+
+                      <Button
+                        type='button'
+                        variant='outline'
+                        onClick={() => imageFileRef.current?.click()}
+                        className='w-full h-24 border-dashed'
+                      >
+                        <div className='text-center'>
+                          <Upload className='w-8 h-8 mx-auto mb-2 text-slate-400' />
+                          <p className='text-sm'>Click to upload new images</p>
+                        </div>
+                      </Button>
+
+                      {/* New Images Preview */}
+                      {newImages.map((imageData, index) => (
+                        <div key={index} className='space-y-2'>
+                          <div className='relative'>
+                            <img
+                              src={imageData.preview}
+                              alt={imageData.altText}
+                              className='w-full rounded-lg'
+                            />
                             <Button
                               type='button'
                               size='sm'
                               variant='destructive'
-                              onClick={() => handleRemoveCurrentImage(index)}
-                              className='h-6 w-6 p-0'
+                              onClick={() => handleRemoveNewImage(index)}
+                              className='absolute top-2 right-2'
                             >
-                              <X className='h-3 w-3' />
+                              <Trash2 className='w-4 h-4' />
                             </Button>
-                          )}
-                        </div>
-
-                        {/* Removed overlay */}
-                        {removedImageIndices.has(index) && (
-                          <div className='absolute inset-0 bg-red-500 bg-opacity-20 rounded-lg flex items-center justify-center'>
-                            <span className='text-red-700 font-semibold text-xs bg-white px-2 py-1 rounded'>
-                              REMOVED
-                            </span>
                           </div>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <p className='text-gray-500 text-center py-4'>
-                    No current images available
-                  </p>
-                )}
-              </div>
-
-              {/* New Images Display */}
-              {newImages.length > 0 && (
-                <div className='mb-6'>
-                  <h3 className='text-lg font-semibold mb-3 text-green-700'>
-                    New Images to Upload
-                  </h3>
-                  <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4'>
-                    {newImages.map((image, index) => (
-                      <div key={index} className='relative group'>
-                        <img
-                          src={image.preview}
-                          alt={image.altText}
-                          className='w-full h-24 object-cover rounded-lg shadow-md border-2 border-green-200'
-                        />
-                        <div className='absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all rounded-lg' />
-                        {/* Remove button */}
-                        <Button
-                          type='button'
-                          size='sm'
-                          variant='destructive'
-                          onClick={() => handleRemoveNewImage(index)}
-                          className='absolute top-1 right-1 h-6 w-6 p-0'
-                        >
-                          <X className='h-3 w-3' />
-                        </Button>
-                        {/* New label */}
-                        <div className='absolute bottom-1 left-1 bg-green-600 text-white px-2 py-0.5 rounded text-xs'>
-                          NEW
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* Upload Input - Show conditionally */}
-              {showUploadInput && (
-                <div className='mb-6'>
-                  <h3 className='text-lg font-semibold mb-3'>
-                    {remainingCurrentImages.length === 0
-                      ? "Add New Images (Required)"
-                      : "Add Additional Images"}
-                  </h3>
-                  <div className='border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-blue-400 transition-colors'>
-                    <input
-                      ref={fileInputRef}
-                      type='file'
-                      accept='image/*'
-                      multiple
-                      onChange={handleFileSelect}
-                      className='hidden'
-                      id='image-upload'
-                    />
-                    <label
-                      htmlFor='image-upload'
-                      className='cursor-pointer flex flex-col items-center gap-2'
-                    >
-                      <ImagePlus className='w-8 h-8 text-gray-400' />
-                      <span className='text-gray-600'>
-                        Click to upload images or drag and drop
-                      </span>
-                      <span className='text-sm text-gray-500'>
-                        PNG, JPG, GIF up to 10MB each
-                      </span>
-                    </label>
-                  </div>
-                </div>
-              )}
-
-              {/* Add Upload Button when there are current images */}
-              {remainingCurrentImages.length > 0 && newImages.length === 0 && (
-                <div className='mb-6 text-center'>
-                  <Button
-                    type='button'
-                    variant='outline'
-                    onClick={() => fileInputRef.current?.click()}
-                    className='border-dashed border-2'
-                  >
-                    <ImagePlus className='w-4 h-4 mr-2' />
-                    Add More Images
-                  </Button>
-                  <input
-                    ref={fileInputRef}
-                    type='file'
-                    accept='image/*'
-                    multiple
-                    onChange={handleFileSelect}
-                    className='hidden'
-                  />
-                </div>
-              )}
-
-              <form onSubmit={handleSubmit} className='space-y-6'>
-                {/* Form Fields */}
-                <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
-                  {/* Title */}
-                  <div className='md:col-span-2'>
-                    <label className='block text-sm font-medium text-gray-700 mb-2'>
-                      <FileText className='w-4 h-4 inline mr-1' />
-                      Title *
-                    </label>
-                    <Input
-                      name='title'
-                      value={formData.title}
-                      onChange={handleInputChange}
-                      required
-                      placeholder='Enter photo title'
-                      className='focus:ring-2 focus:ring-blue-500'
-                    />
-                  </div>
-
-                  {/* Category */}
-                  <div>
-                    <label className='block text-sm font-medium text-gray-700 mb-2'>
-                      <Tag className='w-4 h-4 inline mr-1' />
-                      Category *
-                    </label>
-                    <div className='flex gap-2'>
-                      <select
-                        name='category'
-                        value={formData.category}
-                        onChange={handleInputChange}
-                        required
-                        disabled={isLoadingCategories}
-                        className='flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent'
-                      >
-                        <option value=''>Select Category</option>
-                        {categories.map((category) => (
-                          <option key={category._id} value={category._id}>
-                            {category.name}
-                          </option>
-                        ))}
-                      </select>
-                      <Button
-                        type='button'
-                        onClick={() => setShowAddCategory(!showAddCategory)}
-                        className='px-3 py-2 bg-green-600 hover:bg-green-700'
-                        title='Add new category'
-                      >
-                        <Plus className='w-4 h-4' />
-                      </Button>
-                    </div>
-
-                    {/* Add Category Input */}
-                    {showAddCategory && (
-                      <div className='mt-2 p-3 bg-gray-50 rounded-lg border'>
-                        <div className='flex gap-2'>
                           <Input
-                            type='text'
-                            value={newCategoryName}
-                            onChange={(e) => setNewCategoryName(e.target.value)}
-                            placeholder='Enter category name'
-                            className='flex-1'
-                            onKeyPress={(e) =>
-                              e.key === "Enter" && handleCreateCategory()
+                            placeholder='Alt text'
+                            value={imageData.altText}
+                            onChange={(e) =>
+                              handleNewImageAltChange(index, e.target.value)
                             }
                           />
-                          <Button
-                            type='button'
-                            onClick={handleCreateCategory}
-                            disabled={creatingCategory}
-                            className='px-3 py-2 bg-green-600 hover:bg-green-700'
-                          >
-                            {creatingCategory ? (
-                              <Loader2 className='w-4 h-4 animate-spin' />
-                            ) : (
-                              <Check className='w-4 h-4' />
-                            )}
-                          </Button>
-                          <Button
-                            type='button'
-                            onClick={() => {
-                              setShowAddCategory(false);
-                              setNewCategoryName("");
-                            }}
-                            variant='outline'
-                            className='px-3 py-2'
-                          >
-                            <X className='w-4 h-4' />
-                          </Button>
                         </div>
-                      </div>
-                    )}
-                  </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
 
-                  {/* Date */}
-                  <div>
-                    <label className='block text-sm font-medium text-gray-700 mb-2'>
-                      <Calendar className='w-4 h-4 inline mr-1' />
-                      Date
-                    </label>
-                    <Input
-                      type='date'
-                      name='date'
-                      value={formData.date}
-                      onChange={handleInputChange}
-                      className='focus:ring-2 focus:ring-blue-500'
-                    />
-                  </div>
+                {/* Save Actions */}
+                <Card>
+                  <CardContent className='p-4'>
+                    <div className='space-y-3'>
+                      <Button
+                        type='submit'
+                        className='w-full'
+                        disabled={isLoading || !hasChanges}
+                      >
+                        {isLoading ? (
+                          <>
+                            <Loader2 className='w-4 h-4 mr-2 animate-spin' />
+                            {updatingWithFile ? "Uploading..." : "Saving..."}
+                          </>
+                        ) : (
+                          <>
+                            <Save className='w-4 h-4 mr-2' />
+                            Save Changes
+                          </>
+                        )}
+                      </Button>
 
-                  {/* Location */}
-                  <div>
-                    <label className='block text-sm font-medium text-gray-700 mb-2'>
-                      <MapPin className='w-4 h-4 inline mr-1' />
-                      Location
-                    </label>
-                    <Input
-                      name='location'
-                      value={formData.location}
-                      onChange={handleInputChange}
-                      placeholder='Enter location'
-                      className='focus:ring-2 focus:ring-blue-500'
-                    />
-                  </div>
+                      <Button
+                        type='button'
+                        variant='outline'
+                        onClick={handleCancel}
+                        disabled={isLoading}
+                        className='w-full'
+                      >
+                        Cancel
+                      </Button>
 
-                  {/* Status */}
-                  <div>
-                    <label className='block text-sm font-medium text-gray-700 mb-2'>
-                      Status
-                    </label>
-                    <Select
-                      value={formData.isActive.toString()}
-                      onValueChange={(value) =>
-                        handleSelectChange(
-                          "isActive",
-                          value === "true" ? "true" : "false"
-                        )
-                      }
-                    >
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value='true'>Active</SelectItem>
-                        <SelectItem value='false'>Inactive</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  {/* Description */}
-                  <div className='md:col-span-2'>
-                    <label className='block text-sm font-medium text-gray-700 mb-2'>
-                      Description
-                    </label>
-                    <textarea
-                      name='description'
-                      value={formData.description}
-                      onChange={handleInputChange}
-                      rows={4}
-                      className='w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none'
-                      placeholder='Enter description (optional)'
-                    />
-                  </div>
-                </div>
-
-                {/* Submit Buttons */}
-                <div className='flex flex-col sm:flex-row gap-3 pt-6 border-t'>
-                  <Button
-                    type='submit'
-                    disabled={isUpdating || isUploading}
-                    className='flex-1 bg-gray-500 hover:bg-orange-500'
-                  >
-                    {isUpdating || isUploading ? (
-                      <>
-                        <Loader2 className='w-5 h-5 animate-spin mr-2' />
-                        {isUploading ? "Uploading..." : "Updating..."}
-                      </>
-                    ) : (
-                      <>
-                        <Save className='w-5 h-5 mr-2' />
-                        Update Photo
-                      </>
-                    )}
-                  </Button>
-
-                  <Button
-                    type='button'
-                    variant='outline'
-                    onClick={() => navigate("/admin/photoDashboard")}
-                    className='px-6 py-3'
-                  >
-                    <ArrowLeft className='w-4 h-4 mr-2' />
-                    Cancel
-                  </Button>
-                </div>
-              </form>
-            </CardContent>
-          </Card>
+                      {hasChanges && (
+                        <p className='text-sm text-amber-600 text-center'>
+                          You have unsaved changes
+                        </p>
+                      )}
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            </div>
+          </form>
         </div>
       </div>
     </>

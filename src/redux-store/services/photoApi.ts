@@ -120,9 +120,50 @@ export const photoApi = createApi({
     >({
       query: ({ id, data }) => ({
         url: `/photos/${id}`,
-        method: "PUT",
+        method: "PATCH",
         body: data,
       }),
+      transformResponse: (response: PhotoResponse) => response,
+      invalidatesTags: (_result, _error, { id }) => [
+        { type: "Photo", id },
+        "Photo",
+      ],
+    }),
+
+    // Update photo with file upload (form-data)
+    updatePhotoWithFile: builder.mutation<
+      PhotoResponse,
+      {
+        id: string;
+        file?: File;
+        data: Partial<PhotoUpdateData & { alt?: string }>;
+      }
+    >({
+      query: ({ id, file, data }) => {
+        const formData = new FormData();
+
+        // Add file if provided
+        if (file) {
+          formData.append("photo", file);
+        }
+
+        // Add other data fields
+        Object.entries(data).forEach(([key, value]) => {
+          if (value !== undefined && value !== null) {
+            if (typeof value === "boolean") {
+              formData.append(key, value.toString());
+            } else {
+              formData.append(key, value.toString());
+            }
+          }
+        });
+
+        return {
+          url: `/photos/${id}/upload`,
+          method: "PATCH",
+          body: formData,
+        };
+      },
       transformResponse: (response: PhotoResponse) => response,
       invalidatesTags: (_result, _error, { id }) => [
         { type: "Photo", id },
@@ -186,6 +227,7 @@ export const {
   useUploadPhotoMutation,
   useUploadMultiplePhotosMutation,
   useUpdatePhotoMutation,
+  useUpdatePhotoWithFileMutation,
   useDeletePhotoMutation,
   useGetPhotosByCategoryQuery,
   useSearchPhotosQuery,
