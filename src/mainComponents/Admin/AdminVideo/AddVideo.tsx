@@ -15,8 +15,8 @@ import {
   Calendar,
   Clock,
   AlertCircle,
-  Plus,
   Check,
+  Plus,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
@@ -354,7 +354,7 @@ const AddVideo = () => {
                         <Button
                           type='button'
                           onClick={() => setShowAddCategory(!showAddCategory)}
-                          className='px-3 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors flex items-center gap-1'
+                          className='px-3 py-2 bg-gray-600 text-white rounded-lg hover:bg-green-700 transition-colors flex items-center gap-1'
                           title='Add new category'
                         >
                           <Plus className='w-4 h-4' />

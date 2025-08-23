@@ -4,7 +4,6 @@ import {
   Upload,
   X,
   ImagePlus,
-  Plus,
   Loader2,
   Calendar,
   MapPin,
@@ -12,6 +11,7 @@ import {
   Tag,
   Check,
   AlertCircle,
+  Plus,
 } from "lucide-react";
 import toast from "react-hot-toast";
 import { Card, CardContent } from "@/components/ui/card";
@@ -344,7 +344,7 @@ const AddPhoto: React.FC = () => {
                   <button
                     type='button'
                     onClick={() => fileInputRef.current?.click()}
-                    className='inline-flex items-center gap-2 px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors'
+                    className='inline-flex items-center gap-2 px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-orange-600 transition-colors'
                   >
                     <ImagePlus className='w-4 h-4' />
                     Choose Files
@@ -445,7 +445,7 @@ const AddPhoto: React.FC = () => {
                     <button
                       type='button'
                       onClick={() => setShowAddCategory(!showAddCategory)}
-                      className='px-3 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors flex items-center gap-1'
+                      className='px-3 py-2 bg-gray-600 text-white rounded-lg hover:bg-green-700 transition-colors flex items-center gap-1'
                       title='Add new category'
                     >
                       <Plus className='w-4 h-4' />
@@ -545,7 +545,7 @@ const AddPhoto: React.FC = () => {
                 <button
                   type='submit'
                   disabled={isUploading || selectedFiles.length === 0}
-                  className='flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-orange-500 to-green-600 text-white rounded-lg hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed'
+                  className='flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-gray-500 text-white rounded-lg hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed'
                 >
                   {isUploading ? (
                     <>

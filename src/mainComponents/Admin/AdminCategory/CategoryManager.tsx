@@ -294,8 +294,11 @@ const CategoryManager: React.FC = () => {
         {/* Statistics Cards */}
         <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6'>
           {statsCards.map((stat) => (
-            <Card key={stat.title}>
-              <CardContent className='p-6'>
+            <Card
+              key={stat.title}
+              className='border-l-3 border-l-orange-500 hover:scale-105'
+            >
+              <CardContent className='p-6 '>
                 <div className='flex items-center'>
                   <div className={`${stat.color} p-2 rounded-lg`}>
                     <stat.icon className='w-4 h-4 text-white' />
