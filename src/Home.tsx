@@ -4,7 +4,7 @@ import { HeroSection } from "./mainComponents/HeroSection";
 import { EmergencyCall } from "./mainComponents/ReportAbout/EmergencyCall";
 import OurMission from "./mainComponents/OurMission";
 import LatestBlogPosts from "./mainComponents/AdminBlogs/LatestBlogPosts";
-import DonateUs from "./mainComponents/DonateUs";
+import DonateUs from "./mainComponents/SupportUs/DonateUs";
 import Footer from "./mainComponents/Footer";
 import RunningDog from "./mainComponents/RunningDog";
 import HalfAbout from "./mainComponents/HalfAbout";
