@@ -17,7 +17,7 @@ const AdoptionForm = lazy(() => import("@/mainComponents/Adopt/AdoptionForm"));
 const ReportPage = lazy(
   () => import("@/mainComponents/ReportAbout/ReportPage")
 );
-const SupportUs = lazy(() => import("@/mainComponents/SupportUs"));
+const SupportUs = lazy(() => import("@/mainComponents/SupportUs/SupportUs"));
 const SeeBlogs = lazy(
   () => import("@/mainComponents/AdminBlogs/SmallBlogUI/SeeBlogs")
 );

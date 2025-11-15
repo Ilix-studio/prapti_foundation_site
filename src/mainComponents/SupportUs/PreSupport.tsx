@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { Header } from "@/mainComponents/Header";
-import Footer from "@/mainComponents/Footer";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -21,7 +20,7 @@ import {
   Check,
 } from "lucide-react";
 
-const SupportUs: React.FC = () => {
+const PreSupport = () => {
   const [donationAmount, setDonationAmount] = useState<string>("100");
   const [customAmount, setCustomAmount] = useState<string>("");
   const [paymentMethod, setPaymentMethod] = useState<string>("card");
@@ -40,9 +39,7 @@ const SupportUs: React.FC = () => {
   };
 
   return (
-    <div className='flex flex-col min-h-screen'>
-      <Header />
-
+    <div>
       {/* Hero Section */}
       <section className='relative py-16 md:py-24 bg-amber-50'>
         <div className='container px-4 md:px-6'>
@@ -863,9 +860,8 @@ const SupportUs: React.FC = () => {
           </div>
         </div>
       </section>
-
-      <Footer />
     </div>
   );
 };
-export default SupportUs;
+
+export default PreSupport;

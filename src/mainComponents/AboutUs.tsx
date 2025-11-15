@@ -5,7 +5,7 @@ import Footer from "@/mainComponents/Footer";
 import { Button } from "@/components/ui/button";
 import { Heart, Users, Calendar, Dog } from "lucide-react";
 import { Link } from "react-router-dom";
-import aboutusLogo from "./../assets/aboutUS.png";
+import aboutusLogo from "./../assets/mainLogo.jpeg";
 
 const AboutUs: React.FC = () => {
   return (

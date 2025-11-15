@@ -115,8 +115,8 @@ const DonateUs: React.FC = () => {
                 </div>
 
                 <p className='text-sm text-gray-500 mt-6'>
-                  All donations are tax-deductible. We're registered under
-                  Section 12A & 80G.
+                  All donations are tax-deductible. We're registered under Assam
+                  Government.
                 </p>
               </div>
             </div>
