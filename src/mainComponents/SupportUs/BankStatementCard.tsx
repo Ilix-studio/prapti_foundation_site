@@ -23,8 +23,8 @@ const BankStatementCard: React.FC = () => {
         </div>
       </section>
 
-      <div className=' p-4 sm:p-6 lg:p-8 flex items-center justify-center'>
-        <div className='w-full max-w-4xl shadow-lg'>
+      <div className=' p-4 sm:p-6 lg:p-8 flex items-center justify-center '>
+        <div className='w-full max-w-4xl  '>
           <div className='p-6 sm:p-8 lg:p-12'>
             {/* Header Section */}
             <div className='grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8 pb-6'>

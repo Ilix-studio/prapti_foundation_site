@@ -91,6 +91,17 @@ export function Header() {
                 }`}
               ></span>
             </Link>
+            <Link
+              to='/awards'
+              className='relative text-sm font-medium hover:text-orange-500 transition-colors duration-200 group'
+            >
+              Awards
+              <span
+                className={`absolute -bottom-1 left-0 h-1 bg-orange-500 transition-all duration-300 ${
+                  isActive("/awards") ? "w-full" : "w-0 group-hover:w-full"
+                }`}
+              ></span>
+            </Link>
 
             <Link
               to='/gallery'

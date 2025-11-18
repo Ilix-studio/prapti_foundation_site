@@ -331,7 +331,9 @@ const Footer = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.4 }}
           >
-            <h3 className='text-md font-semibold mb-4'>Get in Touch</h3>
+            <Link to='/admin/dashboard'>
+              <h3 className='text-md font-semibold mb-4'>Get in Touch</h3>
+            </Link>
             <div className='space-y-3'>
               <div className='flex items-start gap-2'>
                 <MapPin className='h-4 w-4 text-orange-500 mt-0.5 flex-shrink-0' />

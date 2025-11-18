@@ -92,7 +92,8 @@ const TestimonialDash = lazy(
 const ViewAllMessage = lazy(
   () => import("@/mainComponents/Admin/AdminMessage/ViewAllMessage")
 );
-
+const AddAwards = lazy(() => import("@/mainComponents/Awards/AddAwards"));
+const ViewAwards = lazy(() => import("@/mainComponents/Awards/ViewAwards"));
 // Route configuration
 export const immediateRoute = [{ path: "/", component: Home }];
 export const immediateRouteTwo = [
@@ -109,7 +110,8 @@ export const publicRoutes = [
   { path: "/report", component: ReportPage },
   { path: "/support", component: SupportUs },
   { path: "/blog", component: SeeBlogs },
-  { path: "/blog/:id", component: BlogPostPage }, // create a component for admin to read blog
+  { path: "/blog/:id", component: BlogPostPage },
+  { path: "/awards", component: ViewAwards },
   { path: "/volunteer", component: VolunteerPage },
   { path: "/write-testimonial", component: WriteTestimonial },
 ];
@@ -124,6 +126,7 @@ export const adminRoutes = [
   { path: "/admin/impact", component: TotalImpactDashboard },
   { path: "/admin/testimonials", component: TestimonialDash },
   { path: "/admin/messages", component: ViewAllMessage },
+  { path: "/admin/addAwards", component: AddAwards },
 ];
 
 // NEW: Admin specific routes with dashboard mapping
