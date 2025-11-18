@@ -18,15 +18,6 @@ export interface BlogPost {
   updatedAt: string;
 }
 
-// Form data for creating/updating blog posts
-export interface BlogFormData {
-  title: string;
-  content: string;
-  category: string; // Category ID or name
-  image?: string;
-  author?: string;
-}
-
 // Blog API response types
 export interface BlogResponse {
   success: boolean;

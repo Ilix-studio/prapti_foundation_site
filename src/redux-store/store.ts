@@ -28,6 +28,8 @@ import { categoryApi } from "./services/categoryApi";
 //
 import { totalImpactApi } from "./services/impactApi";
 import { testimonialApi } from "./services/testimonialApi";
+//
+import { awardApi } from "./services/awardApi";
 
 // Create IndexedDB storage for redux-persist
 const idbStorage = createIdbStorage("prapti-foundation-db");
@@ -55,6 +57,7 @@ const rootReducer = combineReducers({
   //
   [totalImpactApi.reducerPath]: totalImpactApi.reducer,
   [testimonialApi.reducerPath]: testimonialApi.reducer,
+  [awardApi.reducerPath]: awardApi.reducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
@@ -78,7 +81,8 @@ export const store = configureStore({
       videoApi.middleware,
       visitorApi.middleware,
       totalImpactApi.middleware,
-      testimonialApi.middleware
+      testimonialApi.middleware,
+      awardApi.middleware
     ),
 });
 

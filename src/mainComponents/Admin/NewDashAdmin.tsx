@@ -24,6 +24,8 @@ import {
   Images,
   DatabaseZap,
   PenLine,
+  BadgeCheck,
+  Trophy,
 } from "lucide-react";
 
 import {
@@ -188,9 +190,35 @@ const NewDashAdmin: React.FC = () => {
       error: false,
       action: () => navigate("/admin/testimonials"),
     },
+    {
+      title: "Total Award Info",
+      value: testimonialData?.pagination?.totalItems?.toString() || "0",
+      icon: Trophy,
+      color: "text-cyan-500",
+      bgColor: "bg-purple-50",
+      loading: false,
+      error: false,
+      action: () => navigate("/admin/testimonials"),
+    },
+    {
+      title: "Total Rescue Operation",
+      value: testimonialData?.pagination?.totalItems?.toString() || "0",
+      icon: BadgeCheck,
+      color: "text-blue-800",
+      bgColor: "bg-purple-50",
+      loading: false,
+      error: false,
+      action: () => navigate("/admin/testimonials"),
+    },
   ];
 
   const quickActions = [
+    {
+      title: "Add Category",
+      icon: FileText,
+      color: "bg-orange-600",
+      action: () => navigate("/admin/categories"),
+    },
     {
       title: "Add Blog Post",
       icon: Plus,
@@ -200,20 +228,27 @@ const NewDashAdmin: React.FC = () => {
     {
       title: "Upload Photo",
       icon: Upload,
-      color: "bg-purple-600",
+      color: "bg-purple-700",
       action: () => navigate("/admin/addPhoto"),
     },
     {
       title: "Upload Video",
       icon: Video,
-      color: "bg-green-600",
+      color: "bg-green-700",
       action: () => navigate("/admin/addVideo"),
     },
+
     {
-      title: "Add Category",
-      icon: FileText,
-      color: "bg-orange-600",
-      action: () => navigate("/admin/categories"),
+      title: "Add Awards Info",
+      icon: Trophy,
+      color: "bg-cyan-600",
+      action: () => navigate("/admin/addAwards"),
+    },
+    {
+      title: "Add Rescue Info",
+      icon: BadgeCheck,
+      color: "bg-pink-600",
+      action: () => navigate("/admin/addRescue"),
     },
   ];
 
