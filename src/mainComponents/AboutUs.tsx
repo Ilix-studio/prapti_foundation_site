@@ -71,7 +71,7 @@ const AboutUs: React.FC = () => {
               <img
                 src={aboutusLogo}
                 alt="Prapti Foundation's journey"
-                className='w-full h-full object-cover'
+                className='w-full h-full object-cover overflow-hidden'
               />
             </div>
           </div>
