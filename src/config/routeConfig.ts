@@ -92,8 +92,17 @@ const TestimonialDash = lazy(
 const ViewAllMessage = lazy(
   () => import("@/mainComponents/Admin/AdminMessage/ViewAllMessage")
 );
-const AddAwards = lazy(() => import("@/mainComponents/Awards/AddAwards"));
-const ViewAwards = lazy(() => import("@/mainComponents/Awards/ViewAwards"));
+const ViewAwards = lazy(
+  () => import("@/mainComponents/Admin/AdminAwards/ViewAllAwards")
+);
+
+const AddAwards = lazy(
+  () => import("@/mainComponents/Admin/AdminAwards/AddAwards")
+);
+const ViewAward = lazy(
+  () => import("@/mainComponents/Admin/AdminAwards/ViewAward")
+);
+
 // Route configuration
 export const immediateRoute = [{ path: "/", component: Home }];
 export const immediateRouteTwo = [
@@ -111,9 +120,14 @@ export const publicRoutes = [
   { path: "/support", component: SupportUs },
   { path: "/blog", component: SeeBlogs },
   { path: "/blog/:id", component: BlogPostPage },
-  { path: "/awards", component: ViewAwards },
   { path: "/volunteer", component: VolunteerPage },
   { path: "/write-testimonial", component: WriteTestimonial },
+  //
+  { path: "/awards", component: ViewAwards },
+  {
+    path: "/awards/:id",
+    component: ViewAward,
+  },
 ];
 
 export const adminRoutes = [
@@ -126,6 +140,7 @@ export const adminRoutes = [
   { path: "/admin/impact", component: TotalImpactDashboard },
   { path: "/admin/testimonials", component: TestimonialDash },
   { path: "/admin/messages", component: ViewAllMessage },
+  //
   { path: "/admin/addAwards", component: AddAwards },
 ];
 
@@ -134,7 +149,14 @@ export interface AdSpecificRoute {
   path: string;
   component: React.ComponentType;
   parentDashboard: string; // The dashboard this route should go back to
-  category: "photo" | "video" | "blogs" | "message" | "volunteer";
+  category:
+    | "photo"
+    | "video"
+    | "blogs"
+    | "message"
+    | "volunteer"
+    | "award"
+    | "rescue";
 }
 
 export const adSpecificRoutes: AdSpecificRoute[] = [
