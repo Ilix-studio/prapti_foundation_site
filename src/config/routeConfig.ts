@@ -52,7 +52,6 @@ const WriteTestimonial = lazy(
 
 import NotFound from "../mainComponents/NotFound";
 import AdminSeeBlog from "@/mainComponents/Admin/AdminBlogs/SmallBlogUI/AdminSeeBlog";
-import EditAward from "@/mainComponents/Admin/AdminAwards/EditAward";
 
 // Admin components (lazy loaded)
 const NewDashAdmin = lazy(() => import("../mainComponents/Admin/NewDashAdmin"));
@@ -106,6 +105,23 @@ const ViewAward = lazy(
 const AwardDash = lazy(
   () => import("@/mainComponents/Admin/AdminAwards/AwardDash")
 );
+const EditAward = lazy(
+  () => import("@/mainComponents/Admin/AdminAwards/EditAward")
+);
+//
+const ViewAllRescue = lazy(
+  () => import("@/mainComponents/Rescue/ViewAllRescue")
+);
+const ViewRescue = lazy(() => import("@/mainComponents/Rescue/ViewRescue"));
+const EditRescue = lazy(
+  () => import("@/mainComponents/Admin/AdminRescue/EditRescue")
+);
+const AddRescue = lazy(
+  () => import("@/mainComponents/Admin/AdminRescue/AddRescue")
+);
+const RescueDash = lazy(
+  () => import("@/mainComponents/Admin/AdminRescue/RescueDash")
+);
 
 // Route configuration
 export const immediateRoute = [{ path: "/", component: Home }];
@@ -132,6 +148,15 @@ export const publicRoutes = [
     path: "/awards/:id",
     component: ViewAward,
   },
+  //
+  {
+    path: "/rescue",
+    component: ViewAllRescue,
+  },
+  {
+    path: "/rescue/:id",
+    component: ViewRescue,
+  },
 ];
 
 export const adminRoutesDash = [
@@ -146,8 +171,7 @@ export const adminRoutesDash = [
   { path: "/admin/messages", component: ViewAllMessage },
   //
   { path: "/admin/awardDash", component: AwardDash },
-
-  //
+  { path: "/admin/rescueDash", component: RescueDash },
 ];
 
 // NEW: Admin specific routes with dashboard mapping
@@ -252,6 +276,19 @@ export const adSpecificRoutes: AdSpecificRoute[] = [
     component: EditAward,
     parentDashboard: "/admin/awardDash",
     category: "award",
+  },
+  // Rescue specific routes - go back to rescue Dashboard
+  {
+    path: "/admin/addRescue",
+    component: AddRescue,
+    parentDashboard: "/admin/rescueDash",
+    category: "rescue",
+  },
+  {
+    path: "/admin/editRescue/:id",
+    component: EditRescue,
+    parentDashboard: "/admin/rescueDash",
+    category: "rescue",
   },
 ];
 

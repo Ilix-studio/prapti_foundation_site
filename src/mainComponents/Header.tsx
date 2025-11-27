@@ -116,10 +116,10 @@ export function Header() {
             </Link>
 
             <Link
-              to='/volunteer'
+              to='/rescue'
               className='relative text-sm font-medium hover:text-orange-500 transition-colors duration-200 group'
             >
-              Volunteer
+              Rescue Ops
               <span
                 className={`absolute -bottom-1 left-0 h-1 bg-orange-500 transition-all duration-300 ${
                   isActive("/volunteer") ? "w-full" : "w-0 group-hover:w-full"
@@ -240,9 +240,9 @@ export function Header() {
                   Adopt a dog
                 </Button>
               </Link>
-              <Link to='/support' onClick={() => setIsOpen(false)}>
+              <Link to='/volunteer' onClick={() => setIsOpen(false)}>
                 <Button className='w-full bg-orange-500 hover:bg-orange-600 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200'>
-                  Support our cause
+                  Become a volunteer!
                 </Button>
               </Link>
             </div>

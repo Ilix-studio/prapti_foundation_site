@@ -208,7 +208,7 @@ const NewDashAdmin: React.FC = () => {
       bgColor: "bg-purple-50",
       loading: false,
       error: false,
-      action: () => navigate("/admin/testimonials"),
+      action: () => navigate("/admin/rescueDash"),
     },
   ];
 

@@ -54,13 +54,13 @@ export function HeroSection() {
                 Adopt a dog
               </Button>
             </Link>
-            <Link to='/support' className='w-full sm:w-auto'>
+            <Link to='/volunteer' className='w-full sm:w-auto'>
               <Button
                 size='lg'
                 variant='outline'
                 className='bg-orange-490 text-white border-2 hover:bg-white/20 hover:text-white w-full'
               >
-                Support our cause
+                Become a volunteer!
                 <ChevronRight className='ml-2 h-4 w-4' />
               </Button>
             </Link>
