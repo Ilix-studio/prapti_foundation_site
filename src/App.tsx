@@ -9,9 +9,9 @@ import {
   immediateRoute,
   immediateRouteTwo,
   publicRoutes,
-  adminRoutes,
   adSpecificRoutes,
   fallbackRoute,
+  adminRoutesDash,
 } from "./config/routeConfig";
 import {
   createAdminRoute,
@@ -107,7 +107,7 @@ function App() {
         )}
 
         {/* Step 3: Admin routes (with protection + lazy loading) */}
-        {adminRoutes.map(({ path, component }) =>
+        {adminRoutesDash.map(({ path, component }) =>
           createAdminRoute(path, component)
         )}
 

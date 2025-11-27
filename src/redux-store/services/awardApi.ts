@@ -49,14 +49,44 @@ export const awardApi = createApi({
       invalidatesTags: ["Awards"],
     }),
 
-    // PATCH /update/:id
-    updateAwardPost: builder.mutation({
+    // PATCH /update/:id - for JSON body (text fields, delete, updateAlt)
+    updateAwardPost: builder.mutation<
+      { success: boolean; message: string; data: any },
+      {
+        id: string;
+        title?: string;
+        description?: string;
+        category?: string;
+        imageAction?: "delete" | "updateAlt";
+        imageIndex?: string;
+        imageAlt?: string;
+      }
+    >({
       query: ({ id, ...data }) => ({
         url: `/awards/update/${id}`,
         method: "PATCH",
         body: data,
       }),
-      invalidatesTags: (_r, _e, arg) => [{ type: "Awards", id: arg.id }],
+      invalidatesTags: (_r, _e, arg) => [
+        { type: "Awards", id: arg.id },
+        "Awards",
+      ],
+    }),
+
+    // PATCH /update/:id - for FormData (adding new images)
+    updateAwardWithImage: builder.mutation<
+      { success: boolean; message: string; data: any },
+      { id: string; formData: FormData }
+    >({
+      query: ({ id, formData }) => ({
+        url: `/awards/update/${id}`,
+        method: "PATCH",
+        body: formData,
+      }),
+      invalidatesTags: (_r, _e, arg) => [
+        { type: "Awards", id: arg.id },
+        "Awards",
+      ],
     }),
 
     // DELETE /del/:id
@@ -77,5 +107,6 @@ export const {
   useUploadAwardMutation,
   useUploadMultipleAwardsMutation,
   useUpdateAwardPostMutation,
+  useUpdateAwardWithImageMutation,
   useDeleteAwardPostMutation,
 } = awardApi;

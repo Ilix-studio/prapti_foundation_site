@@ -19,7 +19,7 @@ const ReportPage = lazy(
 );
 const SupportUs = lazy(() => import("@/mainComponents/SupportUs/SupportUs"));
 const SeeBlogs = lazy(
-  () => import("@/mainComponents/AdminBlogs/SmallBlogUI/SeeBlogs")
+  () => import("@/mainComponents/Admin/AdminBlogs/SmallBlogUI/SeeBlogs")
 );
 
 //
@@ -28,30 +28,31 @@ const ViewMessage = lazy(
 );
 
 const BlogPostPage = lazy(
-  () => import("@/mainComponents/AdminBlogs/SmallBlogUI/BlogPost")
+  () => import("@/mainComponents/Admin/AdminBlogs/SmallBlogUI/BlogPost")
 );
 const VolunteerPage = lazy(() => import("@/mainComponents/Volunteer/Volunter"));
 const VolunteerDetail = lazy(
   () => import("@/mainComponents/Volunteer/VolunteerDetail")
 );
 const AddBlogPost = lazy(
-  () => import("@/mainComponents/AdminBlogs/AddBlogForm")
+  () => import("@/mainComponents/Admin/AdminBlogs/AddBlogForm")
 );
 const EditBlogPost = lazy(
-  () => import("@/mainComponents/AdminBlogs/EditBlogPost")
+  () => import("@/mainComponents/Admin/AdminBlogs/EditBlogPost")
 );
 const VolunteerDash = lazy(
   () => import("@/mainComponents/Volunteer/VolunteerDash")
 );
 const BlogsDash = lazy(
-  () => import("@/mainComponents/AdminBlogs/SmallBlogUI/BlogsDash")
+  () => import("@/mainComponents/Admin/AdminBlogs/SmallBlogUI/BlogsDash")
 );
 const WriteTestimonial = lazy(
   () => import("@/mainComponents/Testimonials/WriteTestimonial")
 );
 
 import NotFound from "../mainComponents/NotFound";
-import AdminSeeBlog from "@/mainComponents/AdminBlogs/SmallBlogUI/AdminSeeBlog";
+import AdminSeeBlog from "@/mainComponents/Admin/AdminBlogs/SmallBlogUI/AdminSeeBlog";
+import EditAward from "@/mainComponents/Admin/AdminAwards/EditAward";
 
 // Admin components (lazy loaded)
 const NewDashAdmin = lazy(() => import("../mainComponents/Admin/NewDashAdmin"));
@@ -92,15 +93,18 @@ const TestimonialDash = lazy(
 const ViewAllMessage = lazy(
   () => import("@/mainComponents/Admin/AdminMessage/ViewAllMessage")
 );
-const ViewAwards = lazy(
-  () => import("@/mainComponents/Admin/AdminAwards/ViewAllAwards")
+//
+const ViewAllAwards = lazy(
+  () => import("@/mainComponents/Awards/ViewAllAwards")
 );
-
 const AddAwards = lazy(
   () => import("@/mainComponents/Admin/AdminAwards/AddAwards")
 );
 const ViewAward = lazy(
   () => import("@/mainComponents/Admin/AdminAwards/ViewAward")
+);
+const AwardDash = lazy(
+  () => import("@/mainComponents/Admin/AdminAwards/AwardDash")
 );
 
 // Route configuration
@@ -123,14 +127,14 @@ export const publicRoutes = [
   { path: "/volunteer", component: VolunteerPage },
   { path: "/write-testimonial", component: WriteTestimonial },
   //
-  { path: "/awards", component: ViewAwards },
+  { path: "/awards", component: ViewAllAwards },
   {
     path: "/awards/:id",
     component: ViewAward,
   },
 ];
 
-export const adminRoutes = [
+export const adminRoutesDash = [
   { path: "/admin/dashboard", component: NewDashAdmin },
   { path: "/admin/categories", component: CategoryManager },
   { path: "/admin/photoDashboard", component: PhotoDash },
@@ -141,7 +145,9 @@ export const adminRoutes = [
   { path: "/admin/testimonials", component: TestimonialDash },
   { path: "/admin/messages", component: ViewAllMessage },
   //
-  { path: "/admin/addAwards", component: AddAwards },
+  { path: "/admin/awardDash", component: AwardDash },
+
+  //
 ];
 
 // NEW: Admin specific routes with dashboard mapping
@@ -233,6 +239,19 @@ export const adSpecificRoutes: AdSpecificRoute[] = [
     component: ViewMessage,
     parentDashboard: "/admin/messages",
     category: "message",
+  },
+  // Award specific routes - go back to award Dashboard
+  {
+    path: "/admin/addAwards",
+    component: AddAwards,
+    parentDashboard: "/admin/awardDash",
+    category: "award",
+  },
+  {
+    path: "/admin/editAward/:id",
+    component: EditAward,
+    parentDashboard: "/admin/awardDash",
+    category: "award",
   },
 ];
 

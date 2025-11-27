@@ -83,7 +83,7 @@ const NewDashAdmin: React.FC = () => {
     refetch: refetchVisitorStats,
   } = useGetVisitorStatsQuery();
 
-  // Get counts for photos, videos, and press articles
+  // Get counts for photos, videos, and blogs articles
   const { data: photosData } = useGetPhotosQuery({
     page: 1,
     limit: 1, // We only need the count
@@ -198,7 +198,7 @@ const NewDashAdmin: React.FC = () => {
       bgColor: "bg-purple-50",
       loading: false,
       error: false,
-      action: () => navigate("/admin/testimonials"),
+      action: () => navigate("/admin/awardDash"),
     },
     {
       title: "Total Rescue Operation",

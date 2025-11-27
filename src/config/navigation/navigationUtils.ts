@@ -53,6 +53,13 @@ export const getPageType = (path: string): string => {
   ) {
     return "blogs-specific";
   }
+  if (
+    path.startsWith("/admin/award/new") ||
+    path.startsWith("/admin/read/") ||
+    path.startsWith("/admin/blog/edit/")
+  ) {
+    return "award-specific";
+  }
 
   if (path.startsWith("/admin/")) return "admin-general";
 

@@ -10,9 +10,7 @@ interface BlogCardProps {
   post: BlogPost;
   compact?: boolean;
 }
-
 const BlogCard: React.FC<BlogCardProps> = ({ post, compact = false }) => {
-  // Format the date using toLocaleDateString
   const formattedDate = new Date(post.createdAt).toLocaleDateString("en-US", {
     year: "numeric",
     month: "long",
@@ -22,16 +20,16 @@ const BlogCard: React.FC<BlogCardProps> = ({ post, compact = false }) => {
   if (compact) {
     return (
       <div className='flex gap-3 group'>
-        <div className='flex-shrink-0 w-16 h-16 overflow-hidden rounded'>
+        <div className='flex-shrink-0 w-20 h-20 overflow-hidden rounded'>
           <Link to={`/blog/${post._id}`}>
             <img
               src={post.image || "/placeholder.svg"}
               alt={post.title}
-              className='object-fill w-full h-full transition-transform group-hover:scale-105'
+              className='object-cover w-full h-full transition-transform group-hover:scale-105'
             />
           </Link>
         </div>
-        <div>
+        <div className='flex-grow'>
           <h4 className='font-medium leading-tight'>
             <Link to={`/blog/${post._id}`} className='hover:text-orange-500'>
               {post.title}
@@ -80,5 +78,4 @@ const BlogCard: React.FC<BlogCardProps> = ({ post, compact = false }) => {
     </article>
   );
 };
-
 export default BlogCard;

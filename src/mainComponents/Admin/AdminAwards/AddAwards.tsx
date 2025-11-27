@@ -186,7 +186,7 @@ export default function AddAwards() {
       setSelectedFiles([]);
 
       // Navigate back after successful creation
-      setTimeout(() => navigate("/admin/awardsDashboard"), 1500);
+      setTimeout(() => navigate("/admin/awardDash"), 1500);
     } catch (err: any) {
       const errorMessage =
         err?.data?.message || "Failed to create award. Please try again.";
@@ -402,7 +402,7 @@ export default function AddAwards() {
                 <Button
                   type='button'
                   variant='outline'
-                  onClick={() => navigate("/admin/awardsDashboard")}
+                  onClick={() => navigate("/admin/awardDash")}
                 >
                   Cancel
                 </Button>

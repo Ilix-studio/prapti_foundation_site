@@ -9,12 +9,16 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Loader2, Trash2, AlertCircle, Eye } from "lucide-react";
 import toast from "react-hot-toast";
 import { BackNavigation } from "@/config/navigation/BackNavigation";
+import { selectIsAdmin } from "@/redux-store/slices/authSlice";
+import { useSelector } from "react-redux";
 
 const ViewAllAwards = () => {
   const navigate = useNavigate();
   const { data, isLoading, error } = useGetAwardsQuery({});
   const [deleteAward, { isLoading: isDeleting }] = useDeleteAwardPostMutation();
   const [deletingId, setDeletingId] = useState<string | null>(null);
+
+  const isAdmin = useSelector(selectIsAdmin);
 
   if (isLoading) {
     return (
@@ -37,15 +41,23 @@ const ViewAllAwards = () => {
   }
 
   async function handleDelete(id: string) {
+    if (!window.confirm("Are you sure you want to delete this award?")) {
+      return;
+    }
+
     try {
+      console.log("Deleting award:", id); // Debug log
       setDeletingId(id);
-      await deleteAward(id).unwrap();
+      const result = await deleteAward(id).unwrap();
+      console.log("Delete result:", result); // Debug log
       toast.success("Award deleted successfully");
     } catch (error: any) {
+      console.error("Delete error:", error); // Enhanced logging
       toast.error(
-        error?.data?.message || "Failed to delete award. Please try again."
+        error?.data?.message ||
+          error?.message ||
+          "Failed to delete award. Please try again."
       );
-      console.error("Delete error:", error);
     } finally {
       setDeletingId(null);
     }
@@ -104,7 +116,6 @@ const ViewAllAwards = () => {
                         {award.category?.name || "Uncategorized"}
                       </span>
                     </div>
-
                     <div className='flex gap-2'>
                       <Button
                         variant='outline'
@@ -118,28 +129,30 @@ const ViewAllAwards = () => {
                         <Eye className='h-4 w-4' />
                         View
                       </Button>
-                      <Button
-                        variant='destructive'
-                        size='sm'
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleDelete(award._id);
-                        }}
-                        disabled={isDeleting && deletingId === award._id}
-                        className='flex-1'
-                      >
-                        {isDeleting && deletingId === award._id ? (
-                          <>
-                            <Loader2 className='mr-2 h-4 w-4 animate-spin' />
-                            Deleting...
-                          </>
-                        ) : (
-                          <>
-                            <Trash2 className='mr-2 h-4 w-4' />
-                            Delete
-                          </>
-                        )}
-                      </Button>
+                      {isAdmin && (
+                        <Button
+                          variant='destructive'
+                          size='sm'
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDelete(award._id);
+                          }}
+                          disabled={isDeleting && deletingId === award._id}
+                          className='flex-1'
+                        >
+                          {isDeleting && deletingId === award._id ? (
+                            <>
+                              <Loader2 className='mr-2 h-4 w-4 animate-spin' />
+                              Deleting...
+                            </>
+                          ) : (
+                            <>
+                              <Trash2 className='mr-2 h-4 w-4' />
+                              Delete
+                            </>
+                          )}
+                        </Button>
+                      )}
                     </div>
                   </CardContent>
                 </Card>
