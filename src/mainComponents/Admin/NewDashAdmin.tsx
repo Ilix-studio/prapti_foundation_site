@@ -44,6 +44,8 @@ import { useGetPhotosQuery } from "@/redux-store/services/photoApi";
 import { useGetVideosQuery } from "@/redux-store/services/videoApi";
 import { useGetAllTotalImpactQuery } from "@/redux-store/services/impactApi";
 import { useGetTestimonialsQuery } from "@/redux-store/services/testimonialApi";
+import { useGetAwardsQuery } from "@/redux-store/services/awardApi";
+import { useGetRescuePostsQuery } from "@/redux-store/services/rescueApi";
 
 const NewDashAdmin: React.FC = () => {
   const dispatch = useDispatch();
@@ -83,7 +85,7 @@ const NewDashAdmin: React.FC = () => {
     refetch: refetchVisitorStats,
   } = useGetVisitorStatsQuery();
 
-  // Get counts for photos, videos, and press articles
+  // Get counts for photos, videos, and blogs articles
   const { data: photosData } = useGetPhotosQuery({
     page: 1,
     limit: 1, // We only need the count
@@ -101,6 +103,8 @@ const NewDashAdmin: React.FC = () => {
     page: currentPage,
     limit: 10,
   });
+  const { data: awards } = useGetAwardsQuery({});
+  const { data: rescueData } = useGetRescuePostsQuery({ page: 1, limit: 1 });
 
   if (!isAuthenticated || !isAdmin) {
     return <Navigate to='/admin/login' />;
@@ -190,25 +194,26 @@ const NewDashAdmin: React.FC = () => {
       error: false,
       action: () => navigate("/admin/testimonials"),
     },
+
     {
       title: "Total Award Info",
-      value: testimonialData?.pagination?.totalItems?.toString() || "0",
+      value: awards?.length?.toString() || "0",
       icon: Trophy,
       color: "text-cyan-500",
       bgColor: "bg-purple-50",
       loading: false,
       error: false,
-      action: () => navigate("/admin/testimonials"),
+      action: () => navigate("/admin/awardDash"),
     },
     {
       title: "Total Rescue Operation",
-      value: testimonialData?.pagination?.totalItems?.toString() || "0",
+      value: rescueData?.pagination?.total?.toString() || "0",
       icon: BadgeCheck,
       color: "text-blue-800",
       bgColor: "bg-purple-50",
       loading: false,
       error: false,
-      action: () => navigate("/admin/testimonials"),
+      action: () => navigate("/admin/rescueDash"),
     },
   ];
 

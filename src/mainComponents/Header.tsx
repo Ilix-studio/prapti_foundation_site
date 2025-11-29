@@ -116,10 +116,10 @@ export function Header() {
             </Link>
 
             <Link
-              to='/volunteer'
+              to='/rescue'
               className='relative text-sm font-medium hover:text-orange-500 transition-colors duration-200 group'
             >
-              Volunteer
+              Rescue Ops
               <span
                 className={`absolute -bottom-1 left-0 h-1 bg-orange-500 transition-all duration-300 ${
                   isActive("/volunteer") ? "w-full" : "w-0 group-hover:w-full"
@@ -194,6 +194,17 @@ export function Header() {
             >
               Blogs
             </Link>
+            <Link
+              to='/awards'
+              className={`relative text-sm font-medium transition-colors duration-200 py-2 ${
+                isActive("/awards")
+                  ? "text-orange-500 border-l-2 border-orange-500 pl-3"
+                  : "hover:text-orange-500 hover:border-l-2 hover:border-orange-500 hover:pl-3"
+              }`}
+              onClick={() => setIsOpen(false)}
+            >
+              Awards
+            </Link>
 
             <Link
               to='/gallery'
@@ -205,6 +216,17 @@ export function Header() {
               onClick={() => setIsOpen(false)}
             >
               Gallery
+            </Link>
+            <Link
+              to='/rescue'
+              className={`relative text-sm font-medium transition-colors duration-200 py-2 ${
+                isActive("/gallery")
+                  ? "text-orange-500 border-l-2 border-orange-500 pl-3"
+                  : "hover:text-orange-500 hover:border-l-2 hover:border-orange-500 hover:pl-3"
+              }`}
+              onClick={() => setIsOpen(false)}
+            >
+              Rescue Stories
             </Link>
 
             <Link
@@ -219,18 +241,6 @@ export function Header() {
               Contact us
             </Link>
 
-            <Link
-              to='/volunteer'
-              className={`relative text-sm font-medium transition-colors duration-200 py-2 ${
-                isActive("/volunteer")
-                  ? "text-orange-500 border-l-2 border-orange-500 pl-3"
-                  : "hover:text-orange-500 hover:border-l-2 hover:border-orange-500 hover:pl-3"
-              }`}
-              onClick={() => setIsOpen(false)}
-            >
-              Join as a Volunteer
-            </Link>
-
             <div className='flex flex-col gap-2 pt-2 mt-4 border-t border-gray-200'>
               <Link to='/adopt' onClick={() => setIsOpen(false)}>
                 <Button
@@ -240,9 +250,9 @@ export function Header() {
                   Adopt a dog
                 </Button>
               </Link>
-              <Link to='/support' onClick={() => setIsOpen(false)}>
+              <Link to='/volunteer' onClick={() => setIsOpen(false)}>
                 <Button className='w-full bg-orange-500 hover:bg-orange-600 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200'>
-                  Support our cause
+                  Become a volunteer!
                 </Button>
               </Link>
             </div>

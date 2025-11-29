@@ -12,20 +12,21 @@ export const categoryApi = createApi({
   tagTypes: ["Category"],
   endpoints: (builder) => ({
     // Get categories by type (Public)
-    getCategoriesByType: builder.query<Category[], "photo" | "video" | "blogs">(
-      {
-        query: (type) => `/categories/${type}`,
-        transformResponse: (response: { success: boolean; data: Category[] }) =>
-          response.data,
-        providesTags: (result, _error, type) => [
-          { type: "Category", id: type },
-          ...(result || []).map(({ _id }) => ({
-            type: "Category" as const,
-            id: _id,
-          })),
-        ],
-      }
-    ),
+    getCategoriesByType: builder.query<
+      Category[],
+      "photo" | "video" | "blogs" | "award" | "rescue"
+    >({
+      query: (type) => `/categories/${type}`,
+      transformResponse: (response: { success: boolean; data: Category[] }) =>
+        response.data,
+      providesTags: (result, _error, type) => [
+        { type: "Category", id: type },
+        ...(result || []).map(({ _id }) => ({
+          type: "Category" as const,
+          id: _id,
+        })),
+      ],
+    }),
 
     // Get all categories (Admin only)
     getAllCategories: builder.query<Category[], void>({

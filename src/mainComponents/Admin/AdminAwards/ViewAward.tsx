@@ -46,7 +46,7 @@ const ViewAward = () => {
     try {
       await deleteAward(award._id).unwrap();
       toast.success("Award deleted successfully");
-      navigate("/admin/awardsDashboard");
+      navigate("/admin/awardDash");
     } catch (error: any) {
       toast.error(
         error?.data?.message || "Failed to delete award. Please try again."

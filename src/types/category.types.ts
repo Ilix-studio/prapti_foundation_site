@@ -8,7 +8,7 @@ export interface Category {
 
 export interface CategoryCreateData {
   name: string;
-  type: "photo" | "video" | "blogs";
+  type: "photo" | "video" | "blogs" | "award" | "rescue";
 }
 
 export interface CategoryUpdateData {
@@ -17,7 +17,7 @@ export interface CategoryUpdateData {
 // Category create data interface
 export interface CategoryCreateData {
   name: string;
-  type: "photo" | "video" | "blogs";
+  type: "photo" | "video" | "blogs" | "award" | "rescue";
 }
 
 // Category update data interface

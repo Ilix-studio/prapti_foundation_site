@@ -19,19 +19,45 @@ export interface ContextualButton {
 
 // Get page type from path (updated with new admin specific routes)
 export const getPageType = (path: string): string => {
+  // Public pages
   if (path === "/") return "home";
   if (path === "/about") return "about";
   if (path === "/contact") return "contact";
+  if (path === "/gallery") return "gallery";
+  if (path === "/adopt") return "adopt";
+  if (path === "/report") return "report";
+  if (path === "/support") return "support";
+  if (path === "/blog") return "blog-list";
+  if (path.startsWith("/blog/")) return "blog-post";
+  if (path === "/volunteer") return "volunteer";
+  if (path === "/write-testimonial") return "write-testimonial";
+  if (path === "/awards") return "awards-list";
+  if (path.startsWith("/awards/")) return "award-detail";
+  if (path === "/rescue") return "rescue-list";
+  if (path.startsWith("/rescue/")) return "rescue-detail";
+
+  // Public gallery views
+  if (path.startsWith("/view/photo/")) return "view-photo";
+  if (path.startsWith("/view/video/")) return "view-video";
+
+  // Auth
   if (path === "/admin/login") return "admin-login";
 
+  // Admin dashboards
   if (path.startsWith("/admin/dashboard")) return "admin-dashboard";
   if (path.startsWith("/admin/videoDashboard")) return "video-dashboard";
   if (path.startsWith("/admin/photoDashboard")) return "photo-dashboard";
   if (path.startsWith("/admin/blogsDashboard")) return "blogs-dashboard";
-  if (path.startsWith("/admin/messages")) return "admin-messages";
-  if (path.startsWith("/admin/categories")) return "admin-categories";
+  if (path.startsWith("/admin/volunteerDashboard"))
+    return "volunteer-dashboard";
+  if (path.startsWith("/admin/impact")) return "impact-dashboard";
+  if (path.startsWith("/admin/testimonials")) return "testimonial-dashboard";
+  if (path.startsWith("/admin/messages")) return "messages-dashboard";
+  if (path.startsWith("/admin/categories")) return "categories-dashboard";
+  if (path.startsWith("/admin/awardDash")) return "award-dashboard";
+  if (path.startsWith("/admin/rescueDash")) return "rescue-dashboard";
 
-  // NEW: Check for admin specific routes
+  // Admin specific routes - Video
   if (
     path.startsWith("/admin/addVideo") ||
     path.startsWith("/admin/play/") ||
@@ -39,6 +65,8 @@ export const getPageType = (path: string): string => {
   ) {
     return "video-specific";
   }
+
+  // Admin specific routes - Photo
   if (
     path.startsWith("/admin/addPhoto") ||
     path.startsWith("/admin/view/") ||
@@ -46,21 +74,43 @@ export const getPageType = (path: string): string => {
   ) {
     return "photo-specific";
   }
+
+  // Admin specific routes - Blog
   if (
     path.startsWith("/admin/blog/new") ||
-    path.startsWith("/admin/read/") ||
-    path.startsWith("/admin/blog/edit/")
+    path.startsWith("/admin/blog/edit/") ||
+    path.match(/^\/admin\/blog\/[^/]+$/)
   ) {
     return "blogs-specific";
   }
 
+  // Admin specific routes - Volunteer
+  if (path.startsWith("/admin/volunteer/")) {
+    return "volunteer-specific";
+  }
+
+  // Admin specific routes - Award
+  if (
+    path.startsWith("/admin/addAwards") ||
+    path.startsWith("/admin/editAward/")
+  ) {
+    return "award-specific";
+  }
+
+  // Admin specific routes - Rescue
+  if (
+    path.startsWith("/admin/addRescue") ||
+    path.startsWith("/admin/editRescue/")
+  ) {
+    return "rescue-specific";
+  }
+
+  // Fallback for other admin routes
   if (path.startsWith("/admin/")) return "admin-general";
 
+  // Legacy routes (kept for backwards compatibility)
   if (path.startsWith("/photo-gallery")) return "photo-gallery";
   if (path.startsWith("/video-gallery")) return "video-gallery";
-  if (path.startsWith("/view/photo/")) return "view-photo";
-  if (path.startsWith("/view/video/")) return "view-video";
-  if (path.startsWith("/press/")) return "press-article";
 
   return "unknown";
 };
@@ -70,24 +120,53 @@ export const getPageTitle = (path: string): string => {
   const pageType = getPageType(path);
 
   const titleMap: Record<string, string> = {
+    // Public pages
     home: "Home",
     about: "About",
     contact: "Contact",
+    gallery: "Gallery",
+    adopt: "Adoption",
+    report: "Report",
+    support: "Support",
+    "blog-list": "Blog",
+    "blog-post": "Blog",
+    volunteer: "Volunteer",
+    "write-testimonial": "Testimonial",
+    "awards-list": "Awards",
+    "award-detail": "Award",
+    "rescue-list": "Rescues",
+    "rescue-detail": "Rescue",
+    "view-photo": "Photo",
+    "view-video": "Video",
+
+    // Auth
     "admin-login": "Admin Login",
+
+    // Admin dashboards
     "admin-dashboard": "Dashboard",
     "video-dashboard": "Videos",
     "photo-dashboard": "Photos",
-    "blogs-dashboard": "Blogss",
-    "admin-messages": "Messages",
-    "video-specific": "Videos", // Will show "Videos" as back button label
-    "photo-specific": "Photos", // Will show "Photos" as back button label
-    "press-specific": "Press", // Will show "Press" as back button label
+    "blogs-dashboard": "Blogs",
+    "volunteer-dashboard": "Volunteers",
+    "impact-dashboard": "Impact",
+    "testimonial-dashboard": "Testimonials",
+    "messages-dashboard": "Messages",
+    "categories-dashboard": "Categories",
+    "award-dashboard": "Awards",
+    "rescue-dashboard": "Rescues",
+
+    // Admin specific (back button labels)
+    "video-specific": "Videos",
+    "photo-specific": "Photos",
+    "blogs-specific": "Blogs",
+    "volunteer-specific": "Volunteers",
+    "award-specific": "Awards",
+    "rescue-specific": "Rescues",
+
+    // Legacy/fallback
     "admin-general": "Admin",
     "photo-gallery": "Photos",
     "video-gallery": "Videos",
-    "view-photo": "Photo",
-    "view-video": "Video",
-    "press-article": "Article",
   };
 
   return titleMap[pageType] || "Page";
@@ -101,21 +180,30 @@ export const getSmartBackPath = (currentPath: string): string | null => {
     return parentDashboard;
   }
 
-  // Default back navigation logic for other routes
-  if (currentPath.startsWith("/admin/messages/")) {
-    return "/admin/messages"; // Message detail -> All messages
+  // Public route back navigation
+  if (currentPath.startsWith("/blog/")) {
+    return "/blog";
+  }
+
+  if (currentPath.startsWith("/awards/")) {
+    return "/awards";
+  }
+
+  if (currentPath.startsWith("/rescue/")) {
+    return "/rescue";
   }
 
   if (currentPath.startsWith("/view/photo/")) {
-    return "/photo-gallery"; // Photo detail -> Photo gallery
+    return "/gallery";
   }
 
   if (currentPath.startsWith("/view/video/")) {
-    return "/video-gallery"; // Video detail -> Video gallery
+    return "/gallery";
   }
 
-  if (currentPath.startsWith("/press/")) {
-    return "/"; // Press article -> Home
+  // Admin message detail back navigation
+  if (currentPath.startsWith("/admin/messages/")) {
+    return "/admin/messages";
   }
 
   // No specific back path found
@@ -128,14 +216,29 @@ const isRoutePublic = (path: string): boolean => {
     "/",
     "/about",
     "/contact",
+    "/gallery",
+    "/adopt",
+    "/report",
+    "/support",
+    "/blog",
+    "/volunteer",
+    "/write-testimonial",
+    "/awards",
+    "/rescue",
+    "/admin/login",
+    // Legacy routes
     "/photo-gallery",
     "/video-gallery",
-    "/admin/login",
   ];
 
   if (publicPaths.includes(path)) return true;
-  if (path.startsWith("/view/")) return true;
-  if (path.startsWith("/press/")) return true;
+
+  // Dynamic public routes
+  if (path.startsWith("/view/photo/")) return true;
+  if (path.startsWith("/view/video/")) return true;
+  if (path.startsWith("/blog/")) return true;
+  if (path.startsWith("/awards/")) return true;
+  if (path.startsWith("/rescue/")) return true;
 
   return false;
 };

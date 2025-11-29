@@ -48,7 +48,7 @@ const ReportPage: React.FC = () => {
                       </h3>
                       <p className='text-gray-600'>
                         For urgent situations where a dog's life is in immediate
-                        danger, please call our emergency hotline.
+                        danger, please call our emergency number.
                       </p>
                     </div>
                   </div>
@@ -63,9 +63,12 @@ const ReportPage: React.FC = () => {
                     <p className='text-gray-500 mb-4'>
                       Our rescue team is available 24/7 for emergency situations
                     </p>
-                    <a href='tel:+915551234567'>
+                    <a
+                      href='tel:+91919435150744
+'
+                    >
                       <Button className='bg-orange-500 hover:bg-orange-600 w-full'>
-                        +91 555-123-4567
+                        +91-94351 50744
                       </Button>
                     </a>
                   </div>
@@ -79,7 +82,8 @@ const ReportPage: React.FC = () => {
                       Send details and photos via WhatsApp for quick response
                     </p>
                     <a
-                      href='https://wa.me/915551234567'
+                      href='https://wa.me/9435150744
+'
                       target='_blank'
                       rel='noopener noreferrer'
                     >

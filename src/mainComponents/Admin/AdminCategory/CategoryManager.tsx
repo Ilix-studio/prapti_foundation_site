@@ -55,19 +55,22 @@ import {
   Loader2,
   Search,
   AlertCircle,
+  Blend,
+  Trophy,
+  Ambulance,
 } from "lucide-react";
 import { toast } from "react-hot-toast";
 import { BackNavigation } from "@/config/navigation/BackNavigation";
 
 interface CategoryFormData {
   name: string;
-  type: "photo" | "video" | "blogs";
+  type: "photo" | "video" | "blogs" | "award" | "rescue";
 }
 
 const CategoryManager: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [filterType, setFilterType] = useState<
-    "all" | "photo" | "video" | "blogs"
+    "all" | "photo" | "video" | "blogs" | "award" | "rescue"
   >("all");
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [showEditDialog, setShowEditDialog] = useState(false);
@@ -109,8 +112,12 @@ const CategoryManager: React.FC = () => {
         return <Image className='w-4 h-4' />;
       case "video":
         return <Video className='w-4 h-4' />;
-      case "press":
-        return <FileText className='w-4 h-4' />;
+      case "blogs":
+        return <Blend className='w-4 h-4' />;
+      case "award":
+        return <Trophy className='w-4 h-4' />;
+      case "rescue":
+        return <Ambulance className='w-4 h-4' />;
       default:
         return <Folder className='w-4 h-4' />;
     }
@@ -123,7 +130,11 @@ const CategoryManager: React.FC = () => {
         return "default";
       case "video":
         return "secondary";
-      case "press":
+      case "blogs":
+        return "outline";
+      case "award":
+        return "outline";
+      case "rescue":
         return "outline";
       default:
         return "default";
@@ -147,7 +158,7 @@ const CategoryManager: React.FC = () => {
     setSelectedCategory(category);
     setFormData({
       name: category.name,
-      type: category.type as "photo" | "video" | "blogs",
+      type: category.type as "photo" | "video" | "blogs" | "award" | "rescue",
     });
     setShowEditDialog(true);
   };
@@ -251,6 +262,18 @@ const CategoryManager: React.FC = () => {
       icon: FileText,
       color: "bg-yellow-500",
     },
+    {
+      title: "Award Categories",
+      value: categoryStats.blogs || 0,
+      icon: FileText,
+      color: "bg-red-500",
+    },
+    {
+      title: "Rescue Categories",
+      value: categoryStats.blogs || 0,
+      icon: FileText,
+      color: "bg-cyan-500",
+    },
   ];
 
   if (error) {
@@ -286,7 +309,7 @@ const CategoryManager: React.FC = () => {
               Category Management
             </h1>
             <p className='text-gray-600'>
-              Manage categories for photos, videos, and press articles
+              Manage categories for photos, videos, and blogs articles
             </p>
           </div>
         </div>
@@ -471,9 +494,9 @@ const CategoryManager: React.FC = () => {
                   <Label htmlFor='type'>Type *</Label>
                   <Select
                     value={formData.type}
-                    onValueChange={(value: "photo" | "video" | "blogs") =>
-                      setFormData({ ...formData, type: value })
-                    }
+                    onValueChange={(
+                      value: "photo" | "video" | "blogs" | "award" | "rescue"
+                    ) => setFormData({ ...formData, type: value })}
                   >
                     <SelectTrigger className='mt-2'>
                       <SelectValue />
@@ -491,10 +514,22 @@ const CategoryManager: React.FC = () => {
                           Video
                         </div>
                       </SelectItem>
-                      <SelectItem value='press'>
+                      <SelectItem value='blogs'>
                         <div className='flex items-center gap-2'>
                           <FileText className='w-4 h-4' />
-                          Press
+                          Blogs
+                        </div>
+                      </SelectItem>
+                      <SelectItem value='award'>
+                        <div className='flex items-center gap-2'>
+                          <FileText className='w-4 h-4' />
+                          Award
+                        </div>
+                      </SelectItem>
+                      <SelectItem value='rescue'>
+                        <div className='flex items-center gap-2'>
+                          <FileText className='w-4 h-4' />
+                          Rescue
                         </div>
                       </SelectItem>
                     </SelectContent>
