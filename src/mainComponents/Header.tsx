@@ -122,7 +122,7 @@ export function Header() {
               Rescue Ops
               <span
                 className={`absolute -bottom-1 left-0 h-1 bg-orange-500 transition-all duration-300 ${
-                  isActive("/volunteer") ? "w-full" : "w-0 group-hover:w-full"
+                  isActive("/rescue") ? "w-full" : "w-0 group-hover:w-full"
                 }`}
               ></span>
             </Link>
@@ -220,7 +220,7 @@ export function Header() {
             <Link
               to='/rescue'
               className={`relative text-sm font-medium transition-colors duration-200 py-2 ${
-                isActive("/gallery")
+                isActive("/rescue")
                   ? "text-orange-500 border-l-2 border-orange-500 pl-3"
                   : "hover:text-orange-500 hover:border-l-2 hover:border-orange-500 hover:pl-3"
               }`}
