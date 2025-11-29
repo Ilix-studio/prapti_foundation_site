@@ -130,13 +130,20 @@ export const photoApi = createApi({
       ],
     }),
 
-    // Update photo with file upload (form-data)
+    // Update photo with file upload and image management (form-data)
     updatePhotoWithFile: builder.mutation<
       PhotoResponse,
       {
         id: string;
         file?: File;
-        data: Partial<PhotoUpdateData & { alt?: string }>;
+        data: Partial<
+          PhotoUpdateData & {
+            alt?: string;
+            imageAction?: "add" | "delete" | "updateAlt";
+            imageIndex?: string;
+            imageAlt?: string;
+          }
+        >;
       }
     >({
       query: ({ id, file, data }) => {

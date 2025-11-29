@@ -152,6 +152,20 @@ const GalleryPage: React.FC = () => {
     return { src: "/placeholder-image.jpg", alt: photo.title };
   };
 
+  // Helper: Get one item per category (for default view)
+  const getUniqueByCategory = <T extends Photo | Video>(
+    items: T[],
+    getCategoryFn: (item: T) => string
+  ): T[] => {
+    const seen = new Set<string>();
+    return items.filter((item) => {
+      const category = getCategoryFn(item);
+      if (seen.has(category)) return false;
+      seen.add(category);
+      return true;
+    });
+  };
+
   // Handle navigation
   const handlePhotoClick = (photo: Photo) => {
     navigate(`/view/photo/${photo._id}`);
@@ -170,16 +184,22 @@ const GalleryPage: React.FC = () => {
     setSelectedCategory(null);
   };
 
-  // Get filtered data
+  // Raw data from API
+  const allPhotos = photosData?.data?.photos || [];
+  const allVideos = videosData?.data?.videos || [];
+  const categoryFilteredPhotos = categoryPhotosData?.data?.photos || [];
+  const categoryFilteredVideos = categoryVideosData?.data?.videos || [];
+
+  // Get filtered data - show one per category in default view, all when filtered
   const photos =
     selectedCategory && activeTab === "photos"
-      ? categoryPhotosData?.data?.photos || []
-      : photosData?.data?.photos || [];
+      ? categoryFilteredPhotos
+      : getUniqueByCategory(allPhotos, (p) => getPhotoCategoryName(p.category));
 
   const videos =
     selectedCategory && activeTab === "videos"
-      ? categoryVideosData?.data?.videos || []
-      : videosData?.data?.videos || [];
+      ? categoryFilteredVideos
+      : getUniqueByCategory(allVideos, (v) => getVideoCategoryName(v.category));
 
   // Loading and error states
   const isLoading =
@@ -503,11 +523,15 @@ const GalleryPage: React.FC = () => {
               <TabsList className='grid w-full max-w-md mx-auto grid-cols-2 mb-8'>
                 <TabsTrigger value='photos' className='flex items-center gap-2'>
                   <Camera className='h-4 w-4' />
-                  Photos ({photos.length})
+                  Photos (
+                  {photosData?.data?.pagination?.total || allPhotos.length})
                 </TabsTrigger>
                 <TabsTrigger value='videos' className='flex items-center gap-2'>
                   <PlayCircle className='h-4 w-4' />
-                  Videos ({videos.length})
+                  Videos (
+                  {videosData?.data?.pagination?.totalVideos ||
+                    allVideos.length}
+                  )
                 </TabsTrigger>
               </TabsList>
 

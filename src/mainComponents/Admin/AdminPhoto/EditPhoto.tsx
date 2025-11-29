@@ -73,7 +73,7 @@ const EditPhoto = () => {
 
   const [currentImages, setCurrentImages] = useState<PhotoImage[]>([]);
   const [newImages, setNewImages] = useState<FilePreview[]>([]);
-  const [removedImageIds, setRemovedImageIds] = useState<Set<string>>(
+  const [removedImageIndices, setRemovedImageIndices] = useState<Set<number>>(
     new Set()
   );
 
@@ -170,6 +170,19 @@ const EditPhoto = () => {
 
   const handleImageFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
+    const currentCount = currentImages.length - removedImageIndices.size;
+    const remainingSlots = 20 - (currentCount + newImages.length);
+
+    if (files.length > remainingSlots) {
+      setErrors((prev) => ({
+        ...prev,
+        images: `Maximum 20 images allowed. You can add ${Math.max(
+          0,
+          remainingSlots
+        )} more.`,
+      }));
+      return;
+    }
 
     files.forEach((file) => {
       if (file.type.startsWith("image/")) {
@@ -180,17 +193,42 @@ const EditPhoto = () => {
         setHasChanges(true);
       }
     });
+
+    // Reset input
+    if (e.target) {
+      e.target.value = "";
+    }
+
+    // Clear image error if it exists
+    if (errors.images) {
+      setErrors((prev) => ({ ...prev, images: "" }));
+    }
   };
 
-  const handleRemoveCurrentImage = (imageId: string) => {
-    setRemovedImageIds((prev) => new Set([...prev, imageId]));
+  const handleRemoveCurrentImage = (index: number) => {
+    const currentCount = currentImages.length - removedImageIndices.size;
+    const willHaveImages = currentCount - 1 + newImages.length;
+
+    if (willHaveImages < 1) {
+      setErrors((prev) => ({
+        ...prev,
+        images: "At least one image is required. Add a new image first.",
+      }));
+      return;
+    }
+
+    setRemovedImageIndices((prev) => new Set([...prev, index]));
     setHasChanges(true);
+    // Clear image error if it exists
+    if (errors.images) {
+      setErrors((prev) => ({ ...prev, images: "" }));
+    }
   };
 
-  const handleRestoreImage = (imageId: string) => {
-    setRemovedImageIds((prev) => {
+  const handleRestoreImage = (index: number) => {
+    setRemovedImageIndices((prev) => {
       const newSet = new Set(prev);
-      newSet.delete(imageId);
+      newSet.delete(index);
       return newSet;
     });
     setHasChanges(true);
@@ -230,7 +268,7 @@ const EditPhoto = () => {
 
     // Check if all images are removed
     const remainingImages = currentImages.filter(
-      (img) => !removedImageIds.has(img.cloudinaryPublicId)
+      (_, index) => !removedImageIndices.has(index)
     );
 
     if (remainingImages.length === 0 && newImages.length === 0) {
@@ -249,46 +287,59 @@ const EditPhoto = () => {
     }
 
     try {
-      // Check if we have new images to upload
+      // Step 1: Add new images FIRST (so we have images before deleting)
       if (newImages.length > 0) {
-        // Use the file upload mutation for each new image
         for (const imageData of newImages) {
           await updatePhotoWithFile({
             id: id!,
             file: imageData.file,
             data: {
-              title: formData.title,
-              category: formData.category,
-              date: formData.date,
-              location: formData.location,
-              description: formData.description,
-              isActive: formData.isActive,
-              alt: imageData.altText,
+              imageAction: "add",
+              imageAlt: imageData.altText,
             },
           }).unwrap();
         }
-      } else {
-        // Use regular update mutation for metadata-only changes
-        const updateData: PhotoUpdateData = {
-          title: formData.title,
-          description: formData.description,
-          category: formData.category,
-          date: formData.date,
-          location: formData.location,
-          isActive: formData.isActive,
-        };
+      }
 
-        await updatePhoto({
+      // Step 2: Delete removed images (in reverse order to maintain correct indices)
+      const indicesToDelete = Array.from(removedImageIndices).sort(
+        (a, b) => b - a
+      );
+      for (const imageIndex of indicesToDelete) {
+        await updatePhotoWithFile({
           id: id!,
-          data: updateData,
+          data: {
+            imageAction: "delete",
+            imageIndex: imageIndex.toString(),
+          },
         }).unwrap();
       }
 
-      // Success - navigate back to dashboard
+      // Step 3: Update metadata
+      const updateData: PhotoUpdateData = {
+        title: formData.title,
+        description: formData.description,
+        category: formData.category,
+        date: formData.date,
+        location: formData.location,
+        isActive: formData.isActive,
+      };
+
+      await updatePhoto({
+        id: id!,
+        data: updateData,
+      }).unwrap();
+
+      // Refetch to get updated data
+      await refetch();
+
       navigate("/admin/photoDashboard");
     } catch (error: any) {
       setErrors({
-        submit: error.message || "Failed to update photo. Please try again.",
+        submit:
+          error?.data?.message ||
+          error.message ||
+          "Failed to update photo. Please try again.",
       });
     }
   };
@@ -574,6 +625,27 @@ const EditPhoto = () => {
                       </div>
                     </div>
 
+                    {/* Tips */}
+                    <div className='p-3 bg-blue-50 border border-blue-200 rounded-lg'>
+                      <p className='text-sm text-blue-800 font-medium mb-1'>
+                        💡 Tips for updating:
+                      </p>
+                      <ul className='text-xs text-blue-700 space-y-1 list-disc list-inside'>
+                        <li>
+                          To replace an image: add new image first, then mark
+                          old one for deletion
+                        </li>
+                        <li>
+                          At least one image is required — you cannot delete all
+                          images
+                        </li>
+                        <li>
+                          Changes are saved only when you click "Save Changes"
+                        </li>
+                        <li>Maximum 20 images allowed per photo record</li>
+                      </ul>
+                    </div>
+
                     {/* Error Messages */}
                     {errors.submit && (
                       <div className='bg-red-50 border border-red-200 rounded-lg p-4'>
@@ -608,18 +680,17 @@ const EditPhoto = () => {
                   <CardHeader>
                     <CardTitle className='flex items-center gap-2'>
                       <Image className='w-5 h-5' />
-                      Current Images
+                      Current Images (
+                      {currentImages.length - removedImageIndices.size})
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
                     <div className='space-y-4'>
-                      {currentImages.map((image) => {
-                        const isRemoved = removedImageIds.has(
-                          image.cloudinaryPublicId
-                        );
+                      {currentImages.map((image, index) => {
+                        const isRemoved = removedImageIndices.has(index);
                         return (
                           <div
-                            key={image.cloudinaryPublicId}
+                            key={image.cloudinaryPublicId || index}
                             className={`relative ${
                               isRemoved ? "opacity-50" : ""
                             }`}
@@ -629,14 +700,19 @@ const EditPhoto = () => {
                               alt={image.alt}
                               className='w-full rounded-lg'
                             />
+                            {isRemoved && (
+                              <div className='absolute inset-0 bg-red-500/20 rounded-lg flex items-center justify-center'>
+                                <span className='bg-red-600 text-white px-2 py-1 rounded text-sm'>
+                                  Marked for deletion
+                                </span>
+                              </div>
+                            )}
                             <div className='absolute top-2 right-2 flex gap-1'>
                               {isRemoved ? (
                                 <Button
                                   type='button'
                                   size='sm'
-                                  onClick={() =>
-                                    handleRestoreImage(image.cloudinaryPublicId)
-                                  }
+                                  onClick={() => handleRestoreImage(index)}
                                   className='bg-green-600 hover:bg-green-700'
                                 >
                                   Restore
@@ -647,18 +723,36 @@ const EditPhoto = () => {
                                   size='sm'
                                   variant='destructive'
                                   onClick={() =>
-                                    handleRemoveCurrentImage(
-                                      image.cloudinaryPublicId
-                                    )
+                                    handleRemoveCurrentImage(index)
+                                  }
+                                  disabled={
+                                    currentImages.length -
+                                      removedImageIndices.size ===
+                                      1 && newImages.length === 0
+                                  }
+                                  title={
+                                    currentImages.length -
+                                      removedImageIndices.size ===
+                                      1 && newImages.length === 0
+                                      ? "Cannot delete last image"
+                                      : "Delete image"
                                   }
                                 >
                                   <Trash2 className='w-4 h-4' />
                                 </Button>
                               )}
                             </div>
+                            <p className='text-xs text-slate-500 mt-1 truncate'>
+                              {image.alt}
+                            </p>
                           </div>
                         );
                       })}
+                      {currentImages.length === 0 && (
+                        <p className='text-sm text-slate-500 text-center py-4'>
+                          No images uploaded yet
+                        </p>
+                      )}
                     </div>
                   </CardContent>
                 </Card>
@@ -668,7 +762,7 @@ const EditPhoto = () => {
                   <CardHeader>
                     <CardTitle className='flex items-center gap-2'>
                       <Upload className='w-5 h-5' />
-                      Add New Images
+                      Add New Images ({newImages.length})
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
@@ -680,6 +774,7 @@ const EditPhoto = () => {
                         multiple
                         onChange={handleImageFileChange}
                         className='hidden'
+                        disabled={isLoading}
                       />
 
                       <Button
@@ -687,10 +782,24 @@ const EditPhoto = () => {
                         variant='outline'
                         onClick={() => imageFileRef.current?.click()}
                         className='w-full h-24 border-dashed'
+                        disabled={
+                          isLoading ||
+                          currentImages.length -
+                            removedImageIndices.size +
+                            newImages.length >=
+                            20
+                        }
                       >
                         <div className='text-center'>
                           <Upload className='w-8 h-8 mx-auto mb-2 text-slate-400' />
                           <p className='text-sm'>Click to upload new images</p>
+                          <p className='text-xs text-slate-400'>
+                            {20 -
+                              (currentImages.length -
+                                removedImageIndices.size +
+                                newImages.length)}{" "}
+                            slots remaining
+                          </p>
                         </div>
                       </Button>
 
@@ -703,12 +812,18 @@ const EditPhoto = () => {
                               alt={imageData.altText}
                               className='w-full rounded-lg'
                             />
+                            <div className='absolute top-1 left-1'>
+                              <span className='bg-green-600 text-white text-xs px-2 py-0.5 rounded'>
+                                New
+                              </span>
+                            </div>
                             <Button
                               type='button'
                               size='sm'
                               variant='destructive'
                               onClick={() => handleRemoveNewImage(index)}
                               className='absolute top-2 right-2'
+                              disabled={isLoading}
                             >
                               <Trash2 className='w-4 h-4' />
                             </Button>
@@ -719,6 +834,7 @@ const EditPhoto = () => {
                             onChange={(e) =>
                               handleNewImageAltChange(index, e.target.value)
                             }
+                            disabled={isLoading}
                           />
                         </div>
                       ))}
