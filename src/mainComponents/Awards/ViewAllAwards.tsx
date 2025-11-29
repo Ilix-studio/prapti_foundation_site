@@ -8,9 +8,11 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Loader2, Trash2, AlertCircle, Eye } from "lucide-react";
 import toast from "react-hot-toast";
-import { BackNavigation } from "@/config/navigation/BackNavigation";
+
 import { selectIsAdmin } from "@/redux-store/slices/authSlice";
 import { useSelector } from "react-redux";
+import { Header } from "../Header";
+import Footer from "../Footer";
 
 const ViewAllAwards = () => {
   const navigate = useNavigate();
@@ -65,16 +67,21 @@ const ViewAllAwards = () => {
 
   return (
     <>
-      <BackNavigation />
-      <div className='min-h-screen bg-gray-50'>
-        <div className='bg-white'>
-          <div className='container mx-auto px-4 py-4 flex'>
-            <div className='flex items-center gap-2'>
-              <h1 className='text-2xl font-bold'>Award Posts</h1>
-            </div>
-          </div>
+      <Header />
+      <div className='w-full py-12 md:py-24 lg:py-9 bg-slate-50'>
+        <div className='text-center mb-12'>
+          <h2 className='text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl mb-4'>
+            Some Award Posts
+          </h2>
+          <p className='text-gray-600 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed max-w-3xl mx-auto'>
+            Witness the incredible journey of rescue, recovery, and love. Every
+            photo and video tells a story of hope, healing, and the unbreakable
+            bond between humans and animals.
+          </p>
         </div>
+      </div>
 
+      <div className='min-h-screen bg-gray-50'>
         <main className='container mx-auto px-4 py-8'>
           {!data || data.length === 0 ? (
             <div className='text-center py-12'>
@@ -161,6 +168,7 @@ const ViewAllAwards = () => {
           )}
         </main>
       </div>
+      <Footer />
     </>
   );
 };

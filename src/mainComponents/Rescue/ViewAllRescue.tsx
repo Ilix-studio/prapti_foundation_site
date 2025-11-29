@@ -9,9 +9,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Loader2, Trash2, AlertCircle, Eye, Search } from "lucide-react";
 import toast from "react-hot-toast";
-import { BackNavigation } from "@/config/navigation/BackNavigation";
+
 import { selectIsAdmin } from "@/redux-store/slices/authSlice";
 import { useSelector } from "react-redux";
+import { Header } from "../Header";
+import Footer from "../Footer";
 
 const ViewAllRescue = () => {
   const navigate = useNavigate();
@@ -74,13 +76,18 @@ const ViewAllRescue = () => {
 
   return (
     <>
-      <BackNavigation />
+      <Header />
       <div className='min-h-screen bg-gray-50'>
-        <div className='bg-white border-b'>
-          <div className='container mx-auto px-4 py-4'>
-            <div className='flex items-center justify-between gap-4'>
-              <h1 className='text-2xl font-bold'>Rescue Stories</h1>
-            </div>
+        <div className='w-full py-12 md:py-24 lg:py-9 bg-slate-50'>
+          <div className='text-center mb-12'>
+            <h2 className='text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl mb-4'>
+              Our Rescue Posts
+            </h2>
+            <p className='text-gray-600 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed max-w-3xl mx-auto'>
+              Witness the incredible journey of rescue, recovery, and love.
+              Every photo and video tells a story of hope, healing, and the
+              unbreakable bond between humans and animals.
+            </p>
           </div>
         </div>
 
@@ -211,6 +218,7 @@ const ViewAllRescue = () => {
           )}
         </main>
       </div>
+      <Footer />
     </>
   );
 };

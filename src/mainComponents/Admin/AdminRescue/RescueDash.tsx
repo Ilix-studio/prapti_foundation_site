@@ -110,7 +110,7 @@ const RescueDash = () => {
   };
 
   const handleView = (id: string) => {
-    navigate(`/admin/rescue/${id}`);
+    navigate(`/rescue/${id}`);
   };
 
   const handleEdit = (id: string) => {

@@ -65,7 +65,7 @@ const EditRescue = () => {
   }
 
   if (!id) {
-    return <Navigate to='/admin/rescueDashboard' />;
+    return <Navigate to='/admin/rescueDash' />;
   }
 
   const {
@@ -229,7 +229,7 @@ const EditRescue = () => {
       }
 
       toast.success("Rescue post updated successfully!");
-      navigate("/admin/rescueDashboard");
+      navigate("/admin/rescueDash");
     } catch (error: any) {
       console.error("Failed to update rescue post:", error);
       const errorMessage =
@@ -242,10 +242,10 @@ const EditRescue = () => {
   const handleCancel = () => {
     if (hasChanges) {
       if (window.confirm("Discard changes?")) {
-        navigate("/admin/rescueDashboard");
+        navigate("/admin/rescueDash");
       }
     } else {
-      navigate("/admin/rescueDashboard");
+      navigate("/admin/rescueDash");
     }
   };
 

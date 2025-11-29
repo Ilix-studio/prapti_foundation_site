@@ -47,11 +47,6 @@ export const routeAccessRules: RouteAccess[] = [
     isPublic: true,
     description: "Individual video view",
   },
-  {
-    pattern: /^\/press\//,
-    isPublic: true,
-    description: "Press article view",
-  },
 
   // ===== AUTH ROUTES (Special handling) =====
   {
@@ -85,14 +80,6 @@ export const routeAccessRules: RouteAccess[] = [
     requiresAdmin: true,
     redirectTo: "/admin/login",
     description: "Photo management",
-  },
-  {
-    pattern: /^\/admin\/pressDashboard/,
-    isPublic: false,
-    requiresAuth: true,
-    requiresAdmin: true,
-    redirectTo: "/admin/login",
-    description: "Press management",
   },
   {
     pattern: /^\/admin\/add/,
