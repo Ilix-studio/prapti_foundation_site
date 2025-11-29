@@ -28,14 +28,64 @@ export const routeAccessRules: RouteAccess[] = [
     description: "Contact page",
   },
   {
-    pattern: /^\/photo-gallery/,
+    pattern: "/gallery",
     isPublic: true,
-    description: "Photo gallery",
+    description: "Gallery page",
   },
   {
-    pattern: /^\/video-gallery/,
+    pattern: "/adopt",
     isPublic: true,
-    description: "Video gallery",
+    description: "Adoption form",
+  },
+  {
+    pattern: "/report",
+    isPublic: true,
+    description: "Report page",
+  },
+  {
+    pattern: "/support",
+    isPublic: true,
+    description: "Support page",
+  },
+  {
+    pattern: "/blog",
+    isPublic: true,
+    description: "Blog listing",
+  },
+  {
+    pattern: /^\/blog\/[^/]+$/,
+    isPublic: true,
+    description: "Blog post",
+  },
+  {
+    pattern: "/volunteer",
+    isPublic: true,
+    description: "Volunteer page",
+  },
+  {
+    pattern: "/write-testimonial",
+    isPublic: true,
+    description: "Write testimonial",
+  },
+  {
+    pattern: "/awards",
+    isPublic: true,
+    description: "Awards listing",
+  },
+  {
+    pattern: /^\/awards\/[^/]+$/,
+    isPublic: true,
+    description: "Award detail",
+  },
+  {
+    pattern: "/rescue",
+    isPublic: true,
+    description: "Rescue listing",
+  },
+  {
+    pattern: /^\/rescue\/[^/]+$/,
+    isPublic: true,
+    description: "Rescue detail",
   },
   {
     pattern: /^\/view\/photo\//,
@@ -47,16 +97,27 @@ export const routeAccessRules: RouteAccess[] = [
     isPublic: true,
     description: "Individual video view",
   },
+  // Legacy routes
+  {
+    pattern: /^\/photo-gallery/,
+    isPublic: true,
+    description: "Photo gallery (legacy)",
+  },
+  {
+    pattern: /^\/video-gallery/,
+    isPublic: true,
+    description: "Video gallery (legacy)",
+  },
 
   // ===== AUTH ROUTES (Special handling) =====
   {
     pattern: "/admin/login",
     isPublic: true,
-    redirectTo: "/admin/dashboard", // Redirect if already authenticated
+    redirectTo: "/admin/dashboard",
     description: "Admin login page",
   },
 
-  // ===== PROTECTED ADMIN ROUTES =====
+  // ===== PROTECTED ADMIN DASHBOARDS =====
   {
     pattern: /^\/admin\/dashboard/,
     isPublic: false,
@@ -82,44 +143,36 @@ export const routeAccessRules: RouteAccess[] = [
     description: "Photo management",
   },
   {
-    pattern: /^\/admin\/add/,
+    pattern: /^\/admin\/blogsDashboard/,
     isPublic: false,
     requiresAuth: true,
     requiresAdmin: true,
     redirectTo: "/admin/login",
-    description: "Add content pages",
+    description: "Blogs management",
   },
   {
-    pattern: /^\/admin\/edit/,
+    pattern: /^\/admin\/volunteerDashboard/,
     isPublic: false,
     requiresAuth: true,
     requiresAdmin: true,
     redirectTo: "/admin/login",
-    description: "Edit content pages",
+    description: "Volunteer management",
   },
   {
-    pattern: /^\/admin\/view\//,
+    pattern: /^\/admin\/impact/,
     isPublic: false,
     requiresAuth: true,
     requiresAdmin: true,
     redirectTo: "/admin/login",
-    description: "Admin view pages",
+    description: "Impact dashboard",
   },
   {
-    pattern: /^\/admin\/play\//,
+    pattern: /^\/admin\/testimonials/,
     isPublic: false,
     requiresAuth: true,
     requiresAdmin: true,
     redirectTo: "/admin/login",
-    description: "Video player (admin)",
-  },
-  {
-    pattern: /^\/admin\/read\//,
-    isPublic: false,
-    requiresAuth: true,
-    requiresAdmin: true,
-    redirectTo: "/admin/login",
-    description: "Press reader (admin)",
+    description: "Testimonials management",
   },
   {
     pattern: /^\/admin\/messages/,
@@ -129,6 +182,157 @@ export const routeAccessRules: RouteAccess[] = [
     redirectTo: "/admin/login",
     description: "Message management",
   },
+  {
+    pattern: /^\/admin\/categories/,
+    isPublic: false,
+    requiresAuth: true,
+    requiresAdmin: true,
+    redirectTo: "/admin/login",
+    description: "Category management",
+  },
+  {
+    pattern: /^\/admin\/awardDash/,
+    isPublic: false,
+    requiresAuth: true,
+    requiresAdmin: true,
+    redirectTo: "/admin/login",
+    description: "Award management",
+  },
+  {
+    pattern: /^\/admin\/rescueDash/,
+    isPublic: false,
+    requiresAuth: true,
+    requiresAdmin: true,
+    redirectTo: "/admin/login",
+    description: "Rescue management",
+  },
+
+  // ===== PROTECTED ADMIN SPECIFIC ROUTES =====
+  // Photo routes
+  {
+    pattern: /^\/admin\/addPhoto/,
+    isPublic: false,
+    requiresAuth: true,
+    requiresAdmin: true,
+    redirectTo: "/admin/login",
+    description: "Add photo",
+  },
+  {
+    pattern: /^\/admin\/view\/[^/]+$/,
+    isPublic: false,
+    requiresAuth: true,
+    requiresAdmin: true,
+    redirectTo: "/admin/login",
+    description: "View photo (admin)",
+  },
+  {
+    pattern: /^\/admin\/edit\/[^/]+$/,
+    isPublic: false,
+    requiresAuth: true,
+    requiresAdmin: true,
+    redirectTo: "/admin/login",
+    description: "Edit photo",
+  },
+
+  // Video routes
+  {
+    pattern: /^\/admin\/addVideo/,
+    isPublic: false,
+    requiresAuth: true,
+    requiresAdmin: true,
+    redirectTo: "/admin/login",
+    description: "Add video",
+  },
+  {
+    pattern: /^\/admin\/play\/[^/]+$/,
+    isPublic: false,
+    requiresAuth: true,
+    requiresAdmin: true,
+    redirectTo: "/admin/login",
+    description: "Play video (admin)",
+  },
+  {
+    pattern: /^\/admin\/editVideo\/[^/]+$/,
+    isPublic: false,
+    requiresAuth: true,
+    requiresAdmin: true,
+    redirectTo: "/admin/login",
+    description: "Edit video",
+  },
+
+  // Blog routes
+  {
+    pattern: /^\/admin\/blog\/new$/,
+    isPublic: false,
+    requiresAuth: true,
+    requiresAdmin: true,
+    redirectTo: "/admin/login",
+    description: "Add blog post",
+  },
+  {
+    pattern: /^\/admin\/blog\/edit\/[^/]+$/,
+    isPublic: false,
+    requiresAuth: true,
+    requiresAdmin: true,
+    redirectTo: "/admin/login",
+    description: "Edit blog post",
+  },
+  {
+    pattern: /^\/admin\/blog\/[^/]+$/,
+    isPublic: false,
+    requiresAuth: true,
+    requiresAdmin: true,
+    redirectTo: "/admin/login",
+    description: "View blog post (admin)",
+  },
+
+  // Volunteer routes
+  {
+    pattern: /^\/admin\/volunteer\/[^/]+$/,
+    isPublic: false,
+    requiresAuth: true,
+    requiresAdmin: true,
+    redirectTo: "/admin/login",
+    description: "Volunteer detail (admin)",
+  },
+
+  // Award routes
+  {
+    pattern: /^\/admin\/addAwards/,
+    isPublic: false,
+    requiresAuth: true,
+    requiresAdmin: true,
+    redirectTo: "/admin/login",
+    description: "Add award",
+  },
+  {
+    pattern: /^\/admin\/editAward\/[^/]+$/,
+    isPublic: false,
+    requiresAuth: true,
+    requiresAdmin: true,
+    redirectTo: "/admin/login",
+    description: "Edit award",
+  },
+
+  // Rescue routes
+  {
+    pattern: /^\/admin\/addRescue/,
+    isPublic: false,
+    requiresAuth: true,
+    requiresAdmin: true,
+    redirectTo: "/admin/login",
+    description: "Add rescue",
+  },
+  {
+    pattern: /^\/admin\/editRescue\/[^/]+$/,
+    isPublic: false,
+    requiresAuth: true,
+    requiresAdmin: true,
+    redirectTo: "/admin/login",
+    description: "Edit rescue",
+  },
+
+  // ===== CATCH-ALL ADMIN ROUTE =====
   {
     pattern: /^\/admin\//,
     isPublic: false,

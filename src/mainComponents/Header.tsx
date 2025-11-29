@@ -194,6 +194,17 @@ export function Header() {
             >
               Blogs
             </Link>
+            <Link
+              to='/awards'
+              className={`relative text-sm font-medium transition-colors duration-200 py-2 ${
+                isActive("/awards")
+                  ? "text-orange-500 border-l-2 border-orange-500 pl-3"
+                  : "hover:text-orange-500 hover:border-l-2 hover:border-orange-500 hover:pl-3"
+              }`}
+              onClick={() => setIsOpen(false)}
+            >
+              Awards
+            </Link>
 
             <Link
               to='/gallery'
@@ -206,6 +217,17 @@ export function Header() {
             >
               Gallery
             </Link>
+            <Link
+              to='/rescue'
+              className={`relative text-sm font-medium transition-colors duration-200 py-2 ${
+                isActive("/gallery")
+                  ? "text-orange-500 border-l-2 border-orange-500 pl-3"
+                  : "hover:text-orange-500 hover:border-l-2 hover:border-orange-500 hover:pl-3"
+              }`}
+              onClick={() => setIsOpen(false)}
+            >
+              Rescue Stories
+            </Link>
 
             <Link
               to='/contact'
@@ -217,18 +239,6 @@ export function Header() {
               onClick={() => setIsOpen(false)}
             >
               Contact us
-            </Link>
-
-            <Link
-              to='/volunteer'
-              className={`relative text-sm font-medium transition-colors duration-200 py-2 ${
-                isActive("/volunteer")
-                  ? "text-orange-500 border-l-2 border-orange-500 pl-3"
-                  : "hover:text-orange-500 hover:border-l-2 hover:border-orange-500 hover:pl-3"
-              }`}
-              onClick={() => setIsOpen(false)}
-            >
-              Join as a Volunteer
             </Link>
 
             <div className='flex flex-col gap-2 pt-2 mt-4 border-t border-gray-200'>

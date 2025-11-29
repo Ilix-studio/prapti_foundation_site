@@ -133,16 +133,40 @@ const HomeGallery = () => {
     setSelectedCategory(null);
   };
 
+  // Helper: Get one photo per category (for default view)
+  const getUniqueByCategory = <T extends Photo | Video>(
+    items: T[],
+    getCategoryFn: (item: T) => string
+  ): T[] => {
+    const seen = new Set<string>();
+    return items.filter((item) => {
+      const category = getCategoryFn(item);
+      if (seen.has(category)) return false;
+      seen.add(category);
+      return true;
+    });
+  };
+
   // Data extraction
+  const allPhotos = photosData?.data?.photos || [];
+  const categoryFilteredPhotos = categoryPhotosData?.data?.photos || [];
+
+  // When category is selected, show all from that category
+  // Otherwise, show one photo per category
   const photos =
     selectedCategory && activeTab === "photos"
-      ? categoryPhotosData?.data?.photos || []
-      : photosData?.data?.photos || [];
+      ? categoryFilteredPhotos
+      : getUniqueByCategory(allPhotos, (p) => getPhotoCategoryName(p.category));
 
+  const allVideos = videosData?.data?.videos || [];
+  const categoryFilteredVideos = categoryVideosData?.data?.videos || [];
+
+  // When category is selected, show all from that category
+  // Otherwise, show one video per category
   const videos =
     selectedCategory && activeTab === "videos"
-      ? categoryVideosData?.data?.videos || []
-      : videosData?.data?.videos || [];
+      ? categoryFilteredVideos
+      : getUniqueByCategory(allVideos, (v) => getVideoCategoryName(v.category));
 
   // States
   const isLoading =
@@ -508,11 +532,13 @@ const HomeGallery = () => {
             <TabsList className='grid w-full max-w-md mx-auto grid-cols-2 mb-8'>
               <TabsTrigger value='photos' className='flex items-center gap-2'>
                 <Camera className='h-4 w-4' />
-                Photos ({photos.length})
+                Photos (
+                {photosData?.data?.pagination?.total || allPhotos.length})
               </TabsTrigger>
               <TabsTrigger value='videos' className='flex items-center gap-2'>
                 <PlayCircle className='h-4 w-4' />
-                Videos ({videos.length})
+                Videos (
+                {videosData?.data?.pagination?.totalVideos || allVideos.length})
               </TabsTrigger>
             </TabsList>
 
