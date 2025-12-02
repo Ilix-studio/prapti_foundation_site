@@ -193,9 +193,14 @@ const PhotoDash: React.FC = () => {
   };
 
   const handleCategoryFilter = (categoryId: string) => {
+    const categoryName =
+      categoryId === "all"
+        ? ""
+        : categories.find((cat) => cat._id === categoryId)?.name || "";
+
     setQueryParams((prev) => ({
       ...prev,
-      category: categoryId === "all" ? "" : categoryId,
+      category: categoryName,
       page: 1,
     }));
   };

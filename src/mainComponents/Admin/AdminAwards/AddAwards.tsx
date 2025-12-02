@@ -3,7 +3,7 @@ import {
   useUploadMultipleAwardsMutation,
 } from "@/redux-store/services/awardApi";
 import { useNavigate } from "react-router-dom";
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -15,6 +15,7 @@ import {
   useGetAllCategoriesQuery,
   useCreateCategoryMutation,
 } from "@/redux-store/services/categoryApi";
+import { Category } from "@/types/category.types";
 
 interface FilePreview {
   file: File;
@@ -47,8 +48,13 @@ export default function AddAwards() {
 
   const isUploading = uploadingSingle || uploadingMultiple;
 
-  // Fetch all categories
-  const { data: categories = [] } = useGetAllCategoriesQuery();
+  // Fetch all categories and filter for award type only
+  const { data: allCategories = [] } = useGetAllCategoriesQuery();
+
+  const awardCategories = useMemo(
+    () => allCategories.filter((cat: Category) => cat.type === "award"),
+    [allCategories]
+  );
 
   function handleChange(
     e: React.ChangeEvent<
@@ -59,7 +65,6 @@ export default function AddAwards() {
     setForm((prev) => ({ ...prev, [name]: value }));
   }
 
-  // Handle file selection
   const handleFileSelect = useCallback(
     (files: FileList) => {
       const newFiles: FilePreview[] = [];
@@ -92,7 +97,6 @@ export default function AddAwards() {
     [uploadMode, form.title]
   );
 
-  // Handle drag & drop
   const handleDrop = useCallback(
     (e: React.DragEvent) => {
       e.preventDefault();
@@ -104,7 +108,6 @@ export default function AddAwards() {
     [handleFileSelect]
   );
 
-  // Remove file
   const removeFile = (index: number) => {
     setSelectedFiles((prev) => {
       const updated = prev.filter((_, i) => i !== index);
@@ -113,7 +116,6 @@ export default function AddAwards() {
     });
   };
 
-  // Update alt text for specific file
   const updateAltText = (index: number, altText: string) => {
     setSelectedFiles((prev) =>
       prev.map((file, i) => (i === index ? { ...file, altText } : file))
@@ -129,7 +131,7 @@ export default function AddAwards() {
     try {
       const result = await createCategory({
         name: newCategoryName.trim(),
-        type: "blogs",
+        type: "award",
       }).unwrap();
 
       setNewCategoryName("");
@@ -177,7 +179,6 @@ export default function AddAwards() {
 
       toast.success("Award created successfully");
 
-      // Reset form after successful submission
       setForm({
         title: "",
         description: "",
@@ -185,7 +186,6 @@ export default function AddAwards() {
       });
       setSelectedFiles([]);
 
-      // Navigate back after successful creation
       setTimeout(() => navigate("/admin/awardDash"), 1500);
     } catch (err: any) {
       const errorMessage =
@@ -208,7 +208,6 @@ export default function AddAwards() {
           </div>
         </div>
 
-        {/* Main Content */}
         <main className='container mx-auto px-4 py-8'>
           <div className='max-w-3xl mx-auto bg-white rounded-lg shadow p-6'>
             <form onSubmit={handleSubmit} className='space-y-6'>
@@ -255,7 +254,7 @@ export default function AddAwards() {
                     required
                   >
                     <option value=''>Select a category</option>
-                    {categories.map((cat: any) => (
+                    {awardCategories.map((cat: Category) => (
                       <option key={cat._id} value={cat._id}>
                         {cat.name}
                       </option>

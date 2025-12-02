@@ -18,7 +18,6 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-
 import {
   Heart,
   Calendar,
@@ -37,6 +36,7 @@ import {
   PawPrint,
 } from "lucide-react";
 import values from "../../assets/values.png";
+import { useSubmitVolunteerApplicationMutation } from "@/redux-store/services/volunteerApi";
 
 interface FormData {
   firstName: string;
@@ -44,9 +44,9 @@ interface FormData {
   email: string;
   phone: string;
   address: string;
-  city: string;
+  district: string;
   state: string;
-  zip: string;
+  pincode: string;
   availability: string;
   interests: string[];
   experience: string;
@@ -60,20 +60,22 @@ const VolunteerPage: React.FC = () => {
     email: "",
     phone: "",
     address: "",
-    city: "",
+    district: "",
     state: "",
-    zip: "",
+    pincode: "",
     availability: "",
     interests: [],
     experience: "",
     reason: "",
   });
 
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [success, setSuccess] = useState(false);
-  const [error, setError] = useState("");
+  const [validationErrors, setValidationErrors] = useState<
+    Partial<Record<keyof FormData, string>>
+  >({});
 
-  // Function to scroll to the volunteer form
+  const [submitVolunteerApplication, { isLoading, isSuccess, error }] =
+    useSubmitVolunteerApplicationMutation();
+
   const scrollToForm = () => {
     const formSection = document.getElementById("volunteer-form");
     if (formSection) {
@@ -93,6 +95,15 @@ const VolunteerPage: React.FC = () => {
       ...prev,
       [name]: value,
     }));
+
+    // Clear validation error on change
+    if (validationErrors[name as keyof FormData]) {
+      setValidationErrors((prev: Partial<Record<keyof FormData, string>>) => {
+        const newErrors = { ...prev };
+        delete newErrors[name as keyof FormData];
+        return newErrors;
+      });
+    }
   };
 
   const handleSelectChange = (name: string, value: string) => {
@@ -100,6 +111,14 @@ const VolunteerPage: React.FC = () => {
       ...prev,
       [name]: value,
     }));
+
+    if (validationErrors[name as keyof FormData]) {
+      setValidationErrors((prev: Partial<Record<keyof FormData, string>>) => {
+        const newErrors = { ...prev };
+        delete newErrors[name as keyof FormData];
+        return newErrors;
+      });
+    }
   };
 
   const toggleInterest = (interest: string) => {
@@ -113,37 +132,108 @@ const VolunteerPage: React.FC = () => {
         interests: newInterests,
       };
     });
+
+    if (validationErrors.interests) {
+      setValidationErrors((prev: Partial<Record<keyof FormData, string>>) => {
+        const newErrors = { ...prev };
+        delete newErrors.interests;
+        return newErrors;
+      });
+    }
   };
 
-  const handleSubmit = (e?: React.FormEvent) => {
-    if (e) e.preventDefault();
-    setIsSubmitting(true);
-    setError("");
+  const validateForm = (): boolean => {
+    const errors: Partial<Record<keyof FormData, string>> = {};
 
-    // Validate form data
-    if (
-      !formData.firstName ||
-      !formData.lastName ||
-      !formData.email ||
-      !formData.phone
+    // Required fields
+    if (!formData.firstName.trim()) errors.firstName = "First name is required";
+    if (!formData.lastName.trim()) errors.lastName = "Last name is required";
+    if (!formData.email.trim()) {
+      errors.email = "Email is required";
+    } else if (
+      !/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(formData.email)
     ) {
-      setError("Please fill in all required fields");
-      setIsSubmitting(false);
+      errors.email = "Invalid email format";
+    }
+    if (!formData.phone.trim()) {
+      errors.phone = "Phone number is required";
+    } else if (!/^[\+]?[0-9]{10,15}$/.test(formData.phone)) {
+      errors.phone = "Invalid phone number";
+    }
+    if (!formData.address.trim()) errors.address = "Address is required";
+    if (!formData.district.trim()) errors.district = "District is required";
+    if (!formData.state.trim()) errors.state = "State is required";
+    if (!formData.pincode.trim()) {
+      errors.pincode = "Pincode is required";
+    } else if (!/^[0-9]{6,7}$/.test(formData.pincode)) {
+      errors.pincode = "Invalid pincode";
+    }
+    if (!formData.availability)
+      errors.availability = "Availability is required";
+    if (formData.interests.length === 0) {
+      errors.interests = "Select at least one interest";
+    }
+    if (!formData.reason.trim()) errors.reason = "Reason is required";
+
+    setValidationErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
+  const handleSubmit = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+
+    if (!validateForm()) {
+      // Scroll to first error
+      const firstErrorField = Object.keys(validationErrors)[0];
+      const errorElement = document.getElementById(firstErrorField);
+      if (errorElement) {
+        errorElement.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
       return;
     }
 
-    // Simulate form submission
-    setTimeout(() => {
-      setIsSubmitting(false);
-      setSuccess(true);
-      // In a real app, you would submit the form data to your backend here
-      console.log("Form submitted:", formData);
+    try {
+      await submitVolunteerApplication({
+        firstName: formData.firstName.trim(),
+        lastName: formData.lastName.trim(),
+        email: formData.email.trim().toLowerCase(),
+        phone: parseInt(formData.phone.trim(), 10),
+        address: formData.address.trim(),
+        district: formData.district.trim(),
+        state: formData.state.trim(),
+        pincode: parseInt(formData.pincode, 10),
+        availability: formData.availability,
+        interests: formData.interests,
+        experience: formData.experience.trim(),
+        reason: formData.reason.trim(),
+      }).unwrap();
 
-      // Reset the form after 5 seconds
+      // Reset form on success
+      setFormData({
+        firstName: "",
+        lastName: "",
+        email: "",
+        phone: "",
+        address: "",
+        district: "",
+        state: "",
+        pincode: "",
+        availability: "",
+        interests: [],
+        experience: "",
+        reason: "",
+      });
+
+      // Scroll to success message
       setTimeout(() => {
-        setSuccess(false);
-      }, 5000);
-    }, 1500);
+        const formSection = document.getElementById("volunteer-form");
+        if (formSection) {
+          formSection.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+      }, 100);
+    } catch (err) {
+      console.error("Submit error:", err);
+    }
   };
 
   const volunteerOpportunities = [
@@ -265,8 +355,6 @@ const VolunteerPage: React.FC = () => {
         </div>
       </section>
 
-      {/* Volunteer Opportunities */}
-
       {/* Volunteer Benefits */}
       <section className='py-12 md:py-24'>
         <div className='container px-4 md:px-6'>
@@ -372,7 +460,7 @@ const VolunteerPage: React.FC = () => {
 
             <div className='bg-white rounded-lg shadow-md p-6 md:p-8'>
               {/* Success Message */}
-              {success && (
+              {isSuccess && (
                 <div className='mb-6 p-4 bg-green-50 border border-green-200 rounded-md flex items-start gap-3'>
                   <Check className='h-5 w-5 text-green-500 mt-0.5' />
                   <div>
@@ -388,12 +476,14 @@ const VolunteerPage: React.FC = () => {
                 </div>
               )}
 
-              {/* Error message if needed */}
+              {/* Error Message */}
               {error && (
                 <div className='mb-6 p-4 bg-red-50 border border-red-200 rounded-md flex items-start gap-3'>
                   <AlertCircle className='h-5 w-5 text-red-500 mt-0.5' />
                   <div>
-                    <p className='text-red-600 font-medium'>{error}</p>
+                    <p className='text-red-600 font-medium'>
+                      {(error as any)?.data?.message || "Submission failed"}
+                    </p>
                     <p className='text-red-600/70 text-sm'>
                       Please check the form and try again.
                     </p>
@@ -401,8 +491,8 @@ const VolunteerPage: React.FC = () => {
                 </div>
               )}
 
-              {/* Volunteer Form */}
-              <div onSubmit={handleSubmit} className='space-y-8'>
+              {/* Form */}
+              <form onSubmit={handleSubmit} className='space-y-8'>
                 {/* Personal Information */}
                 <div className='space-y-4'>
                   <h3 className='text-lg font-semibold border-b pb-2'>
@@ -417,8 +507,15 @@ const VolunteerPage: React.FC = () => {
                         name='firstName'
                         value={formData.firstName}
                         onChange={handleChange}
-                        required
+                        className={
+                          validationErrors.firstName ? "border-red-500" : ""
+                        }
                       />
+                      {validationErrors.firstName && (
+                        <p className='text-sm text-red-500'>
+                          {validationErrors.firstName}
+                        </p>
+                      )}
                     </div>
 
                     <div className='space-y-2'>
@@ -428,8 +525,15 @@ const VolunteerPage: React.FC = () => {
                         name='lastName'
                         value={formData.lastName}
                         onChange={handleChange}
-                        required
+                        className={
+                          validationErrors.lastName ? "border-red-500" : ""
+                        }
                       />
+                      {validationErrors.lastName && (
+                        <p className='text-sm text-red-500'>
+                          {validationErrors.lastName}
+                        </p>
+                      )}
                     </div>
                   </div>
 
@@ -442,8 +546,15 @@ const VolunteerPage: React.FC = () => {
                         type='email'
                         value={formData.email}
                         onChange={handleChange}
-                        required
+                        className={
+                          validationErrors.email ? "border-red-500" : ""
+                        }
                       />
+                      {validationErrors.email && (
+                        <p className='text-sm text-red-500'>
+                          {validationErrors.email}
+                        </p>
+                      )}
                     </div>
 
                     <div className='space-y-2'>
@@ -454,8 +565,15 @@ const VolunteerPage: React.FC = () => {
                         type='tel'
                         value={formData.phone}
                         onChange={handleChange}
-                        required
+                        className={
+                          validationErrors.phone ? "border-red-500" : ""
+                        }
                       />
+                      {validationErrors.phone && (
+                        <p className='text-sm text-red-500'>
+                          {validationErrors.phone}
+                        </p>
+                      )}
                     </div>
                   </div>
 
@@ -466,20 +584,34 @@ const VolunteerPage: React.FC = () => {
                       name='address'
                       value={formData.address}
                       onChange={handleChange}
-                      required
+                      className={
+                        validationErrors.address ? "border-red-500" : ""
+                      }
                     />
+                    {validationErrors.address && (
+                      <p className='text-sm text-red-500'>
+                        {validationErrors.address}
+                      </p>
+                    )}
                   </div>
 
                   <div className='grid grid-cols-2 md:grid-cols-4 gap-4'>
                     <div className='space-y-2 col-span-2 md:col-span-1'>
-                      <Label htmlFor='city'>City *</Label>
+                      <Label htmlFor='district'>District *</Label>
                       <Input
-                        id='city'
-                        name='city'
-                        value={formData.city}
+                        id='district'
+                        name='district'
+                        value={formData.district}
                         onChange={handleChange}
-                        required
+                        className={
+                          validationErrors.district ? "border-red-500" : ""
+                        }
                       />
+                      {validationErrors.district && (
+                        <p className='text-sm text-red-500'>
+                          {validationErrors.district}
+                        </p>
+                      )}
                     </div>
 
                     <div className='space-y-2 col-span-2 md:col-span-1'>
@@ -489,19 +621,33 @@ const VolunteerPage: React.FC = () => {
                         name='state'
                         value={formData.state}
                         onChange={handleChange}
-                        required
+                        className={
+                          validationErrors.state ? "border-red-500" : ""
+                        }
                       />
+                      {validationErrors.state && (
+                        <p className='text-sm text-red-500'>
+                          {validationErrors.state}
+                        </p>
+                      )}
                     </div>
 
                     <div className='space-y-2 col-span-2 md:col-span-2'>
-                      <Label htmlFor='zip'>Zip Code *</Label>
+                      <Label htmlFor='pincode'>Pincode *</Label>
                       <Input
-                        id='zip'
-                        name='zip'
-                        value={formData.zip}
+                        id='pincode'
+                        name='pincode'
+                        value={formData.pincode}
                         onChange={handleChange}
-                        required
+                        className={
+                          validationErrors.pincode ? "border-red-500" : ""
+                        }
                       />
+                      {validationErrors.pincode && (
+                        <p className='text-sm text-red-500'>
+                          {validationErrors.pincode}
+                        </p>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -520,7 +666,11 @@ const VolunteerPage: React.FC = () => {
                         handleSelectChange("availability", value)
                       }
                     >
-                      <SelectTrigger>
+                      <SelectTrigger
+                        className={
+                          validationErrors.availability ? "border-red-500" : ""
+                        }
+                      >
                         <SelectValue placeholder='Select your availability' />
                       </SelectTrigger>
                       <SelectContent>
@@ -530,6 +680,11 @@ const VolunteerPage: React.FC = () => {
                         <SelectItem value='flexible'>Flexible</SelectItem>
                       </SelectContent>
                     </Select>
+                    {validationErrors.availability && (
+                      <p className='text-sm text-red-500'>
+                        {validationErrors.availability}
+                      </p>
+                    )}
                   </div>
 
                   <div className='space-y-2'>
@@ -552,6 +707,11 @@ const VolunteerPage: React.FC = () => {
                         </Button>
                       ))}
                     </div>
+                    {validationErrors.interests && (
+                      <p className='text-sm text-red-500'>
+                        {validationErrors.interests}
+                      </p>
+                    )}
                   </div>
 
                   <div className='space-y-2'>
@@ -578,9 +738,16 @@ const VolunteerPage: React.FC = () => {
                       value={formData.reason}
                       onChange={handleChange}
                       placeholder="Tell us why you're interested in volunteering with Prapti Foundation."
-                      required
                       rows={4}
+                      className={
+                        validationErrors.reason ? "border-red-500" : ""
+                      }
                     />
+                    {validationErrors.reason && (
+                      <p className='text-sm text-red-500'>
+                        {validationErrors.reason}
+                      </p>
+                    )}
                   </div>
                 </div>
 
@@ -628,14 +795,14 @@ const VolunteerPage: React.FC = () => {
                   </AccordionItem>
                 </Accordion>
 
-                {/* Submit button */}
+                {/* Submit Button */}
                 <div className='pt-4'>
                   <Button
-                    onClick={handleSubmit}
+                    type='submit'
                     className='w-full bg-orange-500 hover:bg-orange-600'
-                    disabled={isSubmitting}
+                    disabled={isLoading}
                   >
-                    {isSubmitting ? (
+                    {isLoading ? (
                       <span className='flex items-center'>
                         <svg
                           className='animate-spin -ml-1 mr-3 h-5 w-5 text-white'
@@ -664,7 +831,7 @@ const VolunteerPage: React.FC = () => {
                     )}
                   </Button>
                 </div>
-              </div>
+              </form>
             </div>
           </div>
         </div>
