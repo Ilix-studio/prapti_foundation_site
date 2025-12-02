@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Menu, PawPrint, X } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link, useLocation } from "react-router-dom";
+import logoImage from "./../assets/boring_logo.png";
 
 export function Header() {
   const [isOpen, setIsOpen] = useState(false);
@@ -42,7 +43,11 @@ export function Header() {
     >
       <div className='container flex items-center justify-between h-16 px-4 md:px-6'>
         <Link to='/' className='flex items-center gap-2'>
-          <PawPrint className='h-6 w-6 text-orange-500' />
+          <img
+            src={logoImage}
+            alt='Prapti Foundation Logo'
+            className='h-6 w-6 object-contain'
+          />
           <motion.span
             className='text-xl font-bold'
             initial={{ opacity: 0 }}

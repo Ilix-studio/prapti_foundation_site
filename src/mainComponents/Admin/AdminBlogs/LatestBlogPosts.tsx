@@ -23,7 +23,7 @@ const LatestBlogPosts: React.FC = () => {
         <div className='flex flex-col items-center justify-center space-y-4 text-center mb-12'>
           <div className='space-y-2'>
             <h2 className='text-3xl font-bold tracking-tighter sm:text-4xl'>
-              Our Latest rescue stories
+              Our Latest stories
             </h2>
             <p className='max-w-[900px] text-black md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed'>
               Stories, and updates from our foundation community.
