@@ -28,10 +28,11 @@ export const awardApi = createApi({
       }),
       invalidatesTags: ["Awards"],
     }),
-
-    // POST /upload (single image)
-    uploadAward: builder.mutation({
-      query: (formData: FormData) => ({
+    uploadAward: builder.mutation<
+      { success: boolean; message: string; data: any },
+      FormData
+    >({
+      query: (formData) => ({
         url: "/awards/upload",
         method: "POST",
         body: formData,
@@ -40,8 +41,11 @@ export const awardApi = createApi({
     }),
 
     // POST /upload-multiple
-    uploadMultipleAwards: builder.mutation({
-      query: (formData: FormData) => ({
+    uploadMultipleAwards: builder.mutation<
+      { success: boolean; message: string; data: any },
+      FormData
+    >({
+      query: (formData) => ({
         url: "/awards/upload-multiple",
         method: "POST",
         body: formData,
