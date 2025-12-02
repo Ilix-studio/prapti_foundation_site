@@ -53,7 +53,7 @@ const SeeBlogs: React.FC = () => {
           (a, b) =>
             new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
         )
-        .slice(0, 3)
+        .slice(0, 6)
     : [];
 
   // Get unique categories from posts
@@ -258,20 +258,6 @@ const SeeBlogs: React.FC = () => {
                     <BlogCard key={post._id} post={post} compact={true} />
                   ))}
                 </div>
-              </div>
-
-              <div className='border rounded-lg p-6'>
-                <h3 className='text-lg font-semibold mb-4'>Subscribe</h3>
-                <p className='text-sm text-gray-500 mb-4'>
-                  Get the latest posts and updates from our shelter delivered
-                  directly to your inbox.
-                </p>
-                <form className='space-y-2'>
-                  <Input placeholder='Your email address' type='email' />
-                  <Button className='w-full bg-orange-500 hover:bg-orange-600'>
-                    Subscribe
-                  </Button>
-                </form>
               </div>
             </div>
           </div>

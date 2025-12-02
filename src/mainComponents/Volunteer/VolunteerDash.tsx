@@ -4,6 +4,7 @@ import {
   useGetVolunteerApplicationsQuery,
   useDeleteVolunteerApplicationMutation,
 } from "../../redux-store/services/volunteerApi";
+import * as XLSX from "xlsx";
 import {
   Eye,
   Trash2,
@@ -13,7 +14,6 @@ import {
   Calendar,
   MapPin,
   Download,
-  Plus,
   Search,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -104,9 +104,66 @@ const VolunteerDash = () => {
     setCurrentPage(1);
   };
 
+  // Replace handleExportData function
   const handleExportData = () => {
-    // TODO: Implement CSV export functionality
-    console.log("Export volunteer data");
+    if (!filteredVolunteers || filteredVolunteers.length === 0) {
+      alert("No data to export");
+      return;
+    }
+
+    // Format data for Excel
+    const exportData = filteredVolunteers.map((volunteer, index) => ({
+      "S.No": index + 1,
+      "First Name": volunteer.firstName,
+      "Last Name": volunteer.lastName,
+      Email: volunteer.email,
+      Phone: volunteer.phone,
+      District: volunteer.district,
+      State: volunteer.state,
+      Pincode: volunteer.pincode,
+      Address: volunteer.address || "",
+      Interests: volunteer.interests?.join(", ") || "",
+      Experience: volunteer.experience || "",
+      Availability: volunteer.availability || "",
+      "Submitted At": new Date(volunteer.submittedAt).toLocaleString("en-US", {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+      }),
+    }));
+
+    // Create workbook and worksheet
+    const worksheet = XLSX.utils.json_to_sheet(exportData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Volunteers");
+
+    // Set column widths
+    const columnWidths = [
+      { wch: 6 }, // S.No
+      { wch: 15 }, // First Name
+      { wch: 15 }, // Last Name
+      { wch: 25 }, // Email
+      { wch: 15 }, // Phone
+      { wch: 15 }, // District
+      { wch: 15 }, // State
+      { wch: 10 }, // Pincode
+      { wch: 30 }, // Address
+      { wch: 30 }, // Interests
+      { wch: 20 }, // Experience
+      { wch: 30 }, // Why Volunteer
+      { wch: 20 }, // Availability
+      { wch: 20 }, // Submitted At
+    ];
+    worksheet["!cols"] = columnWidths;
+
+    // Generate filename with timestamp
+    const timestamp = new Date().toISOString().split("T")[0];
+    const filename = `volunteer_applications_${timestamp}.xlsx`;
+
+    // Download file
+    XLSX.writeFile(workbook, filename);
   };
 
   // Filter volunteers based on search and status
@@ -169,12 +226,6 @@ const VolunteerDash = () => {
               <Download className='h-4 w-4' />
               Export Data
             </Button>
-            <Link to='/volunteer'>
-              <Button className='bg-orange-500 hover:bg-orange-600 flex items-center gap-2'>
-                <Plus className='h-4 w-4' />
-                View Application Form
-              </Button>
-            </Link>
           </div>
         </div>
 
