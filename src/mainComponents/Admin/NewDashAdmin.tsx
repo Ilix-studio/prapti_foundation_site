@@ -5,8 +5,9 @@ import { Link, Navigate, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import logoImage from "../../assets/boring_logo.png";
+
 import {
-  PawPrint,
   LogOut,
   Plus,
   BookOpen,
@@ -266,7 +267,11 @@ const NewDashAdmin: React.FC = () => {
       <header className='sticky top-0 z-40 w-full border-b bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60 shadow-sm'>
         <div className='container flex h-16 items-center justify-between px-4'>
           <div className='flex items-center gap-3'>
-            <PawPrint className='h-8 w-8 text-orange-500' />
+            <img
+              src={logoImage}
+              alt='Prapti Foundation Logo'
+              className='h-9 w-9 object-contain'
+            />
             <div>
               <h1 className='text-lg font-bold text-gray-900'>
                 Admin Dashboard
