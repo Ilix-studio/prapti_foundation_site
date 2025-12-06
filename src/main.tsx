@@ -8,14 +8,14 @@ import { persistor, store } from "./redux-store/store.ts";
 import { PersistGate } from "redux-persist/integration/react";
 import { GoogleReCaptchaProvider } from "@wojtekmaj/react-recaptcha-v3";
 
-const RECAPTCHA_SITE_KEY = import.meta.env.VITE_RECAPTCHA_SITE_KEY;
-
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
         <BrowserRouter>
-          <GoogleReCaptchaProvider reCaptchaKey={RECAPTCHA_SITE_KEY}>
+          <GoogleReCaptchaProvider
+            reCaptchaKey={import.meta.env.VITE_RECAPTCHA_SITE_KEY}
+          >
             <App />
           </GoogleReCaptchaProvider>
         </BrowserRouter>
