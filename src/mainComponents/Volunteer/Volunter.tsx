@@ -1,4 +1,5 @@
-import React, { useRef, useState } from "react";
+import React, { useState, useCallback } from "react";
+import { useGoogleReCaptcha } from "@wojtekmaj/react-recaptcha-v3";
 import { Header } from "@/mainComponents/Header";
 import Footer from "@/mainComponents/Footer";
 import { Button } from "@/components/ui/button";
@@ -38,7 +39,6 @@ import {
 import values from "../../assets/values.png";
 import { useSubmitVolunteerApplicationMutation } from "@/redux-store/services/volunteerApi";
 import toast from "react-hot-toast";
-import ReCAPTCHA from "react-google-recaptcha";
 
 interface FormData {
   firstName: string;
@@ -56,7 +56,7 @@ interface FormData {
 }
 
 const VolunteerPage: React.FC = () => {
-  const recaptchaRef = useRef<ReCAPTCHA>(null);
+  const { executeRecaptcha } = useGoogleReCaptcha();
   const [formData, setFormData] = useState<FormData>({
     firstName: "",
     lastName: "",
@@ -99,9 +99,8 @@ const VolunteerPage: React.FC = () => {
       [name]: value,
     }));
 
-    // Clear validation error on change
     if (validationErrors[name as keyof FormData]) {
-      setValidationErrors((prev: Partial<Record<keyof FormData, string>>) => {
+      setValidationErrors((prev) => {
         const newErrors = { ...prev };
         delete newErrors[name as keyof FormData];
         return newErrors;
@@ -116,7 +115,7 @@ const VolunteerPage: React.FC = () => {
     }));
 
     if (validationErrors[name as keyof FormData]) {
-      setValidationErrors((prev: Partial<Record<keyof FormData, string>>) => {
+      setValidationErrors((prev) => {
         const newErrors = { ...prev };
         delete newErrors[name as keyof FormData];
         return newErrors;
@@ -137,7 +136,7 @@ const VolunteerPage: React.FC = () => {
     });
 
     if (validationErrors.interests) {
-      setValidationErrors((prev: Partial<Record<keyof FormData, string>>) => {
+      setValidationErrors((prev) => {
         const newErrors = { ...prev };
         delete newErrors.interests;
         return newErrors;
@@ -145,110 +144,112 @@ const VolunteerPage: React.FC = () => {
     }
   };
 
-  const validateForm = (): boolean => {
-    const errors: Partial<Record<keyof FormData, string>> = {};
+  const handleSubmit = useCallback(
+    async (e: React.FormEvent) => {
+      e.preventDefault();
 
-    // Required fields
-    if (!formData.firstName.trim()) errors.firstName = "First name is required";
-    if (!formData.lastName.trim()) errors.lastName = "Last name is required";
-    if (!formData.email.trim()) {
-      errors.email = "Email is required";
-    } else if (
-      !/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(formData.email)
-    ) {
-      errors.email = "Invalid email format";
-    }
-    if (!formData.phone.trim()) {
-      errors.phone = "Phone number is required";
-    } else if (!/^[\+]?[0-9]{10,15}$/.test(formData.phone)) {
-      errors.phone = "Invalid phone number";
-    }
-    if (!formData.address.trim()) errors.address = "Address is required";
-    if (!formData.district.trim()) errors.district = "District is required";
-    if (!formData.state.trim()) errors.state = "State is required";
-    if (!formData.pincode.trim()) {
-      errors.pincode = "Pincode is required";
-    } else if (!/^[0-9]{6,7}$/.test(formData.pincode)) {
-      errors.pincode = "Invalid pincode";
-    }
-    if (!formData.availability)
-      errors.availability = "Availability is required";
-    if (formData.interests.length === 0) {
-      errors.interests = "Select at least one interest";
-    }
-    if (!formData.reason.trim()) errors.reason = "Reason is required";
+      // Call validateForm inline to avoid stale closure
+      const errors: Partial<Record<keyof FormData, string>> = {};
 
-    setValidationErrors(errors);
-    return Object.keys(errors).length === 0;
-  };
-
-  const handleSubmit = async (e?: React.FormEvent) => {
-    if (e) e.preventDefault();
-
-    if (!validateForm()) {
-      // Scroll to first error
-      const firstErrorField = Object.keys(validationErrors)[0];
-      const errorElement = document.getElementById(firstErrorField);
-      if (errorElement) {
-        errorElement.scrollIntoView({ behavior: "smooth", block: "center" });
+      if (!formData.firstName.trim())
+        errors.firstName = "First name is required";
+      if (!formData.lastName.trim()) errors.lastName = "Last name is required";
+      if (!formData.email.trim()) {
+        errors.email = "Email is required";
+      } else if (
+        !/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(formData.email)
+      ) {
+        errors.email = "Invalid email format";
       }
-      return;
-    }
+      if (!formData.phone.trim()) {
+        errors.phone = "Phone number is required";
+      } else if (!/^[\+]?[0-9]{10,15}$/.test(formData.phone)) {
+        errors.phone = "Invalid phone number";
+      }
+      if (!formData.address.trim()) errors.address = "Address is required";
+      if (!formData.district.trim()) errors.district = "District is required";
+      if (!formData.state.trim()) errors.state = "State is required";
+      if (!formData.pincode.trim()) {
+        errors.pincode = "Pincode is required";
+      } else if (!/^[0-9]{6,7}$/.test(formData.pincode)) {
+        errors.pincode = "Invalid pincode";
+      }
+      if (!formData.availability)
+        errors.availability = "Availability is required";
+      if (formData.interests.length === 0) {
+        errors.interests = "Select at least one interest";
+      }
+      if (!formData.reason.trim()) errors.reason = "Reason is required";
 
-    try {
-      const token = await recaptchaRef.current?.executeAsync();
-
-      if (!token) {
-        toast.error("reCAPTCHA verification failed");
+      if (Object.keys(errors).length > 0) {
+        setValidationErrors(errors);
+        const firstErrorField = Object.keys(errors)[0];
+        const errorElement = document.getElementById(firstErrorField);
+        if (errorElement) {
+          errorElement.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
         return;
       }
-      await submitVolunteerApplication({
-        firstName: formData.firstName.trim(),
-        lastName: formData.lastName.trim(),
-        email: formData.email.trim().toLowerCase(),
-        phone: parseInt(formData.phone.trim(), 10),
-        address: formData.address.trim(),
-        district: formData.district.trim(),
-        state: formData.state.trim(),
-        pincode: parseInt(formData.pincode, 10),
-        availability: formData.availability,
-        interests: formData.interests,
-        experience: formData.experience.trim(),
-        reason: formData.reason.trim(),
-        recaptchaToken: token, // Add token to payload
-      }).unwrap();
 
-      // Reset reCAPTCHA
-      recaptchaRef.current?.reset();
+      if (!executeRecaptcha) {
+        toast.error("reCAPTCHA not ready. Please try again.");
+        return;
+      }
 
-      // Reset form on success
-      setFormData({
-        firstName: "",
-        lastName: "",
-        email: "",
-        phone: "",
-        address: "",
-        district: "",
-        state: "",
-        pincode: "",
-        availability: "",
-        interests: [],
-        experience: "",
-        reason: "",
-      } as FormData);
+      try {
+        const token = await executeRecaptcha("volunteer_application");
 
-      // Scroll to success message
-      setTimeout(() => {
-        const formSection = document.getElementById("volunteer-form");
-        if (formSection) {
-          formSection.scrollIntoView({ behavior: "smooth", block: "start" });
+        if (!token) {
+          toast.error("reCAPTCHA verification failed");
+          return;
         }
-      }, 100);
-    } catch (err) {
-      console.error("Submit error:", err);
-      recaptchaRef.current?.reset();
-    }
-  };
+
+        await submitVolunteerApplication({
+          firstName: formData.firstName.trim(),
+          lastName: formData.lastName.trim(),
+          email: formData.email.trim().toLowerCase(),
+          phone: parseInt(formData.phone.trim(), 10),
+          address: formData.address.trim(),
+          district: formData.district.trim(),
+          state: formData.state.trim(),
+          pincode: parseInt(formData.pincode, 10),
+          availability: formData.availability,
+          interests: formData.interests,
+          experience: formData.experience.trim(),
+          reason: formData.reason.trim(),
+          recaptchaToken: token,
+        }).unwrap();
+
+        setFormData({
+          firstName: "",
+          lastName: "",
+          email: "",
+          phone: "",
+          address: "",
+          district: "",
+          state: "",
+          pincode: "",
+          availability: "",
+          interests: [],
+          experience: "",
+          reason: "",
+        });
+
+        toast.success("Application submitted successfully!");
+
+        setTimeout(() => {
+          const formSection = document.getElementById("volunteer-form");
+          if (formSection) {
+            formSection.scrollIntoView({ behavior: "smooth", block: "start" });
+          }
+        }, 100);
+      } catch (err: any) {
+        console.error("Submit error:", err);
+        toast.error(err?.data?.message || "Submission failed");
+      }
+    },
+    [executeRecaptcha, formData, submitVolunteerApplication]
+  );
 
   const volunteerOpportunities = [
     {
@@ -303,6 +304,7 @@ const VolunteerPage: React.FC = () => {
   return (
     <div className='flex flex-col min-h-screen'>
       <Header />
+
       {/* Volunteer Application Form */}
       <section id='volunteer-form' className='py-12 md:py-24'>
         <div className='container px-4 md:px-6'>
@@ -321,38 +323,6 @@ const VolunteerPage: React.FC = () => {
             </div>
 
             <div className='bg-white rounded-lg shadow-md p-6 md:p-8'>
-              {/* Success Message */}
-              {isSuccess && (
-                <div className='mb-6 p-4 bg-green-50 border border-green-200 rounded-md flex items-start gap-3'>
-                  <Check className='h-5 w-5 text-green-500 mt-0.5' />
-                  <div>
-                    <p className='text-green-600 font-medium'>
-                      Application Submitted Successfully!
-                    </p>
-                    <p className='text-green-600/70 text-sm'>
-                      Thank you for your interest in volunteering with Prapti
-                      Foundation. We'll review your application and contact you
-                      soon.
-                    </p>
-                  </div>
-                </div>
-              )}
-
-              {/* Error Message */}
-              {error && (
-                <div className='mb-6 p-4 bg-red-50 border border-red-200 rounded-md flex items-start gap-3'>
-                  <AlertCircle className='h-5 w-5 text-red-500 mt-0.5' />
-                  <div>
-                    <p className='text-red-600 font-medium'>
-                      {(error as any)?.data?.message || "Submission failed"}
-                    </p>
-                    <p className='text-red-600/70 text-sm'>
-                      Please check the form and try again.
-                    </p>
-                  </div>
-                </div>
-              )}
-
               {/* Form */}
               <form onSubmit={handleSubmit} className='space-y-8'>
                 {/* Personal Information */}
@@ -657,12 +627,6 @@ const VolunteerPage: React.FC = () => {
                   </AccordionItem>
                 </Accordion>
 
-                <ReCAPTCHA
-                  ref={recaptchaRef}
-                  size='invisible'
-                  sitekey={import.meta.env.VITE_RECAPTCHA_SITE_KEY}
-                />
-
                 {/* Submit Button */}
                 <div className='pt-4'>
                   <Button
@@ -700,6 +664,37 @@ const VolunteerPage: React.FC = () => {
                   </Button>
                 </div>
               </form>
+              {/* Success Message */}
+              {isSuccess && (
+                <div className='mb-6 p-4 bg-green-50 border border-green-200 rounded-md flex items-start gap-3'>
+                  <Check className='h-5 w-5 text-green-500 mt-0.5' />
+                  <div>
+                    <p className='text-green-600 font-medium'>
+                      Application Submitted Successfully!
+                    </p>
+                    <p className='text-green-600/70 text-sm'>
+                      Thank you for your interest in volunteering with Prapti
+                      Foundation. We'll review your application and contact you
+                      soon.
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              {/* Error Message */}
+              {error && (
+                <div className='mb-6 p-4 bg-red-50 border border-red-200 rounded-md flex items-start gap-3'>
+                  <AlertCircle className='h-5 w-5 text-red-500 mt-0.5' />
+                  <div>
+                    <p className='text-red-600 font-medium'>
+                      {(error as any)?.data?.message || "Submission failed"}
+                    </p>
+                    <p className='text-red-600/70 text-sm'>
+                      Please check the form and try again.
+                    </p>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>

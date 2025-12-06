@@ -18,6 +18,10 @@ export const baseQuery = fetchBaseQuery({
     } else {
       console.warn("No token found in Redux state");
     }
+    // Add Content-Type for all requests
+    if (!headers.has("Content-Type")) {
+      headers.set("Content-Type", "application/json");
+    }
 
     return headers;
   },

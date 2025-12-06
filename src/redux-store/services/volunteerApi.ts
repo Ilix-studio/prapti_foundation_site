@@ -22,7 +22,10 @@ export const volunteerApi = createApi({
       query: (data) => ({
         url: "/volunteers/create",
         method: "POST",
-        body: data,
+        body: JSON.stringify(data),
+        headers: {
+          "Content-Type": "application/json",
+        },
       }),
       invalidatesTags: [{ type: "Volunteers", id: "LIST" }],
       transformErrorResponse: (response) => handleApiError(response),
