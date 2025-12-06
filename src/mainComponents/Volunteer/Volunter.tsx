@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { Header } from "@/mainComponents/Header";
 import Footer from "@/mainComponents/Footer";
 import { Button } from "@/components/ui/button";
@@ -37,6 +37,8 @@ import {
 } from "lucide-react";
 import values from "../../assets/values.png";
 import { useSubmitVolunteerApplicationMutation } from "@/redux-store/services/volunteerApi";
+import toast from "react-hot-toast";
+import ReCAPTCHA from "react-google-recaptcha";
 
 interface FormData {
   firstName: string;
@@ -54,6 +56,7 @@ interface FormData {
 }
 
 const VolunteerPage: React.FC = () => {
+  const recaptchaRef = useRef<ReCAPTCHA>(null);
   const [formData, setFormData] = useState<FormData>({
     firstName: "",
     lastName: "",
@@ -193,6 +196,12 @@ const VolunteerPage: React.FC = () => {
     }
 
     try {
+      const token = await recaptchaRef.current?.executeAsync();
+
+      if (!token) {
+        toast.error("reCAPTCHA verification failed");
+        return;
+      }
       await submitVolunteerApplication({
         firstName: formData.firstName.trim(),
         lastName: formData.lastName.trim(),
@@ -206,7 +215,11 @@ const VolunteerPage: React.FC = () => {
         interests: formData.interests,
         experience: formData.experience.trim(),
         reason: formData.reason.trim(),
+        recaptchaToken: token, // Add token to payload
       }).unwrap();
+
+      // Reset reCAPTCHA
+      recaptchaRef.current?.reset();
 
       // Reset form on success
       setFormData({
@@ -222,7 +235,7 @@ const VolunteerPage: React.FC = () => {
         interests: [],
         experience: "",
         reason: "",
-      });
+      } as FormData);
 
       // Scroll to success message
       setTimeout(() => {
@@ -233,6 +246,7 @@ const VolunteerPage: React.FC = () => {
       }, 100);
     } catch (err) {
       console.error("Submit error:", err);
+      recaptchaRef.current?.reset();
     }
   };
 
@@ -289,158 +303,6 @@ const VolunteerPage: React.FC = () => {
   return (
     <div className='flex flex-col min-h-screen'>
       <Header />
-
-      {/* Hero Section */}
-      <section className='relative py-16 md:py-24 bg-amber-50'>
-        <div className='container px-4 md:px-6'>
-          <div className='max-w-3xl mx-auto text-center space-y-4'>
-            <h1 className='text-4xl font-bold tracking-tighter sm:text-5xl'>
-              Volunteer with Us
-            </h1>
-            <p className='text-gray-500 md:text-xl'>
-              Join our team of dedicated volunteers and help make a difference
-              in the lives of stray dogs in Golaghat.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* Why Volunteer Section */}
-      <section className='py-12 md:py-24'>
-        <div className='container px-4 md:px-6'>
-          <div className='grid gap-12 lg:grid-cols-2 lg:gap-16 items-center'>
-            <div className='space-y-4'>
-              <div className='inline-block rounded-lg bg-orange-100 px-3 py-1 text-sm'>
-                Why Volunteer
-              </div>
-              <h2 className='text-3xl font-bold tracking-tighter sm:text-4xl'>
-                Make a Real Impact
-              </h2>
-              <div className='space-y-4 text-gray-500'>
-                <p>
-                  Volunteering with Prapti Foundation is more than just spending
-                  time with dogs—it's about transforming lives. Our volunteers
-                  are the backbone of our organization, helping us provide
-                  essential care, socialization, and love to dogs who have been
-                  rescued from difficult situations.
-                </p>
-                <p>
-                  Whether you can give a few hours a week or a few hours a
-                  month, your contribution matters. Every moment spent walking,
-                  grooming, cleaning, or simply sitting with our dogs helps them
-                  heal and prepare for their forever homes.
-                </p>
-                <p>
-                  No special skills are needed—just a compassionate heart and
-                  willingness to help. We provide all necessary training and
-                  support to ensure both you and our dogs have a positive
-                  experience.
-                </p>
-              </div>
-              <Button
-                onClick={scrollToForm}
-                className='bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded-md transition-colors duration-200'
-              >
-                Fill The Form
-              </Button>
-            </div>
-            <div className='relative rounded-lg overflow-hidden'>
-              <img
-                src={values}
-                alt='Volunteers working with dogs'
-                className='w-full h-full object-cover'
-              />
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Volunteer Benefits */}
-      <section className='py-12 md:py-24'>
-        <div className='container px-4 md:px-6'>
-          <div className='text-center space-y-4 max-w-3xl mx-auto mb-12'>
-            <div className='inline-block rounded-lg bg-orange-100 px-3 py-1 text-sm'>
-              Benefits
-            </div>
-            <h2 className='text-3xl font-bold tracking-tighter sm:text-4xl'>
-              Why Volunteer With Us
-            </h2>
-            <p className='text-gray-500'>
-              Volunteering with Prapti Foundation offers many rewards beyond
-              helping dogs.
-            </p>
-          </div>
-
-          <div className='grid md:grid-cols-3 gap-8'>
-            <div className='bg-white p-6 rounded-lg shadow-sm space-y-3'>
-              <div className='inline-flex items-center justify-center w-12 h-12 rounded-full bg-orange-100 text-orange-500'>
-                <Heart className='h-6 w-6' />
-              </div>
-              <h3 className='text-xl font-semibold'>Make a Difference</h3>
-              <p className='text-gray-500'>
-                Directly impact the lives of dogs in need and help them find
-                loving homes.
-              </p>
-            </div>
-
-            <div className='bg-white p-6 rounded-lg shadow-sm space-y-3'>
-              <div className='inline-flex items-center justify-center w-12 h-12 rounded-full bg-orange-100 text-orange-500'>
-                <Users className='h-6 w-6' />
-              </div>
-              <h3 className='text-xl font-semibold'>Join a Community</h3>
-              <p className='text-gray-500'>
-                Become part of a dedicated team of animal lovers who share your
-                passion.
-              </p>
-            </div>
-
-            <div className='bg-white p-6 rounded-lg shadow-sm space-y-3'>
-              <div className='inline-flex items-center justify-center w-12 h-12 rounded-full bg-orange-100 text-orange-500'>
-                <Star className='h-6 w-6' />
-              </div>
-              <h3 className='text-xl font-semibold'>Develop Skills</h3>
-              <p className='text-gray-500'>
-                Gain valuable experience in animal care, event planning, or
-                social media management.
-              </p>
-            </div>
-
-            <div className='bg-white p-6 rounded-lg shadow-sm space-y-3'>
-              <div className='inline-flex items-center justify-center w-12 h-12 rounded-full bg-orange-100 text-orange-500'>
-                <ThumbsUp className='h-6 w-6' />
-              </div>
-              <h3 className='text-xl font-semibold'>Feel Good</h3>
-              <p className='text-gray-500'>
-                Experience the joy and satisfaction that comes from helping
-                animals in need.
-              </p>
-            </div>
-
-            <div className='bg-white p-6 rounded-lg shadow-sm space-y-3'>
-              <div className='inline-flex items-center justify-center w-12 h-12 rounded-full bg-orange-100 text-orange-500'>
-                <Clock className='h-6 w-6' />
-              </div>
-              <h3 className='text-xl font-semibold'>Flexible Schedule</h3>
-              <p className='text-gray-500'>
-                Choose volunteer opportunities that fit your availability and
-                lifestyle.
-              </p>
-            </div>
-
-            <div className='bg-white p-6 rounded-lg shadow-sm space-y-3'>
-              <div className='inline-flex items-center justify-center w-12 h-12 rounded-full bg-orange-100 text-orange-500'>
-                <Calendar className='h-6 w-6' />
-              </div>
-              <h3 className='text-xl font-semibold'>Special Events</h3>
-              <p className='text-gray-500'>
-                Participate in adoption events, fundraisers, and community
-                outreach programs.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* Volunteer Application Form */}
       <section id='volunteer-form' className='py-12 md:py-24'>
         <div className='container px-4 md:px-6'>
@@ -795,6 +657,12 @@ const VolunteerPage: React.FC = () => {
                   </AccordionItem>
                 </Accordion>
 
+                <ReCAPTCHA
+                  ref={recaptchaRef}
+                  size='invisible'
+                  sitekey={import.meta.env.VITE_RECAPTCHA_SITE_KEY}
+                />
+
                 {/* Submit Button */}
                 <div className='pt-4'>
                   <Button
@@ -832,6 +700,157 @@ const VolunteerPage: React.FC = () => {
                   </Button>
                 </div>
               </form>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Hero Section */}
+      <section className='relative py-16 md:py-24 bg-amber-50'>
+        <div className='container px-4 md:px-6'>
+          <div className='max-w-3xl mx-auto text-center space-y-4'>
+            <h1 className='text-4xl font-bold tracking-tighter sm:text-5xl'>
+              Volunteer with Us
+            </h1>
+            <p className='text-gray-500 md:text-xl'>
+              Join our team of dedicated volunteers and help make a difference
+              in the lives of stray dogs in Golaghat.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Why Volunteer Section */}
+      <section className='py-12 md:py-24'>
+        <div className='container px-4 md:px-6'>
+          <div className='grid gap-12 lg:grid-cols-2 lg:gap-16 items-center'>
+            <div className='space-y-4'>
+              <div className='inline-block rounded-lg bg-orange-100 px-3 py-1 text-sm'>
+                Why Volunteer
+              </div>
+              <h2 className='text-3xl font-bold tracking-tighter sm:text-4xl'>
+                Make a Real Impact
+              </h2>
+              <div className='space-y-4 text-gray-500'>
+                <p>
+                  Volunteering with Prapti Foundation is more than just spending
+                  time with dogs—it's about transforming lives. Our volunteers
+                  are the backbone of our organization, helping us provide
+                  essential care, socialization, and love to dogs who have been
+                  rescued from difficult situations.
+                </p>
+                <p>
+                  Whether you can give a few hours a week or a few hours a
+                  month, your contribution matters. Every moment spent walking,
+                  grooming, cleaning, or simply sitting with our dogs helps them
+                  heal and prepare for their forever homes.
+                </p>
+                <p>
+                  No special skills are needed—just a compassionate heart and
+                  willingness to help. We provide all necessary training and
+                  support to ensure both you and our dogs have a positive
+                  experience.
+                </p>
+              </div>
+              <Button
+                onClick={scrollToForm}
+                className='bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded-md transition-colors duration-200'
+              >
+                Fill The Form
+              </Button>
+            </div>
+            <div className='relative rounded-lg overflow-hidden'>
+              <img
+                src={values}
+                alt='Volunteers working with dogs'
+                className='w-full h-full object-cover'
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Volunteer Benefits */}
+      <section className='py-12 md:py-24'>
+        <div className='container px-4 md:px-6'>
+          <div className='text-center space-y-4 max-w-3xl mx-auto mb-12'>
+            <div className='inline-block rounded-lg bg-orange-100 px-3 py-1 text-sm'>
+              Benefits
+            </div>
+            <h2 className='text-3xl font-bold tracking-tighter sm:text-4xl'>
+              Why Volunteer With Us
+            </h2>
+            <p className='text-gray-500'>
+              Volunteering with Prapti Foundation offers many rewards beyond
+              helping dogs.
+            </p>
+          </div>
+
+          <div className='grid md:grid-cols-3 gap-8'>
+            <div className='bg-white p-6 rounded-lg shadow-sm space-y-3'>
+              <div className='inline-flex items-center justify-center w-12 h-12 rounded-full bg-orange-100 text-orange-500'>
+                <Heart className='h-6 w-6' />
+              </div>
+              <h3 className='text-xl font-semibold'>Make a Difference</h3>
+              <p className='text-gray-500'>
+                Directly impact the lives of dogs in need and help them find
+                loving homes.
+              </p>
+            </div>
+
+            <div className='bg-white p-6 rounded-lg shadow-sm space-y-3'>
+              <div className='inline-flex items-center justify-center w-12 h-12 rounded-full bg-orange-100 text-orange-500'>
+                <Users className='h-6 w-6' />
+              </div>
+              <h3 className='text-xl font-semibold'>Join a Community</h3>
+              <p className='text-gray-500'>
+                Become part of a dedicated team of animal lovers who share your
+                passion.
+              </p>
+            </div>
+
+            <div className='bg-white p-6 rounded-lg shadow-sm space-y-3'>
+              <div className='inline-flex items-center justify-center w-12 h-12 rounded-full bg-orange-100 text-orange-500'>
+                <Star className='h-6 w-6' />
+              </div>
+              <h3 className='text-xl font-semibold'>Develop Skills</h3>
+              <p className='text-gray-500'>
+                Gain valuable experience in animal care, event planning, or
+                social media management.
+              </p>
+            </div>
+
+            <div className='bg-white p-6 rounded-lg shadow-sm space-y-3'>
+              <div className='inline-flex items-center justify-center w-12 h-12 rounded-full bg-orange-100 text-orange-500'>
+                <ThumbsUp className='h-6 w-6' />
+              </div>
+              <h3 className='text-xl font-semibold'>Feel Good</h3>
+              <p className='text-gray-500'>
+                Experience the joy and satisfaction that comes from helping
+                animals in need.
+              </p>
+            </div>
+
+            <div className='bg-white p-6 rounded-lg shadow-sm space-y-3'>
+              <div className='inline-flex items-center justify-center w-12 h-12 rounded-full bg-orange-100 text-orange-500'>
+                <Clock className='h-6 w-6' />
+              </div>
+              <h3 className='text-xl font-semibold'>Flexible Schedule</h3>
+              <p className='text-gray-500'>
+                Choose volunteer opportunities that fit your availability and
+                lifestyle.
+              </p>
+            </div>
+
+            <div className='bg-white p-6 rounded-lg shadow-sm space-y-3'>
+              <div className='inline-flex items-center justify-center w-12 h-12 rounded-full bg-orange-100 text-orange-500'>
+                <Calendar className='h-6 w-6' />
+              </div>
+              <h3 className='text-xl font-semibold'>Special Events</h3>
+              <p className='text-gray-500'>
+                Participate in adoption events, fundraisers, and community
+                outreach programs.
+              </p>
             </div>
           </div>
         </div>

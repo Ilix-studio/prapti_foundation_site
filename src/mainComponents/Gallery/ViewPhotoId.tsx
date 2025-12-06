@@ -426,12 +426,7 @@ const ViewPhotoId: React.FC = () => {
                       </>
                     )}
 
-                    <div className='absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-200'>
-                      <div className='bg-black/70 text-white px-3 py-1 rounded-full text-sm font-medium backdrop-blur-sm flex items-center gap-1'>
-                        <ExternalLink className='w-3 h-3' />
-                        View Full Size
-                      </div>
-                    </div>
+                    <div className='absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-200'></div>
                   </div>
                 ) : (
                   <div className='w-full h-96 bg-gray-200 flex items-center justify-center rounded-lg'>
