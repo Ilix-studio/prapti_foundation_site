@@ -1,5 +1,5 @@
-import React, { useState, useCallback } from "react";
-import { useGoogleReCaptcha } from "@wojtekmaj/react-recaptcha-v3";
+import React, { useState, useCallback, useEffect } from "react";
+
 import { Header } from "@/mainComponents/Header";
 import Footer from "@/mainComponents/Footer";
 import { Button } from "@/components/ui/button";
@@ -39,6 +39,7 @@ import {
 import values from "../../assets/values.png";
 import { useSubmitVolunteerApplicationMutation } from "@/redux-store/services/volunteerApi";
 import toast from "react-hot-toast";
+import { useRecaptchaV2 } from "@/hooks/useRecaptchaV2";
 
 interface FormData {
   firstName: string;
@@ -56,7 +57,7 @@ interface FormData {
 }
 
 const VolunteerPage: React.FC = () => {
-  const { executeRecaptcha } = useGoogleReCaptcha();
+  const { containerRef, render, reset, getToken } = useRecaptchaV2();
   const [formData, setFormData] = useState<FormData>({
     firstName: "",
     lastName: "",
@@ -78,6 +79,22 @@ const VolunteerPage: React.FC = () => {
 
   const [submitVolunteerApplication, { isLoading, isSuccess, error }] =
     useSubmitVolunteerApplicationMutation();
+  const isDevelopment = import.meta.env.MODE === "development";
+
+  useEffect(() => {
+    if (!isDevelopment) {
+      const timer = setTimeout(() => {
+        if (window.grecaptcha) {
+          render(
+            undefined,
+            () => toast.error("reCAPTCHA expired, please try again"),
+            () => toast.error("reCAPTCHA error, please reload")
+          );
+        }
+      }, 500);
+      return () => clearTimeout(timer);
+    }
+  }, [render, isDevelopment]);
 
   const scrollToForm = () => {
     const formSection = document.getElementById("volunteer-form");
@@ -148,9 +165,8 @@ const VolunteerPage: React.FC = () => {
     async (e: React.FormEvent) => {
       e.preventDefault();
 
-      // Call validateForm inline to avoid stale closure
+      // Inline validation
       const errors: Partial<Record<keyof FormData, string>> = {};
-
       if (!formData.firstName.trim())
         errors.firstName = "First name is required";
       if (!formData.lastName.trim()) errors.lastName = "Last name is required";
@@ -176,34 +192,30 @@ const VolunteerPage: React.FC = () => {
       }
       if (!formData.availability)
         errors.availability = "Availability is required";
-      if (formData.interests.length === 0) {
+      if (formData.interests.length === 0)
         errors.interests = "Select at least one interest";
-      }
       if (!formData.reason.trim()) errors.reason = "Reason is required";
 
       if (Object.keys(errors).length > 0) {
         setValidationErrors(errors);
         const firstErrorField = Object.keys(errors)[0];
-        const errorElement = document.getElementById(firstErrorField);
-        if (errorElement) {
-          errorElement.scrollIntoView({ behavior: "smooth", block: "center" });
-        }
+        document
+          .getElementById(firstErrorField)
+          ?.scrollIntoView({ behavior: "smooth", block: "center" });
         return;
       }
 
-      if (!executeRecaptcha) {
-        toast.error("reCAPTCHA not ready. Please try again.");
-        return;
+      let token: string | null = null;
+
+      if (!isDevelopment) {
+        token = getToken();
+        if (!token) {
+          toast.error("Please complete reCAPTCHA");
+          return;
+        }
       }
 
       try {
-        const token = await executeRecaptcha("volunteer_application");
-
-        if (!token) {
-          toast.error("reCAPTCHA verification failed");
-          return;
-        }
-
         await submitVolunteerApplication({
           firstName: formData.firstName.trim(),
           lastName: formData.lastName.trim(),
@@ -217,8 +229,10 @@ const VolunteerPage: React.FC = () => {
           interests: formData.interests,
           experience: formData.experience.trim(),
           reason: formData.reason.trim(),
-          recaptchaToken: token,
+          recaptchaToken: token || "dev-bypass",
         }).unwrap();
+
+        if (!isDevelopment) reset();
 
         setFormData({
           firstName: "",
@@ -238,17 +252,17 @@ const VolunteerPage: React.FC = () => {
         toast.success("Application submitted successfully!");
 
         setTimeout(() => {
-          const formSection = document.getElementById("volunteer-form");
-          if (formSection) {
-            formSection.scrollIntoView({ behavior: "smooth", block: "start" });
-          }
+          document
+            .getElementById("volunteer-form")
+            ?.scrollIntoView({ behavior: "smooth", block: "start" });
         }, 100);
       } catch (err: any) {
         console.error("Submit error:", err);
+        if (!isDevelopment) reset();
         toast.error(err?.data?.message || "Submission failed");
       }
     },
-    [executeRecaptcha, formData, submitVolunteerApplication]
+    [formData, submitVolunteerApplication, isDevelopment, getToken, reset]
   );
 
   const volunteerOpportunities = [
@@ -626,6 +640,19 @@ const VolunteerPage: React.FC = () => {
                     </AccordionContent>
                   </AccordionItem>
                 </Accordion>
+                {/* reCAPTCHA - only in production */}
+                {!isDevelopment && (
+                  <div className='flex justify-center py-4'>
+                    <div ref={containerRef} />
+                  </div>
+                )}
+
+                {/* Development indicator */}
+                {isDevelopment && (
+                  <div className='text-sm text-yellow-600 bg-yellow-50 p-3 rounded border border-yellow-200'>
+                    <strong>Development Mode:</strong> reCAPTCHA bypassed
+                  </div>
+                )}
 
                 {/* Submit Button */}
                 <div className='pt-4'>
