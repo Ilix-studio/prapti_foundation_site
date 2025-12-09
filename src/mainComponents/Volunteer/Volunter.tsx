@@ -81,17 +81,18 @@ const VolunteerPage: React.FC = () => {
     useSubmitVolunteerApplicationMutation();
   const isDevelopment = import.meta.env.MODE === "development";
 
+  // In VolunteerPage component
   useEffect(() => {
     if (!isDevelopment) {
+      // Longer delay to ensure script loads
       const timer = setTimeout(() => {
-        if (window.grecaptcha) {
-          render(
-            undefined,
-            () => toast.error("reCAPTCHA expired, please try again"),
-            () => toast.error("reCAPTCHA error, please reload")
-          );
-        }
-      }, 500);
+        render(
+          undefined,
+          () => toast.error("reCAPTCHA expired, please try again"),
+          () => toast.error("reCAPTCHA error, please reload")
+        );
+      }, 1000); // Increased from 500ms to 1000ms
+
       return () => clearTimeout(timer);
     }
   }, [render, isDevelopment]);

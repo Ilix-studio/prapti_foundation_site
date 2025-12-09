@@ -16,6 +16,7 @@ declare global {
       ) => number;
       reset: (widgetId?: number) => void;
       getResponse: (widgetId?: number) => string;
+      ready: (callback: () => void) => void;
     };
   }
 }
@@ -24,6 +25,7 @@ export const useRecaptchaV2 = () => {
   const widgetIdRef = useRef<number | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const scriptLoadedRef = useRef(false);
+  const renderAttemptsRef = useRef(0);
 
   useEffect(() => {
     if (scriptLoadedRef.current) return;
@@ -32,8 +34,12 @@ export const useRecaptchaV2 = () => {
     script.src = "https://www.google.com/recaptcha/api.js?render=explicit";
     script.async = true;
     script.defer = true;
+
+    script.onload = () => {
+      scriptLoadedRef.current = true;
+    };
+
     document.body.appendChild(script);
-    scriptLoadedRef.current = true;
 
     return () => {
       if (document.body.contains(script)) {
@@ -48,15 +54,35 @@ export const useRecaptchaV2 = () => {
       expiredCallback?: () => void,
       errorCallback?: () => void
     ) => {
-      if (!containerRef.current || !window.grecaptcha) return;
+      if (widgetIdRef.current !== null) return; // Already rendered
+      if (!containerRef.current) return;
 
-      widgetIdRef.current = window.grecaptcha.render(containerRef.current, {
-        sitekey: import.meta.env.VITE_RECAPTCHA_SITE_KEY_V2 || "",
-        callback,
-        "expired-callback": expiredCallback,
-        "error-callback": errorCallback,
-        size: "normal",
-      });
+      const attemptRender = () => {
+        if (!window.grecaptcha || !window.grecaptcha.render) {
+          renderAttemptsRef.current++;
+          if (renderAttemptsRef.current < 20) {
+            setTimeout(attemptRender, 200);
+          }
+          return;
+        }
+
+        try {
+          widgetIdRef.current = window.grecaptcha.render(
+            containerRef.current!,
+            {
+              sitekey: import.meta.env.VITE_RECAPTCHA_SITE_KEY_V2 || "",
+              callback,
+              "expired-callback": expiredCallback,
+              "error-callback": errorCallback,
+              size: "normal",
+            }
+          );
+        } catch (error) {
+          console.error("reCAPTCHA render error:", error);
+        }
+      };
+
+      attemptRender();
     },
     []
   );
