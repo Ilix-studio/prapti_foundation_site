@@ -50,6 +50,7 @@ const LoginUser: React.FC = () => {
   const toggleShowPassword = () => {
     setShowPassword(!showPassword);
   };
+  const isRecaptchaReady = isDevelopment || !!getToken();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -160,7 +161,7 @@ const LoginUser: React.FC = () => {
             <Button
               type='submit'
               className='w-full bg-orange-500 hover:bg-orange-600'
-              disabled={isLoading}
+              disabled={isLoading || (!isDevelopment && !isRecaptchaReady)}
             >
               {isLoading ? (
                 <span className='flex items-center gap-2'>
