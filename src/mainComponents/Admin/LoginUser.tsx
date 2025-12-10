@@ -9,6 +9,8 @@ import { Link } from "react-router-dom";
 import { useLoginAdminMutation } from "@/redux-store/services/adminApi";
 import { useSelector } from "react-redux";
 import { selectAuth } from "@/redux-store/slices/authSlice";
+import { useRecaptchaV2 } from "@/hooks/useRecaptchaV2";
+import toast from "react-hot-toast";
 
 const LoginUser: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -18,8 +20,9 @@ const LoginUser: React.FC = () => {
 
   const navigate = useNavigate();
   const { isAuthenticated, error } = useSelector(selectAuth);
+  const { containerRef, render, reset, getToken } = useRecaptchaV2();
+  const isDevelopment = import.meta.env.VITE_NODE_ENV === "development";
 
-  // Use the RTK Query mutation hook
   const [loginAdmin, { isLoading }] = useLoginAdminMutation();
 
   // Redirect if already authenticated
@@ -28,6 +31,21 @@ const LoginUser: React.FC = () => {
       navigate("/admin/dashboard");
     }
   }, [isAuthenticated, navigate]);
+
+  // Initialize reCAPTCHA
+  useEffect(() => {
+    if (!isDevelopment) {
+      const timer = setTimeout(() => {
+        render(
+          undefined,
+          () => toast.error("reCAPTCHA expired, please try again"),
+          () => toast.error("reCAPTCHA error, please reload")
+        );
+      }, 1000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [render, isDevelopment]);
 
   const toggleShowPassword = () => {
     setShowPassword(!showPassword);
@@ -42,13 +60,30 @@ const LoginUser: React.FC = () => {
       return;
     }
 
+    let recaptchaToken: string | null = null;
+
+    if (!isDevelopment) {
+      recaptchaToken = getToken();
+      if (!recaptchaToken) {
+        setErrorMessage("Please complete the reCAPTCHA verification");
+        return;
+      }
+    }
+
     try {
-      const result = await loginAdmin({ email, password }).unwrap();
+      const result = await loginAdmin({
+        email,
+        password,
+        recaptchaToken: recaptchaToken || "dev-bypass",
+      }).unwrap();
+
       if (!result.success) {
         setErrorMessage(result.message || "Login failed");
+        if (!isDevelopment) reset();
       }
     } catch (err: any) {
       setErrorMessage(err.data?.message || "Login failed. Please try again.");
+      if (!isDevelopment) reset();
     }
   };
 
@@ -79,9 +114,6 @@ const LoginUser: React.FC = () => {
                 onChange={(e) => setEmail(e.target.value)}
                 required
               />
-              <p className='text-xs text-gray-500'>
-                Demo: Use praptifoundation@gmail.com for admin access
-              </p>
             </div>
 
             <div className='space-y-2'>
@@ -109,10 +141,21 @@ const LoginUser: React.FC = () => {
                   )}
                 </button>
               </div>
-              <p className='text-xs text-gray-500'>
-                Demo: Use "admin123" as the password
-              </p>
             </div>
+
+            {/* reCAPTCHA - production only */}
+            {!isDevelopment && (
+              <div className='flex justify-center py-2'>
+                <div ref={containerRef} />
+              </div>
+            )}
+
+            {/* Development indicator */}
+            {isDevelopment && (
+              <div className='text-sm text-yellow-600 bg-yellow-50 p-3 rounded border border-yellow-200'>
+                <strong>Development Mode:</strong> reCAPTCHA bypassed
+              </div>
+            )}
 
             <Button
               type='submit'

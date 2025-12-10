@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -16,6 +16,8 @@ import {
   AlertCircle,
 } from "lucide-react";
 import { useSendContactMessageMutation } from "@/redux-store/services/contactApi";
+import { useRecaptchaV2 } from "@/hooks/useRecaptchaV2";
+import toast from "react-hot-toast";
 
 interface FormData {
   name: string;
@@ -31,6 +33,24 @@ const SmallContactSec = () => {
     subject: "",
     message: "",
   });
+
+  const { containerRef, render, reset, getToken } = useRecaptchaV2();
+  const isDevelopment = import.meta.env.VITE_NODE_ENV === "development";
+
+  // Initialize reCAPTCHA
+  useEffect(() => {
+    if (!isDevelopment) {
+      const timer = setTimeout(() => {
+        render(
+          undefined,
+          () => toast.error("reCAPTCHA expired, please try again"),
+          () => toast.error("reCAPTCHA error, please reload")
+        );
+      }, 1000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [render, isDevelopment]);
 
   const [sendContactMessage, { isLoading, isSuccess, error }] =
     useSendContactMessageMutation();
@@ -57,13 +77,27 @@ const SmallContactSec = () => {
       return;
     }
 
+    let recaptchaToken: string | null = null;
+
+    if (!isDevelopment) {
+      recaptchaToken = getToken();
+      if (!recaptchaToken) {
+        toast.error("Please complete the reCAPTCHA verification");
+        return;
+      }
+    }
+
     try {
-      await sendContactMessage(formData).unwrap();
-      // Reset form on success
+      await sendContactMessage({
+        ...formData,
+        recaptchaToken: recaptchaToken || "dev-bypass",
+      }).unwrap();
+
       setFormData({ name: "", email: "", subject: "", message: "" });
+      if (!isDevelopment) reset();
     } catch (err) {
-      // Error is handled by RTK Query
       console.error("Failed to send message:", err);
+      if (!isDevelopment) reset();
     }
   };
 
@@ -240,9 +274,23 @@ const SmallContactSec = () => {
                         />
                       </div>
 
+                      {/* reCAPTCHA - production only */}
+                      {!isDevelopment && (
+                        <div className='flex justify-center py-2'>
+                          <div ref={containerRef} />
+                        </div>
+                      )}
+
+                      {/* Development indicator */}
+                      {isDevelopment && (
+                        <div className='text-sm text-yellow-600 bg-yellow-50 p-3 rounded border border-yellow-200 mb-4'>
+                          <strong>Development Mode:</strong> reCAPTCHA bypassed
+                        </div>
+                      )}
+
                       <Button
                         type='submit'
-                        className='w-full bg-gray-500 hover:bg-orange-600 text-white py-3 text-lg font-medium'
+                        className='w-full bg-orange-500 hover:bg-orange-600 text-white py-3 text-lg font-medium'
                         disabled={isLoading}
                       >
                         {isLoading ? (
