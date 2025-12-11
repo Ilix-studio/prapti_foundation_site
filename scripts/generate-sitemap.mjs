@@ -1,10 +1,9 @@
-// scripts/generate-sitemap.ts
+// scripts/generate-sitemap.mjs
 import { writeFileSync, mkdirSync, existsSync } from "node:fs";
+import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { dirname } from "node:path";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const BASE_URL = "https://praptifoundation.in";
 const API_URL =
@@ -19,7 +18,22 @@ const staticPages = [
   { path: "/rescue", priority: 0.9, changefreq: "daily" },
   { path: "/awards", priority: 0.6, changefreq: "monthly" },
   { path: "/volunteer", priority: 0.8, changefreq: "monthly" },
+  { path: "/support", priority: 0.8, changefreq: "monthly" },
+  { path: "/testimonial", priority: 0.6, changefreq: "weekly" },
 ];
+
+async function fetchWithTimeout(url, timeout = 5000) {
+  const controller = new AbortController();
+  const id = setTimeout(() => controller.abort(), timeout);
+  try {
+    const res = await fetch(url, { signal: controller.signal });
+    clearTimeout(id);
+    return res;
+  } catch (e) {
+    clearTimeout(id);
+    throw e;
+  }
+}
 
 async function generateSitemap() {
   const today = new Date().toISOString().split("T")[0];
@@ -27,7 +41,6 @@ async function generateSitemap() {
   let xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">`;
 
-  // Static pages
   for (const page of staticPages) {
     xml += `
   <url>
@@ -38,9 +51,9 @@ async function generateSitemap() {
   </url>`;
   }
 
-  // Dynamic: Blogs
+  // Blogs
   try {
-    const blogsRes = await fetch(`${API_URL}/blogs`);
+    const blogsRes = await fetchWithTimeout(`${API_URL}/blogs`);
     const blogs = await blogsRes.json();
     const blogList = Array.isArray(blogs) ? blogs : blogs.data || [];
 
@@ -53,13 +66,14 @@ async function generateSitemap() {
     <priority>0.7</priority>
   </url>`;
     }
+    console.log(`✅ Added ${blogList.length} blogs`);
   } catch (e) {
-    console.warn("Failed to fetch blogs");
+    console.warn("⚠️ Failed to fetch blogs:", e.message || e);
   }
 
-  // Dynamic: Rescues
+  // Rescues
   try {
-    const rescuesRes = await fetch(`${API_URL}/rescues`);
+    const rescuesRes = await fetchWithTimeout(`${API_URL}/rescues`);
     const rescues = await rescuesRes.json();
     const rescueList = rescues.data?.rescues || rescues.data || [];
 
@@ -72,21 +86,24 @@ async function generateSitemap() {
     <priority>0.7</priority>
   </url>`;
     }
+    console.log(`✅ Added ${rescueList.length} rescues`);
   } catch (e) {
-    console.warn("Failed to fetch rescues");
+    console.warn("⚠️ Failed to fetch rescues:", e.message || e);
   }
 
   xml += "\n</urlset>";
 
-  const publicDir = new URL("../public", import.meta.url).pathname;
-
+  const publicDir = resolve(__dirname, "../public");
   if (!existsSync(publicDir)) {
     mkdirSync(publicDir, { recursive: true });
   }
 
-  const sitemapPath = new URL("sitemap.xml", `file://${publicDir}/`).pathname;
+  const sitemapPath = resolve(publicDir, "sitemap.xml");
   writeFileSync(sitemapPath, xml);
   console.log(`✅ Sitemap generated at ${sitemapPath}`);
 }
 
-generateSitemap();
+generateSitemap().catch((e) => {
+  console.error("❌ Sitemap generation failed:", e.message || e);
+  process.exit(1);
+});
