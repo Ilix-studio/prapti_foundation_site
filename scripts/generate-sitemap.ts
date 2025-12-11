@@ -1,9 +1,14 @@
 // scripts/generate-sitemap.ts
-import { writeFileSync, mkdirSync, existsSync } from "fs";
+import { writeFileSync, mkdirSync, existsSync } from "node:fs";
+import { fileURLToPath } from "node:url";
+import { dirname } from "node:path";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const BASE_URL = "https://praptifoundation.in";
 const API_URL =
-  "https://prapti-foundation-be-874257626954.europe-west1.run.app/api"; // Update this
+  "https://prapti-foundation-be-874257626954.europe-west1.run.app/api";
 
 const staticPages = [
   { path: "/", priority: 1.0, changefreq: "daily" },
@@ -73,12 +78,15 @@ async function generateSitemap() {
 
   xml += "\n</urlset>";
 
-  if (!existsSync("public")) {
-    mkdirSync("public");
+  const publicDir = new URL("../public", import.meta.url).pathname;
+
+  if (!existsSync(publicDir)) {
+    mkdirSync(publicDir, { recursive: true });
   }
 
-  writeFileSync("public/sitemap.xml", xml);
-  console.log("✅ Sitemap generated at public/sitemap.xml");
+  const sitemapPath = new URL("sitemap.xml", `file://${publicDir}/`).pathname;
+  writeFileSync(sitemapPath, xml);
+  console.log(`✅ Sitemap generated at ${sitemapPath}`);
 }
 
 generateSitemap();
