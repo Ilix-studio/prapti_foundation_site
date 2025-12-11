@@ -77,6 +77,7 @@ const AboutUs: React.FC = () => {
           </div>
         </div>
       </section>
+      {/* <OurTeam /> */}
 
       {/* Our Impact Section */}
       <section className='py-12 md:py-24 bg-orange-50'>

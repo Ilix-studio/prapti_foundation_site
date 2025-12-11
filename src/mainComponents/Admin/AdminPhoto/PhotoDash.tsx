@@ -335,7 +335,7 @@ const PhotoDash: React.FC = () => {
                 onChange={(e) => handleCategoryFilter(e.target.value)}
                 disabled={isLoadingPhotos || isLoadingCategories}
               >
-                <option value='all'>All Categories</option>
+                <option value='all'>Select Categories</option>
                 {categories.map((cat) => (
                   <option key={cat._id} value={cat._id}>
                     {cat.name}

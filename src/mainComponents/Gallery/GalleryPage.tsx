@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import {
@@ -37,11 +37,15 @@ import { getCategoryColor } from "./getColor";
 import { formatDate } from "./galleryHelper";
 import { cn } from "@/constants/utils";
 
+const MAX_VISIBLE_CATEGORIES = 4; // Including "All"
+
 const GalleryPage: React.FC = () => {
   const navigate = useNavigate();
   const [hovered, setHovered] = useState<number | null>(null);
   const [activeTab, setActiveTab] = useState<"photos" | "videos">("photos");
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [showAllPhotoCategories, setShowAllPhotoCategories] = useState(false);
+  const [showAllVideoCategories, setShowAllVideoCategories] = useState(false);
 
   // Fetch categories for photos and videos
   const {
@@ -72,6 +76,50 @@ const GalleryPage: React.FC = () => {
     ],
     [videoCategories]
   );
+
+  // Helper to get visible categories with remaining count
+  const getVisibleCategories = <T extends { _id: string; name: string }>(
+    categories: T[],
+    showAll: boolean
+  ): { visible: T[]; remaining: number } => {
+    if (showAll || categories.length <= MAX_VISIBLE_CATEGORIES) {
+      return { visible: categories, remaining: 0 };
+    }
+    return {
+      visible: categories.slice(0, MAX_VISIBLE_CATEGORIES),
+      remaining: categories.length - MAX_VISIBLE_CATEGORIES,
+    };
+  };
+
+  const photoFilterData = useMemo(
+    () => getVisibleCategories(photoFilterOptions, showAllPhotoCategories),
+    [photoFilterOptions, showAllPhotoCategories]
+  );
+
+  const videoFilterData = useMemo(
+    () => getVisibleCategories(videoFilterOptions, showAllVideoCategories),
+    [videoFilterOptions, showAllVideoCategories]
+  );
+
+  // Auto-expand if selected category is beyond visible range
+  useEffect(() => {
+    if (selectedCategory && activeTab === "photos") {
+      const index = photoFilterOptions.findIndex(
+        (c) => c._id === selectedCategory
+      );
+      if (index >= MAX_VISIBLE_CATEGORIES) {
+        setShowAllPhotoCategories(true);
+      }
+    }
+    if (selectedCategory && activeTab === "videos") {
+      const index = videoFilterOptions.findIndex(
+        (c) => c._id === selectedCategory
+      );
+      if (index >= MAX_VISIBLE_CATEGORIES) {
+        setShowAllVideoCategories(true);
+      }
+    }
+  }, [selectedCategory, activeTab, photoFilterOptions, videoFilterOptions]);
 
   // Helper function to get category name for filtering
   const getCategoryFilterValue = (categoryId: string, isPhoto: boolean) => {
@@ -539,7 +587,7 @@ const GalleryPage: React.FC = () => {
               <TabsContent value='photos' className='w-full'>
                 {/* Photo Filters */}
                 <div className='flex flex-wrap gap-2 justify-center mb-8'>
-                  {photoFilterOptions.map((category) => (
+                  {photoFilterData.visible.map((category) => (
                     <Button
                       key={category._id}
                       variant={
@@ -567,6 +615,27 @@ const GalleryPage: React.FC = () => {
                       {category.name}
                     </Button>
                   ))}
+                  {photoFilterData.remaining > 0 && (
+                    <Button
+                      variant='ghost'
+                      size='sm'
+                      onClick={() => setShowAllPhotoCategories(true)}
+                      className='text-orange-500 hover:text-orange-600 hover:bg-orange-50'
+                    >
+                      +{photoFilterData.remaining} more
+                    </Button>
+                  )}
+                  {showAllPhotoCategories &&
+                    photoFilterOptions.length > MAX_VISIBLE_CATEGORIES && (
+                      <Button
+                        variant='ghost'
+                        size='sm'
+                        onClick={() => setShowAllPhotoCategories(false)}
+                        className='text-gray-500 hover:text-gray-600'
+                      >
+                        Show less
+                      </Button>
+                    )}
                 </div>
 
                 {photos.length === 0 ? (
@@ -677,7 +746,7 @@ const GalleryPage: React.FC = () => {
               <TabsContent value='videos' className='w-full'>
                 {/* Video Filters */}
                 <div className='flex flex-wrap gap-2 justify-center mb-8'>
-                  {videoFilterOptions.map((category) => (
+                  {videoFilterData.visible.map((category) => (
                     <Button
                       key={category._id}
                       variant={
@@ -705,6 +774,27 @@ const GalleryPage: React.FC = () => {
                       {category.name}
                     </Button>
                   ))}
+                  {videoFilterData.remaining > 0 && (
+                    <Button
+                      variant='ghost'
+                      size='sm'
+                      onClick={() => setShowAllVideoCategories(true)}
+                      className='text-orange-500 hover:text-orange-600 hover:bg-orange-50'
+                    >
+                      +{videoFilterData.remaining} more
+                    </Button>
+                  )}
+                  {showAllVideoCategories &&
+                    videoFilterOptions.length > MAX_VISIBLE_CATEGORIES && (
+                      <Button
+                        variant='ghost'
+                        size='sm'
+                        onClick={() => setShowAllVideoCategories(false)}
+                        className='text-gray-500 hover:text-gray-600'
+                      >
+                        Show less
+                      </Button>
+                    )}
                 </div>
 
                 {videos.length === 0 ? (

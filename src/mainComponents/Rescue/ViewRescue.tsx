@@ -11,8 +11,11 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Loader2, AlertCircle, Trash2, Edit, ArrowLeft } from "lucide-react";
 import { useSelector } from "react-redux";
 import { selectIsAdmin } from "@/redux-store/slices/authSlice";
+import { BreadcrumbSchema } from "@/SEO/StructuredData";
 
 import toast from "react-hot-toast";
+import { SEO } from "@/SEO/SEO";
+import { RescueStorySchema } from "@/SEO/StructuredData";
 
 const ViewRescue = () => {
   const { id } = useParams<{ id: string }>();
@@ -64,9 +67,40 @@ const ViewRescue = () => {
   }
 
   const rescue = rescueData.data;
+  const rescueUrl = `/rescue/${id}`;
+  const rescueDescription = rescue.description.substring(0, 160) + "...";
+
+  const breadcrumbs = [
+    { name: "Home", url: "/" },
+    { name: "Rescue Operations", url: "/rescue" },
+    { name: rescue.title, url: rescueUrl },
+  ];
 
   return (
     <>
+      <SEO
+        title={rescue.title}
+        description={rescueDescription}
+        canonical={rescueUrl}
+        ogImage={rescue.afterImage}
+        type='article'
+        publishedTime={rescue.createdAt}
+        modifiedTime={rescue.updatedAt}
+        keywords={[
+          "dog rescue story",
+          "before after transformation",
+          "stray dog rescue Golaghat",
+        ]}
+      />
+      <RescueStorySchema
+        title={rescue.title}
+        description={rescueDescription}
+        url={rescueUrl}
+        beforeImage={rescue.beforeImage}
+        afterImage={rescue.afterImage}
+        rescueDate={rescue.createdAt}
+      />
+      <BreadcrumbSchema items={breadcrumbs} />
       <div className='min-h-screen bg-gray-50'>
         <div className='bg-white border-b'>
           <div className='container mx-auto px-4 py-4 flex items-center justify-between'>

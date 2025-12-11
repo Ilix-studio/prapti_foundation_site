@@ -27,6 +27,7 @@ import {
   PenLine,
   BadgeCheck,
   Trophy,
+  GitGraph,
 } from "lucide-react";
 
 import {
@@ -215,6 +216,15 @@ const NewDashAdmin: React.FC = () => {
       loading: false,
       error: false,
       action: () => navigate("/admin/rescueDash"),
+    },
+    {
+      title: "Category Management",
+      icon: GitGraph,
+      color: "text-black-800",
+      bgColor: "bg-red-50",
+      loading: false,
+      error: false,
+      action: () => navigate("/admin/categories"),
     },
   ];
 

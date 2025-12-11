@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://praptifoundation.in/sitemap.xml
+
+# Block admin routes
+Disallow: /admin/
+Disallow: /login
