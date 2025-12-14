@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Heart, Users, Calendar, Dog } from "lucide-react";
 import { Link } from "react-router-dom";
 import aboutusLogo from "./../assets/mainLogo.jpeg";
+import OurTeam from "./OurTeam";
 
 const AboutUs: React.FC = () => {
   return (
@@ -77,7 +78,7 @@ const AboutUs: React.FC = () => {
           </div>
         </div>
       </section>
-      {/* <OurTeam /> */}
+      <OurTeam />
 
       {/* Our Impact Section */}
       <section className='py-12 md:py-24 bg-orange-50'>
