@@ -1,3 +1,4 @@
+import { MessageCircle } from "lucide-react";
 import { useState } from "react";
 
 type Step = 1 | 2 | 3 | 4;
@@ -85,7 +86,7 @@ export default function UploadDocs() {
         <div className='mx-6 mt-5 bg-red-50 border border-red-200 rounded-lg px-4 py-3 flex items-start gap-3'>
           <span className='text-red-500 mt-0.5'>🔴</span>
           <p className='text-sm text-red-700'>
-            Your business information could not be verified. Please upload a
+            Your Organisation information could not be verified. Please upload a
             valid registration document via WhatsApp below.
           </p>
         </div>
@@ -119,13 +120,17 @@ export default function UploadDocs() {
         <div className='px-6'>
           {/* WhatsApp QR Code */}
           <div className='flex flex-col items-center mb-5'>
-            <img
-              src='src/assets/ilix.jpeg'
-              alt='WhatsApp QR Code'
-              className='w-48 h-48 rounded-xl object-contain border border-gray-200 shadow-sm'
-            />
+            <a
+              href='https://wa.me/919101035038'
+              target='_blank'
+              rel='noopener noreferrer'
+              className='flex items-center gap-2 px-5 py-3 bg-[#25D366] hover:bg-[#1ebe5d] text-white text-sm font-semibold rounded-xl transition-colors shadow-sm'
+            >
+              <MessageCircle size={18} fill='white' strokeWidth={0} />
+              Upload on WhatsApp
+            </a>
             <p className='text-xs text-gray-500 mt-2 text-center'>
-              Scan this QR code with WhatsApp to link your device
+              Upload by using WhatsApp
             </p>
           </div>
 
