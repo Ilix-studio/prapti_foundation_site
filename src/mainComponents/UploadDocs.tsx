@@ -1,47 +1,4 @@
 import { MessageCircle } from "lucide-react";
-import { useState } from "react";
-
-type Step = 1 | 2 | 3 | 4;
-
-interface StepConfig {
-  step: Step;
-  title: string;
-  description: string;
-  icon: string;
-  detail?: string;
-}
-
-const STEPS: StepConfig[] = [
-  {
-    step: 1,
-    title: "Open WhatsApp",
-    description: "Launch WhatsApp on your mobile device.",
-    icon: "💬",
-  },
-  {
-    step: 2,
-    title: "Go to Settings → Linked Devices",
-    description:
-      'Tap the three-dot menu (Android) or Settings tab (iOS), then select "Linked Devices".',
-    icon: "⚙️",
-  },
-  {
-    step: 3,
-    title: "Tap Link a Device → Scan QR Code",
-    description:
-      "Tap the button in the top-right corner, then point your camera at the QR code shown on this screen.",
-    icon: "📷",
-    detail: "The QR code scanner will appear automatically.",
-  },
-  {
-    step: 4,
-    title: "Send Document via WhatsApp",
-    description:
-      "Once linked, open your chat and attach your MEME certificate or required document using the 📎 icon, then send it.",
-    icon: "📎",
-    detail: "Accepted: MEME Certificate, GST cert, VAT cert, Trust deed, etc.",
-  },
-];
 
 const ACCEPTED_DOCS = [
   "MEME Certificate",
@@ -54,11 +11,6 @@ const ACCEPTED_DOCS = [
 ];
 
 export default function UploadDocs() {
-  const [currentStep, setCurrentStep] = useState<Step>(1);
-  const [uploadComplete, setUploadComplete] = useState(false);
-
-  const isLastStep = currentStep === STEPS.length;
-
   return (
     <div className='min-h-screen bg-gray-50 flex items-center justify-center p-6'>
       <div className='w-full max-w-2xl bg-white rounded-2xl shadow-md overflow-hidden'>
@@ -133,102 +85,7 @@ export default function UploadDocs() {
               Upload by using WhatsApp
             </p>
           </div>
-
-          <p className='text-xs font-semibold text-gray-500 uppercase tracking-wider mb-4'>
-            How to Upload via WhatsApp
-          </p>
-
-          <div className='space-y-3'>
-            {STEPS.map(({ step, title, description, icon, detail }) => {
-              const isActive = currentStep === step;
-              const isDone = currentStep > step;
-
-              return (
-                <div
-                  key={step}
-                  className={`rounded-xl border p-4 transition-all duration-200 ${
-                    isActive
-                      ? "border-[#25D366] bg-[#f0fdf4]"
-                      : isDone
-                      ? "border-gray-200 bg-gray-50 opacity-60"
-                      : "border-gray-100 bg-white opacity-40"
-                  }`}
-                >
-                  <div className='flex items-start gap-3'>
-                    <div
-                      className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold shrink-0 ${
-                        isDone
-                          ? "bg-[#25D366] text-white"
-                          : isActive
-                          ? "bg-[#075E54] text-white"
-                          : "bg-gray-200 text-gray-400"
-                      }`}
-                    >
-                      {isDone ? "✓" : step}
-                    </div>
-                    <div className='flex-1'>
-                      <div className='flex items-center gap-2'>
-                        <span>{icon}</span>
-                        <p className='text-sm font-semibold text-gray-800'>
-                          {title}
-                        </p>
-                      </div>
-                      <p className='text-sm text-gray-600 mt-1'>
-                        {description}
-                      </p>
-                      {detail && isActive && (
-                        <p className='text-xs text-[#075E54] mt-1 font-medium'>
-                          ℹ️ {detail}
-                        </p>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-
-          {/* Step Navigation */}
-          <div className='flex gap-3 mt-5'>
-            {currentStep > 1 && !uploadComplete && (
-              <button
-                onClick={() => setCurrentStep((s) => (s - 1) as Step)}
-                className='flex-1 py-2.5 rounded-xl border border-gray-300 text-sm text-gray-600 font-medium hover:bg-gray-50 transition'
-              >
-                ← Back
-              </button>
-            )}
-            {!uploadComplete && (
-              <button
-                onClick={() => {
-                  if (isLastStep) {
-                    setUploadComplete(true);
-                  } else {
-                    setCurrentStep((s) => (s + 1) as Step);
-                  }
-                }}
-                className='flex-1 py-2.5 rounded-xl bg-[#25D366] text-white text-sm font-semibold hover:bg-[#1ebe5d] transition'
-              >
-                {isLastStep ? "✅ Mark as Sent" : "Next →"}
-              </button>
-            )}
-          </div>
         </div>
-
-        {/* Upload Confirmed + Restart */}
-        {uploadComplete && (
-          <div className='px-6 mt-5'>
-            <div className='bg-green-50 border border-green-200 rounded-xl p-4 text-sm text-green-800 font-medium text-center'>
-              ✅ Document sent via WhatsApp. Awaiting verification.
-            </div>
-
-            <div className='mt-4 bg-yellow-50 border border-yellow-200 rounded-xl p-4'>
-              <p className='text-sm font-semibold text-yellow-800 mb-1'>
-                🔄 To Restart the google cloud server.
-              </p>
-            </div>
-          </div>
-        )}
 
         <div className='h-6' />
       </div>
