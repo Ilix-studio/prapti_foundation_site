@@ -13,7 +13,7 @@ import SmallContactSec from "./mainComponents/ContactUs/SmallContactSec";
 import TotalImpactView from "./mainComponents/Admin/AdminImpact/TotalImpactView";
 import Testimonials from "./mainComponents/Testimonials/Testimonials";
 import { Helmet } from "react-helmet";
-import UploadDocs from "./mainComponents/UploadDocs";
+// import UploadDocs from "./mainComponents/UploadDocs";
 
 const Home: React.FC = () => {
   return (
@@ -33,7 +33,7 @@ const Home: React.FC = () => {
         <link rel='canonical' href='https://praptifoundation.in/' />
       </Helmet>
       <Header />
-      <UploadDocs />
+      {/* <UploadDocs /> */}
       <HeroSection />
       <EmergencyCall />
       <LatestBlogPosts />
