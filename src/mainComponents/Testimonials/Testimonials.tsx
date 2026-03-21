@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight, Loader2 } from "lucide-react";
 import { useGetActiveTestimonialsQuery } from "@/redux-store/services/testimonialApi";
 import { Link } from "react-router-dom";
+import FallBackTestimonials from "@/fallback_system/for_testimonials/FallBackTestimonials";
 
 interface TestimonialsProps {
   onAddTestimonial?: () => void;
@@ -42,20 +43,7 @@ const Testimonials: React.FC<TestimonialsProps> = ({ onAddTestimonial }) => {
   }
 
   if (error) {
-    return (
-      <section className='py-16 bg-gradient-to-b from-slate-50 to-white dark:from-slate-900 dark:to-slate-800'>
-        <div className='container mx-auto px-4'>
-          <div className='text-center'>
-            <h2 className='text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4'>
-              What Our Clients Say
-            </h2>
-            <p className='text-red-600 dark:text-red-400'>
-              Unable to load testimonials at the moment.
-            </p>
-          </div>
-        </div>
-      </section>
-    );
+    return <FallBackTestimonials />;
   }
 
   const testimonials = testimonialsData?.data || [];

@@ -3,7 +3,7 @@ import React from "react";
 import { motion } from "framer-motion";
 import { useGetLatestTotalImpactQuery } from "@/redux-store/services/impactApi";
 import { Card, CardContent } from "@/components/ui/card";
-import { Heart, Home, Users, Loader2, AlertCircle } from "lucide-react";
+import { Heart, Home, Users, Loader2 } from "lucide-react";
 
 const TotalImpactView: React.FC = () => {
   const {
@@ -34,22 +34,7 @@ const TotalImpactView: React.FC = () => {
   }
 
   if (error) {
-    return (
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className='mt-12 mb-16 mx-auto max-w-6xl px-4 sm:px-6 lg:px-8'
-      >
-        <Card className='bg-gradient-to-r from-red-50 to-pink-50 border-red-200 '>
-          <CardContent className='p-8 sm:p-10 lg:p-12'>
-            <div className='flex items-center justify-center text-red-600'>
-              <AlertCircle className='w-6 h-6 mr-3' />
-              <span className='font-medium'>Unable to load impact data</span>
-            </div>
-          </CardContent>
-        </Card>
-      </motion.div>
-    );
+    return null;
   }
 
   if (!impactResponse?.data) {

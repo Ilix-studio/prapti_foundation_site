@@ -7,14 +7,12 @@ import {
   Loader2,
   Play,
   Clock,
-  AlertCircle,
   X,
   Camera,
   PlayCircle,
   ArrowRight,
 } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Alert, AlertDescription } from "@/components/ui/alert";
 
 // Import API hooks from project knowledge
 import {
@@ -37,6 +35,7 @@ import { formatDate, getPhotoCategoryName } from "./galleryHelper";
 import { cn } from "@/constants/utils";
 import { getCategoryColor } from "./getColor";
 import { Button } from "@/components/ui/button";
+import FallbackGallery from "@/fallback_system/for_photos/FallbackGallery";
 
 // Types for common props
 interface MediaItemProps {
@@ -78,7 +77,7 @@ const HomeGallery = () => {
     },
     {
       skip: !selectedCategory || activeTab !== "photos",
-    }
+    },
   );
 
   // API hooks for videos
@@ -105,7 +104,7 @@ const HomeGallery = () => {
     },
     {
       skip: !selectedCategory || activeTab !== "videos",
-    }
+    },
   );
 
   // Helper function to get photo primary image
@@ -136,7 +135,7 @@ const HomeGallery = () => {
   // Helper: Get one photo per category (for default view)
   const getUniqueByCategory = <T extends Photo | Video>(
     items: T[],
-    getCategoryFn: (item: T) => string
+    getCategoryFn: (item: T) => string,
   ): T[] => {
     const seen = new Set<string>();
     return items.filter((item) => {
@@ -182,8 +181,8 @@ const HomeGallery = () => {
     ? activeTab === "photos" && photos[0]
       ? getPhotoCategoryName(photos[0].category)
       : activeTab === "videos" && videos[0]
-      ? getVideoCategoryName(videos[0].category)
-      : "Category"
+        ? getVideoCategoryName(videos[0].category)
+        : "Category"
     : null;
 
   // Common gallery metadata component
@@ -221,7 +220,7 @@ const HomeGallery = () => {
     <div className='absolute top-4 left-4 flex items-center gap-2'>
       <span
         className={`px-2 py-1 rounded-full text-xs font-medium ${getCategoryColor(
-          categoryName
+          categoryName,
         )}`}
       >
         {categoryName.charAt(0).toUpperCase() + categoryName.slice(1)}
@@ -261,7 +260,7 @@ const HomeGallery = () => {
         onMouseLeave={() => onHover(null)}
         className={cn(
           "rounded-xl relative bg-gray-100 overflow-hidden h-60 md:h-80 w-full transition-all duration-300 ease-out",
-          hovered !== null && hovered !== index
+          hovered !== null && hovered !== index,
         )}
         whileHover={{ scale: 1.02 }}
         transition={{ duration: 0.2 }}
@@ -287,7 +286,7 @@ const HomeGallery = () => {
         <div
           className={cn(
             "absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex items-end p-6 transition-opacity duration-300 pointer-events-none",
-            isHovered ? "opacity-100" : "opacity-0"
+            isHovered ? "opacity-100" : "opacity-0",
           )}
         >
           <div className='text-white'>
@@ -328,7 +327,7 @@ const HomeGallery = () => {
         onMouseLeave={() => onHover(null)}
         className={cn(
           "rounded-xl relative bg-gray-100 overflow-hidden h-60 md:h-80 w-full transition-all duration-300 ease-out cursor-pointer group",
-          hovered !== null && hovered !== index + 1000
+          hovered !== null && hovered !== index + 1000,
         )}
         whileHover={{ scale: 1.02 }}
         transition={{ duration: 0.2 }}
@@ -364,7 +363,7 @@ const HomeGallery = () => {
         <div
           className={cn(
             "absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex items-end p-6 transition-opacity duration-300",
-            isHovered ? "opacity-100" : "opacity-0"
+            isHovered ? "opacity-100" : "opacity-0",
           )}
         >
           <div className='text-white'>
@@ -457,8 +456,8 @@ const HomeGallery = () => {
               activeTab === "photos" ? "Photos" : "Videos"
             } from ${selectedCategoryName} category`
           : selectedCategory
-          ? "Heartwarming moments from rescue to wagging tails."
-          : "A glimpse into our work, community engagement, and public events."}
+            ? "Heartwarming moments from rescue to wagging tails."
+            : "A glimpse into our work, community engagement, and public events."}
       </p>
 
       {selectedCategory && (
@@ -489,19 +488,7 @@ const HomeGallery = () => {
 
   // Error state
   if (hasError) {
-    return (
-      <section id='gallery' className='py-12 md:py-16 lg:py-24 bg-slate-50'>
-        <div className='container px-4 sm:px-6'>
-          <GalleryHeader />
-          <Alert variant='destructive' className='max-w-md mx-auto'>
-            <AlertCircle className='h-4 w-4' />
-            <AlertDescription>
-              Failed to load gallery content. Please try again later.
-            </AlertDescription>
-          </Alert>
-        </div>
-      </section>
-    );
+    return <FallbackGallery />;
   }
 
   return (
