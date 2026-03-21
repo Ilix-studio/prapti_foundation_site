@@ -187,6 +187,9 @@ const FallBackTestimonials: React.FC<TestimonialsProps> = ({
           <p className='text-sm text-gray-500 dark:text-gray-400'>
             Your kind words could help others discover the care we provide.
           </p>
+          <p className='text-xs text-gray-400 dark:text-gray-500 mt-2 italic underline'>
+            Limited Mode : Live Data Entry not possible due to server issues
+          </p>
         </div>
       </div>
     </section>
