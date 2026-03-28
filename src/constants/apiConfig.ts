@@ -2,7 +2,8 @@ import { fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 export const API_CONFIG = {
   BASE_URL:
-    import.meta.env.VITE_API_URL ?? "https://api.biswajitphukan.com/api",
+    import.meta.env.VITE_API_URL ??
+    "https://praptifoundation-backend-34098913955.europe-west1.run.app/api",
 };
 
 export const baseQuery = fetchBaseQuery({
