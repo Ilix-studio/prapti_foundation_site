@@ -22,7 +22,6 @@ const SeeBlogs = lazy(
   () => import("@/mainComponents/Admin/AdminBlogs/SmallBlogUI/SeeBlogs")
 );
 
-//
 const ViewMessage = lazy(
   () => import("@/mainComponents/Admin/AdminMessage/ViewMessage")
 );
@@ -52,6 +51,7 @@ const WriteTestimonial = lazy(
 
 import NotFound from "../mainComponents/NotFound";
 import AdminSeeBlog from "@/mainComponents/Admin/AdminBlogs/SmallBlogUI/AdminSeeBlog";
+import BudgetedBillMemo from "@/mainComponents/BudgetedBillMemo";
 
 // Admin components (lazy loaded)
 const NewDashAdmin = lazy(() => import("../mainComponents/Admin/NewDashAdmin"));
@@ -157,6 +157,9 @@ export const publicRoutes = [
     path: "/rescue/:id",
     component: ViewRescue,
   },
+  {
+    path: "/see-bill-memo",
+    component: BudgetedBillMemo, },
 ];
 
 export const adminRoutesDash = [

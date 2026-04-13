@@ -293,6 +293,12 @@ const Footer = () => {
               >
                 Support Us
               </Link>
+              <Link
+                to='/see-bill-memo'
+                className='text-sm text-gray-600 dark:text-gray-400 hover:text-orange-500 transition-colors'
+              >
+                Budgeted Bill Memo
+              </Link>
             </nav>
           </motion.div>
 
