@@ -44,7 +44,8 @@ const TAG_LABELS: Record<TagVariant, string> = {
 const FRONTEND_ITEMS: LineItem[] = [
   {
     name: "Public Interface & Core Pages",
-    components: "Home, AboutUs, ContactUs, SupportUs, GalleryPage, ViewAllAwards",
+    components:
+      "Home, AboutUs, ContactUs, SupportUs, GalleryPage, ViewAllAwards",
     scope: "Responsive layouts, intuitive navigation, and Foundation branding",
     complexity: "Medium",
     charge: 4000,
@@ -53,14 +54,16 @@ const FRONTEND_ITEMS: LineItem[] = [
   {
     name: "Animal Rescue & Adoption Flow",
     components: "AdoptionForm, ReportPage, ViewAllRescue, ViewRescue",
-    scope: "Multi-step form schemas, file attachment handling for rescue reports",
+    scope:
+      "Multi-step form schemas, file attachment handling for rescue reports",
     complexity: "Medium",
     charge: 3500,
     tag: "fe",
   },
   {
     name: "Community & Volunteer UI",
-    components: "VolunteerPage, VolunteerDetail, WriteTestimonial, SeeBlogs, BlogPost",
+    components:
+      "VolunteerPage, VolunteerDetail, WriteTestimonial, SeeBlogs, BlogPost",
     scope: "Blog catalog, testimonial forms, volunteer registration flow",
     complexity: "Medium",
     charge: 3500,
@@ -79,8 +82,10 @@ const FRONTEND_ITEMS: LineItem[] = [
 const BACKEND_ITEMS: LineItem[] = [
   {
     name: "Core Server & Auth System",
-    components: "Admin login (JWT), role verification, route protection middleware",
-    scope: "Secure routing for admin dashboards, general API health and error handling",
+    components:
+      "Admin login (JWT), role verification, route protection middleware",
+    scope:
+      "Secure routing for admin dashboards, general API health and error handling",
     complexity: "Medium",
     charge: 3000,
     tag: "be",
@@ -88,7 +93,8 @@ const BACKEND_ITEMS: LineItem[] = [
   {
     name: "Media & Content APIs",
     components: "Photo, Video, Blogs, Category, Awards Controllers",
-    scope: "Cloudinary/AWS S3 integration, CRUD logic for blogs and media files",
+    scope:
+      "Cloudinary/AWS S3 integration, CRUD logic for blogs and media files",
     complexity: "Complex",
     charge: 4500,
     tag: "be",
@@ -96,7 +102,8 @@ const BACKEND_ITEMS: LineItem[] = [
   {
     name: "Rescue & Adoption Engine",
     components: "Adoption, Rescue Controllers & Models",
-    scope: "Handling rescue submissions, adoption requests, status tracking updates",
+    scope:
+      "Handling rescue submissions, adoption requests, status tracking updates",
     complexity: "Medium",
     charge: 3500,
     tag: "be",
@@ -104,7 +111,8 @@ const BACKEND_ITEMS: LineItem[] = [
   {
     name: "Community Management APIs",
     components: "Volunteer, Testimonial, Impact, Messages Controllers",
-    scope: "Volunteer applications, real-time message handling, and impact statistics",
+    scope:
+      "Volunteer applications, real-time message handling, and impact statistics",
     complexity: "Medium",
     charge: 3000,
     tag: "be",
@@ -129,7 +137,9 @@ const Tag: React.FC<{ variant: TagVariant }> = ({ variant }) => (
   </span>
 );
 
-const SectionTitle: React.FC<{ children: React.ReactNode }> = ({ children }) => (
+const SectionTitle: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => (
   <div
     className='flex items-center gap-2 border-b-2 border-indigo-600 uppercase font-bold text-indigo-600 tracking-widest'
     style={{ fontSize: 10, paddingTop: 24, paddingBottom: 12 }}
@@ -364,15 +374,11 @@ const BudgetedBillMemo: React.FC = () => {
           <div className='flex flex-col sm:flex-row sm:justify-between sm:items-start relative z-10 gap-4 sm:gap-0'>
             {/* Brand */}
             <div className='flex items-center gap-2 sm:gap-3'>
-              <div
-                className='w-10 h-10 sm:w-12 sm:h-12 bg-indigo-600 rounded-lg flex items-center justify-center text-white text-xl sm:text-2xl font-bold flex-shrink-0'
-              >
+              <div className='w-10 h-10 sm:w-12 sm:h-12 bg-indigo-600 rounded-lg flex items-center justify-center text-white text-xl sm:text-2xl font-bold flex-shrink-0'>
                 PF
               </div>
               <div>
-                <h1
-                  className='text-xl sm:text-2xl font-semibold tracking-wide text-white font-sans'
-                >
+                <h1 className='text-xl sm:text-2xl font-semibold tracking-wide text-white font-sans'>
                   Prapti Foundation
                 </h1>
                 <span
@@ -401,10 +407,17 @@ const BudgetedBillMemo: React.FC = () => {
 
           {/* Meta row */}
           <div
-             className='grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6 lg:gap-10 mt-6 sm:mt-7 pt-4 sm:pt-6 relative z-10'
+            className='grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6 lg:gap-10 mt-6 sm:mt-7 pt-4 sm:pt-6 relative z-10'
             style={{ borderTop: "1px solid rgba(255,255,255,0.1)" }}
           >
-            <MetaItem label='Date' value={new Date().toLocaleDateString("en-IN", { day: 'numeric', month: 'short', year: 'numeric'})} />
+            <MetaItem
+              label='Date'
+              value={new Date().toLocaleDateString("en-IN", {
+                day: "numeric",
+                month: "short",
+                year: "numeric",
+              })}
+            />
             <MetaItem label='Project Type' value='Full-Stack App' />
             <MetaItem label='Currency' value='INR (₹)' />
             <MetaItem
@@ -456,7 +469,7 @@ const BudgetedBillMemo: React.FC = () => {
         </div>
 
         {/* ── Line Item Tables ── */}
-        <div className="py-2">
+        <div className='py-2'>
           <TableSection
             title='Frontend Development (React, Vite, TailwindCSS)'
             items={FRONTEND_ITEMS}
@@ -521,15 +534,35 @@ const BudgetedBillMemo: React.FC = () => {
           >
             {copied ? (
               <>
-                <svg className='w-4 h-4' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
-                  <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M5 13l4 4L19 7' />
+                <svg
+                  className='w-4 h-4'
+                  fill='none'
+                  stroke='currentColor'
+                  viewBox='0 0 24 24'
+                >
+                  <path
+                    strokeLinecap='round'
+                    strokeLinejoin='round'
+                    strokeWidth={2}
+                    d='M5 13l4 4L19 7'
+                  />
                 </svg>
                 Details Copied!
               </>
             ) : (
               <>
-                <svg className='w-4 h-4' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
-                  <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z' />
+                <svg
+                  className='w-4 h-4'
+                  fill='none'
+                  stroke='currentColor'
+                  viewBox='0 0 24 24'
+                >
+                  <path
+                    strokeLinecap='round'
+                    strokeLinejoin='round'
+                    strokeWidth={2}
+                    d='M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z'
+                  />
                 </svg>
                 Copy Estimate Details
               </>
@@ -558,8 +591,10 @@ const BudgetedBillMemo: React.FC = () => {
         {/* ── Footer ── */}
         <div className='bg-indigo-950 text-indigo-400 px-4 sm:px-6 lg:px-12 py-5 flex flex-col sm:flex-row justify-between items-center text-xs gap-2 sm:gap-0'>
           <div className='text-center sm:text-left text-indigo-200'>
-            Developed specifically for 
-            <strong className='text-white font-medium ml-1'>Prapti Foundation</strong>
+            Developed specifically for
+            <strong className='text-white font-medium ml-1'>
+              Prapti Foundation
+            </strong>
           </div>
           <div
             className='text-white font-mono uppercase tracking-widest text-center sm:text-right'

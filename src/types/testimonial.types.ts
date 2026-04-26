@@ -42,7 +42,6 @@ export interface TestimonialCreateRequest {
   name: string;
   profession: string;
   rate: number;
-  recaptchaToken?: string;
 }
 
 export interface TestimonialUpdateRequest {

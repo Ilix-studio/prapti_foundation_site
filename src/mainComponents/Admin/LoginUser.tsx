@@ -9,8 +9,6 @@ import { Link } from "react-router-dom";
 import { useLoginAdminMutation } from "@/redux-store/services/adminApi";
 import { useSelector } from "react-redux";
 import { selectAuth } from "@/redux-store/slices/authSlice";
-import { useRecaptchaV2 } from "@/hooks/useRecaptchaV2";
-import toast from "react-hot-toast";
 
 const LoginUser: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -20,8 +18,6 @@ const LoginUser: React.FC = () => {
 
   const navigate = useNavigate();
   const { isAuthenticated, error } = useSelector(selectAuth);
-  const { containerRef, render, reset, getToken } = useRecaptchaV2();
-  const isDevelopment = import.meta.env.VITE_NODE_ENV === "development";
 
   const [loginAdmin, { isLoading }] = useLoginAdminMutation();
 
@@ -32,25 +28,9 @@ const LoginUser: React.FC = () => {
     }
   }, [isAuthenticated, navigate]);
 
-  // Initialize reCAPTCHA
-  useEffect(() => {
-    if (!isDevelopment) {
-      const timer = setTimeout(() => {
-        render(
-          undefined,
-          () => toast.error("reCAPTCHA expired, please try again"),
-          () => toast.error("reCAPTCHA error, please reload")
-        );
-      }, 1000);
-
-      return () => clearTimeout(timer);
-    }
-  }, [render, isDevelopment]);
-
   const toggleShowPassword = () => {
     setShowPassword(!showPassword);
   };
-  const isRecaptchaReady = isDevelopment || !!getToken();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -61,30 +41,17 @@ const LoginUser: React.FC = () => {
       return;
     }
 
-    let recaptchaToken: string | null = null;
-
-    if (!isDevelopment) {
-      recaptchaToken = getToken();
-      if (!recaptchaToken) {
-        setErrorMessage("Please complete the reCAPTCHA verification");
-        return;
-      }
-    }
-
     try {
       const result = await loginAdmin({
         email,
         password,
-        recaptchaToken: recaptchaToken || "dev-bypass",
       }).unwrap();
 
       if (!result.success) {
         setErrorMessage(result.message || "Login failed");
-        if (!isDevelopment) reset();
       }
     } catch (err: any) {
       setErrorMessage(err.data?.message || "Login failed. Please try again.");
-      if (!isDevelopment) reset();
     }
   };
 
@@ -144,24 +111,10 @@ const LoginUser: React.FC = () => {
               </div>
             </div>
 
-            {/* reCAPTCHA - production only */}
-            {!isDevelopment && (
-              <div className='flex justify-center py-2'>
-                <div ref={containerRef} />
-              </div>
-            )}
-
-            {/* Development indicator */}
-            {isDevelopment && (
-              <div className='text-sm text-yellow-600 bg-yellow-50 p-3 rounded border border-yellow-200'>
-                <strong>Development Mode:</strong> reCAPTCHA bypassed
-              </div>
-            )}
-
             <Button
               type='submit'
               className='w-full bg-orange-500 hover:bg-orange-600'
-              disabled={isLoading || (!isDevelopment && !isRecaptchaReady)}
+              disabled={isLoading}
             >
               {isLoading ? (
                 <span className='flex items-center gap-2'>

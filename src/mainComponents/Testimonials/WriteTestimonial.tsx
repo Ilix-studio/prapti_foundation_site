@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
 import {
   TestimonialCreateRequest,
@@ -13,8 +13,6 @@ import { Star, Send, Loader2 } from "lucide-react";
 import { useCreateTestimonialMutation } from "@/redux-store/services/testimonialApi";
 import Footer from "../Footer";
 import { Header } from "../Header";
-import toast from "react-hot-toast";
-import { useRecaptchaV2 } from "@/hooks/useRecaptchaV2";
 
 const WriteTestimonial: React.FC<WriteTestimonialProps> = ({
   onSuccess,
@@ -22,8 +20,6 @@ const WriteTestimonial: React.FC<WriteTestimonialProps> = ({
 }) => {
   const [createTestimonial, { isLoading, isSuccess, error }] =
     useCreateTestimonialMutation();
-  const { containerRef, render, reset, getToken } = useRecaptchaV2();
-  const isDevelopment = import.meta.env.VITE_NODE_ENV === "development";
   const [formData, setFormData] = useState<TestimonialCreateRequest>({
     quote: "",
     name: "",
@@ -71,70 +67,25 @@ const WriteTestimonial: React.FC<WriteTestimonialProps> = ({
     return Object.keys(newErrors).length === 0;
   };
 
-  // Initialize reCAPTCHA
-  useEffect(() => {
-    if (!isDevelopment) {
-      const timer = setTimeout(() => {
-        render(
-          undefined,
-          () => toast.error("reCAPTCHA expired, please try again"),
-          () => toast.error("reCAPTCHA error, please reload")
-        );
-      }, 1000);
-
-      return () => clearTimeout(timer);
-    }
-  }, [render, isDevelopment]);
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!validateForm()) return;
 
-    let recaptchaToken: string | null = null;
-
-    if (!isDevelopment) {
-      recaptchaToken = getToken();
-      if (!recaptchaToken) {
-        toast.error("Please complete the reCAPTCHA verification");
-        return;
-      }
-    }
-
     try {
-      await createTestimonial({
-        ...formData,
-        recaptchaToken: recaptchaToken || "dev-bypass",
-      }).unwrap();
+      await createTestimonial(formData).unwrap();
 
       setFormData({ quote: "", name: "", profession: "", rate: 0 });
       setErrors({});
-      if (!isDevelopment) reset();
       onSuccess?.();
     } catch (err) {
       console.error("Failed to create testimonial:", err);
-      if (!isDevelopment) reset();
     }
   };
 
-  // In the JSX, add before submit button:
-  {
-    !isDevelopment && (
-      <div className='flex justify-center py-2'>
-        <div ref={containerRef} />
-      </div>
-    );
-  }
-
-  {
-    isDevelopment && (
-      <div className='text-sm text-yellow-600 bg-yellow-50 p-3 rounded border border-yellow-200'>
-        <strong>Development Mode:</strong> reCAPTCHA bypassed
-      </div>
-    );
-  }
   const handleInputChange = (
     field: keyof TestimonialCreateRequest,
-    value: string | number
+    value: string | number,
   ) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
     // Clear error for this field
@@ -284,17 +235,6 @@ const WriteTestimonial: React.FC<WriteTestimonialProps> = ({
                   It will appear on our website within the next 4 hours after
                   review.
                 </p>
-              </div>
-            )}
-            {!isDevelopment && (
-              <div className='flex justify-center py-2'>
-                <div ref={containerRef} />
-              </div>
-            )}
-
-            {isDevelopment && (
-              <div className='text-sm text-yellow-600 bg-yellow-50 p-3 rounded border border-yellow-200'>
-                <strong>Development Mode:</strong> reCAPTCHA bypassed
               </div>
             )}
 

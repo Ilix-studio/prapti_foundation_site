@@ -31,7 +31,6 @@ export interface VolunteerInput {
   interests: string[];
   experience?: string;
   reason: string;
-  recaptchaToken?: string;
 }
 
 export interface VolunteerResponse {

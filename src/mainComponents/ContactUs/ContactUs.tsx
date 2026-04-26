@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -19,7 +19,6 @@ import {
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useSendContactMessageMutation } from "@/redux-store/services/contactApi";
-import { useRecaptchaV2 } from "@/hooks/useRecaptchaV2";
 import toast from "react-hot-toast";
 import Footer from "../Footer";
 
@@ -42,26 +41,8 @@ const ContactUs: React.FC = () => {
   const [sendContactMessage, { isLoading, isSuccess, error }] =
     useSendContactMessageMutation();
 
-  const { containerRef, render, reset, getToken } = useRecaptchaV2();
-  const isDevelopment = import.meta.env.VITE_NODE_ENV === "development";
-
-  // Initialize reCAPTCHA
-  useEffect(() => {
-    if (!isDevelopment) {
-      const timer = setTimeout(() => {
-        render(
-          undefined,
-          () => toast.error("reCAPTCHA expired, please try again"),
-          () => toast.error("reCAPTCHA error, please reload")
-        );
-      }, 1000);
-
-      return () => clearTimeout(timer);
-    }
-  }, [render, isDevelopment]);
-
   const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -82,27 +63,12 @@ const ContactUs: React.FC = () => {
       return;
     }
 
-    let recaptchaToken: string | null = null;
-
-    if (!isDevelopment) {
-      recaptchaToken = getToken();
-      if (!recaptchaToken) {
-        toast.error("Please complete the reCAPTCHA verification");
-        return;
-      }
-    }
-
     try {
-      await sendContactMessage({
-        ...formData,
-        recaptchaToken: recaptchaToken || "dev-bypass",
-      }).unwrap();
+      await sendContactMessage(formData).unwrap();
 
       setFormData({ name: "", email: "", subject: "", message: "" });
-      if (!isDevelopment) reset();
     } catch (err) {
       console.error("Failed to send message:", err);
-      if (!isDevelopment) reset();
     }
   };
 
@@ -357,20 +323,6 @@ const ContactUs: React.FC = () => {
                       className='border-gray-200 focus:border-orange-300 focus:ring-orange-200 resize-none'
                     />
                   </div>
-
-                  {/* reCAPTCHA - production only */}
-                  {!isDevelopment && (
-                    <div className='flex justify-center py-2'>
-                      <div ref={containerRef} />
-                    </div>
-                  )}
-
-                  {/* Development indicator */}
-                  {isDevelopment && (
-                    <div className='text-sm text-yellow-600 bg-yellow-50 p-3 rounded border border-yellow-200'>
-                      <strong>Development Mode:</strong> reCAPTCHA bypassed
-                    </div>
-                  )}
 
                   <Button
                     type='submit'

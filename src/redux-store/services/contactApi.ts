@@ -16,10 +16,7 @@ export const contactApi = createApi({
   tagTypes: ["ContactMessages", "ContactMessage"],
   endpoints: (builder) => ({
     // Send contact message (Public)
-    sendContactMessage: builder.mutation<
-      SendMessageResponse,
-      ContactFormData & { recaptchaToken: string }
-    >({
+    sendContactMessage: builder.mutation<SendMessageResponse, ContactFormData>({
       query: (data) => ({
         url: "/messages/send",
         method: "POST",
