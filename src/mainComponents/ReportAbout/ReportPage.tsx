@@ -82,8 +82,7 @@ const ReportPage: React.FC = () => {
                       Send details and photos via WhatsApp for quick response
                     </p>
                     <a
-                      href='https://wa.me/9435150744
-'
+                      href='https://wa.me/7002240538'
                       target='_blank'
                       rel='noopener noreferrer'
                     >
