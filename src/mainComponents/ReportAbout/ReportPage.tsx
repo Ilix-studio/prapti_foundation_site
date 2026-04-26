@@ -64,11 +64,11 @@ const ReportPage: React.FC = () => {
                       Our rescue team is available 24/7 for emergency situations
                     </p>
                     <a
-                      href='tel:+91919435150744
+                      href='tel:+917002240538
 '
                     >
                       <Button className='bg-orange-500 hover:bg-orange-600 w-full'>
-                        +91-94351 50744
+                        +91-7002240538
                       </Button>
                     </a>
                   </div>

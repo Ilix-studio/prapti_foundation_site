@@ -14,49 +14,48 @@ const teamMembers: TeamMember[] = [
     id: 1,
     name: "Dhrubajyoti Mech",
     image:
-      "https://firebasestorage.googleapis.com/v0/b/tsangpool-honda-otp.firebasestorage.app/o/prapti-team-member%2FScreenshot%202025-12-14%20at%2020.05.44.png?alt=media&token=5853a738-5c81-46ba-8606-55f1d9058b2e",
+      "https://res.cloudinary.com/doakqvah3/image/upload/q_auto/f_auto/v1777246163/WhatsApp_Image_2026-04-27_at_4.31.07_AM_1_zhoa3l.jpg",
   },
-  {
-    id: 2,
-    name: "Abhishek Boney Sinha",
+  // {
+  //   id: 2,
+  //   name: "Abhishek Boney Sinha",
 
-    image:
-      "https://firebasestorage.googleapis.com/v0/b/tsangpool-honda-otp.firebasestorage.app/o/prapti-team-member%2FScreenshot%202025-12-14%20at%2020.06.48.png?alt=media&token=9d5e5d7d-3cd3-45ee-b425-5ecca1cf0945",
-  },
-  {
-    id: 3,
-    name: "Nayan Das",
+  //   image:
+  //     "https://firebasestorage.googleapis.com/v0/b/tsangpool-honda-otp.firebasestorage.app/o/prapti-team-member%2FScreenshot%202025-12-14%20at%2020.06.48.png?alt=media&token=9d5e5d7d-3cd3-45ee-b425-5ecca1cf0945",
+  // },
+  // {
+  //   id: 3,
+  //   name: "Nayan Das",
 
-    image:
-      "https://firebasestorage.googleapis.com/v0/b/tsangpool-honda-otp.firebasestorage.app/o/prapti-team-member%2FScreenshot%202025-12-14%20at%2020.07.28.png?alt=media&token=bbb4a254-4c66-411e-8730-590ee6ef46ec",
-  },
+  //   image:
+  //     "https://res.cloudinary.com/doakqvah3/image/upload/q_auto/f_auto/v1777246162/WhatsApp_Image_2026-04-27_at_4.31.05_AM_nrncih.jpg",
+  // },
   {
     id: 4,
     name: "Moheswar Deka",
 
     image:
-      "https://firebasestorage.googleapis.com/v0/b/tsangpool-honda-otp.firebasestorage.app/o/prapti-team-member%2FScreenshot%202025-12-14%20at%2020.08.16.png?alt=media&token=dd5aeaf3-e16b-4bba-a9f3-740be35098e3",
+      "https://res.cloudinary.com/doakqvah3/image/upload/q_auto/f_auto/v1777246162/WhatsApp_Image_2026-04-27_at_4.31.06_AM_1_hhsd65.jpg",
   },
-  {
-    id: 5,
-    name: "Partha Hazarika",
+  // {
+  //   id: 5,
+  //   name: "Partha Hazarika",
+  //   image:
+  //     "https://res.cloudinary.com/doakqvah3/image/upload/q_auto/f_auto/v1777246163/WhatsApp_Image_2026-04-27_at_4.31.07_AM_by5zmn.jpg",
+  // },
+  // {
+  //   id: 6,
+  //   name: "Dr. Jajneswar Bari ",
 
-    image:
-      "https://firebasestorage.googleapis.com/v0/b/tsangpool-honda-otp.firebasestorage.app/o/prapti-team-member%2FWhatsApp%20Image%202025-12-12%20at%2011.47.28%20AM.png?alt=media&token=f8c7797e-de06-4a4f-a4c5-a8907c9555ef",
-  },
-  {
-    id: 6,
-    name: "Dr. Jajneswar Bari ",
-
-    image:
-      "https://firebasestorage.googleapis.com/v0/b/tsangpool-honda-otp.firebasestorage.app/o/prapti-team-member%2FWhatsApp%20Image%202025-12-12%20at%202.30.32%20PM.png?alt=media&token=56a507e4-a428-4252-8046-0fa508e25cae",
-  },
+  //   image:
+  //     "https://firebasestorage.googleapis.com/v0/b/tsangpool-honda-otp.firebasestorage.app/o/prapti-team-member%2FWhatsApp%20Image%202025-12-12%20at%202.30.32%20PM.png?alt=media&token=56a507e4-a428-4252-8046-0fa508e25cae",
+  // },
   {
     id: 7,
     name: "Pompy Borah",
 
     image:
-      "https://firebasestorage.googleapis.com/v0/b/tsangpool-honda-otp.firebasestorage.app/o/prapti-team-member%2FScreenshot%202025-12-14%20at%2020.15.36.png?alt=media&token=105058a6-44ce-4db6-b6e1-a4990dd9b78b",
+      "https://res.cloudinary.com/doakqvah3/image/upload/q_auto/f_auto/v1777246163/WhatsApp_Image_2026-04-27_at_4.31.06_AM_fzmjeq.jpg",
   },
   // {
   //   id: 8,
