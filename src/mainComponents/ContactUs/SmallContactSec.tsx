@@ -120,7 +120,7 @@ const SmallContactSec = () => {
                     </div>
                     <div>
                       <h3 className='font-semibold text-gray-900'>Phone</h3>
-                      <p className='text-gray-600'>+91 98765 43210</p>
+                      <p className='text-gray-600'>+91 700 224 0538</p>
                     </div>
                   </div>
 
