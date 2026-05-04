@@ -47,7 +47,7 @@ export const BackNavigation = () => {
     const { canAccess, reason } = canAccessRoute(
       currentPath,
       isAuthenticated,
-      isAdmin
+      isAdmin,
     );
 
     if (!canAccess) {
@@ -86,7 +86,7 @@ export const BackNavigation = () => {
     if (routeAccess && !routeAccess.isPublic) {
       navigate("/", { replace: true });
     } else {
-      navigate("/admin/login");
+      navigate("/auth/login");
     }
   };
 
@@ -96,7 +96,7 @@ export const BackNavigation = () => {
 
     if (safePath !== path) {
       console.warn(
-        `Redirecting from ${path} to ${safePath} due to access restrictions`
+        `Redirecting from ${path} to ${safePath} due to access restrictions`,
       );
     }
 
@@ -136,7 +136,7 @@ export const BackNavigation = () => {
   const contextualButtons = getContextualButtonsForPage(
     pageType,
     navigationContext,
-    buttonActions
+    buttonActions,
   );
 
   // Filter buttons based on screen size and priority
@@ -168,7 +168,7 @@ export const BackNavigation = () => {
             <Button
               size='sm'
               variant='outline'
-              onClick={() => safeNavigate("/admin/login")}
+              onClick={() => safeNavigate("/auth/login")}
               className='ml-auto text-xs'
             >
               Login
@@ -226,8 +226,8 @@ export const BackNavigation = () => {
                       button.variant === "default"
                         ? "bg-gradient-to-r from-[#FF9933] to-[#138808] hover:from-[#FF9933]/90 hover:to-[#138808]/90 text-white shadow-lg"
                         : button.variant === "destructive"
-                        ? "hover:bg-red-50 hover:border-red-200 text-red-600 hover:text-red-700"
-                        : "hover:bg-[#FF9933]/5 hover:border-[#FF9933]/30"
+                          ? "hover:bg-red-50 hover:border-red-200 text-red-600 hover:text-red-700"
+                          : "hover:bg-[#FF9933]/5 hover:border-[#FF9933]/30"
                     }
                     ${button.className || ""}
                   `}
@@ -252,8 +252,8 @@ export const BackNavigation = () => {
                       button.variant === "default"
                         ? "bg-gradient-to-r from-[#FF9933] to-[#138808] hover:from-[#FF9933]/90 hover:to-[#138808]/90 text-white shadow-lg"
                         : button.variant === "destructive"
-                        ? "hover:bg-red-50 hover:border-red-200 text-red-600 hover:text-red-700"
-                        : "hover:bg-[#FF9933]/5 hover:border-[#FF9933]/30"
+                          ? "hover:bg-red-50 hover:border-red-200 text-red-600 hover:text-red-700"
+                          : "hover:bg-[#FF9933]/5 hover:border-[#FF9933]/30"
                     }
                   `}
                 >

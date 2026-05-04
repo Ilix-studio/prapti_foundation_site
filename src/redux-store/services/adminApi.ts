@@ -9,7 +9,7 @@ export const adminAuthApi = createApi({
   endpoints: (builder) => ({
     loginAdmin: builder.mutation<LoginResponse, LoginRequest>({
       query: (credentials) => ({
-        url: "/admin/login",
+        url: "/auth/login",
         method: "POST",
         body: credentials,
       }),
@@ -33,7 +33,7 @@ export const adminAuthApi = createApi({
 
     logoutAdmin: builder.mutation<{ success: boolean; message: string }, void>({
       query: () => ({
-        url: "/admin/logout",
+        url: "/auth/logout",
         method: "POST",
       }),
       async onQueryStarted(_, { dispatch, queryFulfilled }) {
