@@ -22,11 +22,13 @@ const BlogCard: React.FC<BlogCardProps> = ({ post, compact = false }) => {
       <div className='flex gap-3 group'>
         <div className='flex-shrink-0 w-20 h-20 overflow-hidden rounded'>
           <Link to={`/blog/${post._id}`}>
-            <img
-              src={post.image || "/placeholder.svg"}
-              alt={post.title}
-              className='object-cover w-full h-full transition-transform group-hover:scale-105'
-            />
+            <div className='overflow-hidden rounded-lg'>
+              <img
+                src={post.image || "/placeholder.svg"}
+                alt={post.title}
+                className='w-full h-auto object-cover'
+              />
+            </div>
           </Link>
         </div>
         <div className='flex-grow'>
@@ -44,11 +46,13 @@ const BlogCard: React.FC<BlogCardProps> = ({ post, compact = false }) => {
   return (
     <article className='space-y-2 group bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300'>
       <Link to={`/blog/${post._id}`}>
-        <img
-          src={post.image || "/placeholder.svg"}
-          alt={post.title}
-          className='aspect-video object-cover w-full transition-transform group-hover:scale-105 duration-300'
-        />
+        <div className='overflow-hidden rounded-lg'>
+          <img
+            src={post.image || "/placeholder.svg"}
+            alt={post.title}
+            className='w-full h-auto object-cover'
+          />
+        </div>
       </Link>
 
       <div className='space-y-3 p-4'>

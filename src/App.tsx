@@ -95,25 +95,25 @@ function App() {
       <Routes>
         {/* Step 1: Immediate routes (no lazy loading) */}
         {immediateRoute.map(({ path, component }) =>
-          createImmediateRoute(path, component)
+          createImmediateRoute(path, component),
         )}
         {immediateRouteTwo.map(({ path, component }) =>
-          createImmediateRouteTwo(path, component)
+          createImmediateRouteTwo(path, component),
         )}
 
         {/* Step 2: Public routes (with lazy loading) */}
         {publicRoutes.map(({ path, component }) =>
-          createPublicRoute(path, component)
+          createPublicRoute(path, component),
         )}
 
         {/* Step 3: Admin routes (with protection + lazy loading) */}
         {adminRoutesDash.map(({ path, component }) =>
-          createAdminRoute(path, component)
+          createAdminRoute(path, component),
         )}
 
         {/* Step 4: Admin Specific Dashboard routes (with protection + lazy loading) */}
         {adSpecificRoutes.map(({ path, component }) =>
-          createAdSpecificRoute(path, component)
+          createAdSpecificRoute(path, component),
         )}
 
         {/* Step 4: Fallback route */}

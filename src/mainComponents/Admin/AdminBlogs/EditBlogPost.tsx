@@ -7,13 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+
 import { Save, Loader2, Trash2, Plus, Check, X } from "lucide-react";
 import { selectIsAdmin } from "@/redux-store/slices/authSlice";
 import {
@@ -115,7 +109,7 @@ const EditBlogPost: React.FC = () => {
     } catch (error: any) {
       console.error("Create category error:", error);
       setError(
-        error?.data?.message || error?.message || "Failed to create category"
+        error?.data?.message || error?.message || "Failed to create category",
       );
     }
   };
@@ -160,7 +154,7 @@ const EditBlogPost: React.FC = () => {
       navigate("/admin/blogsDashboard");
     } catch (err: any) {
       setError(
-        err.data?.message || "Failed to update blog post. Please try again."
+        err.data?.message || "Failed to update blog post. Please try again.",
       );
       console.error("Error updating blog post:", err);
     }
@@ -190,7 +184,7 @@ const EditBlogPost: React.FC = () => {
       navigate("/admin/blogsDashboard");
     } catch (err: any) {
       setError(
-        err.data?.message || "Failed to delete blog post. Please try again."
+        err.data?.message || "Failed to delete blog post. Please try again.",
       );
       console.error("Error deleting blog post:", err);
       setShowDeleteConfirm(false);
@@ -277,32 +271,28 @@ const EditBlogPost: React.FC = () => {
                 <div className='space-y-2'>
                   <Label htmlFor='category'>Category</Label>
                   <div className='flex gap-2'>
-                    <Select
+                    <select
+                      id='category'
                       value={category}
-                      onValueChange={setCategory}
+                      onChange={(e) => setCategory(e.target.value)}
+                      required
                       disabled={isLoading}
+                      className='flex-1 h-10 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50'
                     >
-                      <SelectTrigger className='flex-1'>
-                        <SelectValue placeholder='Select a category' />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {isCategoriesLoading ? (
-                          <SelectItem value='' disabled>
-                            Loading categories...
-                          </SelectItem>
-                        ) : categories.length === 0 ? (
-                          <SelectItem value='' disabled>
-                            No blog categories found
-                          </SelectItem>
-                        ) : (
-                          categories.map((cat) => (
-                            <SelectItem key={cat._id} value={cat._id}>
-                              {cat.name}
-                            </SelectItem>
-                          ))
-                        )}
-                      </SelectContent>
-                    </Select>
+                      <option value=''>
+                        {isCategoriesLoading
+                          ? "Loading categories..."
+                          : categories.length === 0
+                            ? "No categories available"
+                            : "Select category"}
+                      </option>
+                      {!isCategoriesLoading &&
+                        categories.map((cat) => (
+                          <option key={cat._id} value={cat._id}>
+                            {cat.name}
+                          </option>
+                        ))}
+                    </select>
                     <Button
                       type='button'
                       onClick={() => setShowAddCategory(!showAddCategory)}
@@ -314,7 +304,6 @@ const EditBlogPost: React.FC = () => {
                     </Button>
                   </div>
 
-                  {/* Add Category Input */}
                   {showAddCategory && (
                     <div className='mt-2 p-3 bg-gray-50 rounded-lg border'>
                       <div className='flex gap-2'>

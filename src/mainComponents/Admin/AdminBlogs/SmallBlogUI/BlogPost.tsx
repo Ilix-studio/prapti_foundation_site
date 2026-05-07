@@ -37,7 +37,7 @@ const BlogPostPage: React.FC = () => {
           .filter(
             (p) =>
               getBlogCategoryId(p.category) ===
-                getBlogCategoryId(post.category) && p._id !== post._id
+                getBlogCategoryId(post.category) && p._id !== post._id,
           )
           .slice(0, 3)
       : [];
@@ -134,7 +134,7 @@ const BlogPostPage: React.FC = () => {
               <img
                 src={post.image || "/placeholder.svg"}
                 alt={post.title}
-                className='aspect-video w-full object-cover'
+                className='w-full h-auto object-cover'
               />
             </div>
 

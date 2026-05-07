@@ -324,6 +324,9 @@ const NewDashAdmin: React.FC = () => {
           <p className='text-gray-600'>
             Here's what's happening with your website today.
           </p>
+          <p className='text-gray-500 text-sm'>
+            Directly select the cards to manage content.
+          </p>
         </div>
 
         {/* Stats Grid */}

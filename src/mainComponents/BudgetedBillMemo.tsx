@@ -48,7 +48,7 @@ const FRONTEND_ITEMS: LineItem[] = [
       "Home, AboutUs, ContactUs, SupportUs, GalleryPage, ViewAllAwards",
     scope: "Responsive layouts, intuitive navigation, and Foundation branding",
     complexity: "Medium",
-    charge: 4000,
+    charge: 3700,
     tag: "fe",
   },
   {
@@ -57,7 +57,7 @@ const FRONTEND_ITEMS: LineItem[] = [
     scope:
       "Multi-step form schemas, file attachment handling for rescue reports",
     complexity: "Medium",
-    charge: 3500,
+    charge: 3800,
     tag: "fe",
   },
   {
@@ -66,7 +66,7 @@ const FRONTEND_ITEMS: LineItem[] = [
       "VolunteerPage, VolunteerDetail, WriteTestimonial, SeeBlogs, BlogPost",
     scope: "Blog catalog, testimonial forms, volunteer registration flow",
     complexity: "Medium",
-    charge: 3500,
+    charge: 3600,
     tag: "fe",
   },
   {
@@ -74,7 +74,7 @@ const FRONTEND_ITEMS: LineItem[] = [
     components: "NewDashAdmin, PhotoDash, VideoDash, RescueDash, AwardDash",
     scope: "Data visualization for impact, management tables for records",
     complexity: "Complex",
-    charge: 5000,
+    charge: 4900,
     tag: "admin",
   },
 ];
@@ -87,7 +87,7 @@ const BACKEND_ITEMS: LineItem[] = [
     scope:
       "Secure routing for admin dashboards, general API health and error handling",
     complexity: "Medium",
-    charge: 3000,
+    charge: 3500,
     tag: "be",
   },
   {
@@ -95,8 +95,8 @@ const BACKEND_ITEMS: LineItem[] = [
     components: "Photo, Video, Blogs, Category, Awards Controllers",
     scope:
       "Cloudinary/AWS S3 integration, CRUD logic for blogs and media files",
-    complexity: "Complex",
-    charge: 4500,
+    complexity: "Medium",
+    charge: 3500,
     tag: "be",
   },
   {
@@ -114,7 +114,7 @@ const BACKEND_ITEMS: LineItem[] = [
     scope:
       "Volunteer applications, real-time message handling, and impact statistics",
     complexity: "Medium",
-    charge: 3000,
+    charge: 3500,
     tag: "be",
   },
 ];
@@ -294,19 +294,6 @@ const formatBillForCopy = () => {
 
 const NOTE_BOXES: NoteBox[] = [
   {
-    title: "Payment Terms",
-    highlight: true,
-    content: (
-      <p className='text-sm text-gray-600 leading-relaxed'>
-        50% advance (₹15,000) before development start.
-        <br />
-        50% balance (₹15,000) upon final delivery.
-        <br />
-        Payment via Bank Transfer/UPI.
-      </p>
-    ),
-  },
-  {
     title: "What's Included",
     content: (
       <ul className='text-sm text-gray-600 list-disc pl-4 leading-loose'>
@@ -315,6 +302,7 @@ const NOTE_BOXES: NoteBox[] = [
         <li>Initial Server Deployment Setup</li>
         <li>Image Processing / Web Optimization</li>
         <li>Free bug resolution for 30 days</li>
+        <li>Domain Name and Frontend Hosting Fee</li>
       </ul>
     ),
   },
@@ -322,19 +310,10 @@ const NOTE_BOXES: NoteBox[] = [
     title: "Not Included",
     content: (
       <ul className='text-sm text-gray-600 list-disc pl-4 leading-loose'>
-        <li>Domain name and monthly hosting fees</li>
+        <li>Backend hosting subscription fees</li>
         <li>Third-party API pricing (Emails, SMS)</li>
         <li>Major architectural changes post-approval</li>
         <li>Content creation / Manual data entry</li>
-      </ul>
-    ),
-  },
-  {
-    title: "Support Scope",
-    content: (
-      <ul className='text-sm text-gray-600 list-disc pl-4 leading-loose'>
-        <li>Email support during business hours</li>
-        <li>On-demand feature additions (billed separately)</li>
       </ul>
     ),
   },
@@ -382,8 +361,8 @@ const BudgetedBillMemo: React.FC = () => {
                   Prapti Foundation
                 </h1>
                 <span
-                  className='text-indigo-200 font-medium uppercase tracking-widest'
-                  style={{ fontSize: "10px" }}
+                  className='text-white-900 font-medium uppercase tracking-widest'
+                  style={{ fontSize: "20px" }}
                 >
                   NGO Web Platform Initiative
                 </span>
@@ -400,7 +379,7 @@ const BudgetedBillMemo: React.FC = () => {
                   lineHeight: 1,
                 }}
               >
-                Project Estimate
+                Cost BreakDown
               </div>
             </div>
           </div>
@@ -420,11 +399,6 @@ const BudgetedBillMemo: React.FC = () => {
             />
             <MetaItem label='Project Type' value='Full-Stack App' />
             <MetaItem label='Currency' value='INR (₹)' />
-            <MetaItem
-              label='Status'
-              value='PROPOSAL'
-              valueClass='text-indigo-400 font-bold'
-            />
           </div>
         </div>
 
@@ -460,11 +434,6 @@ const BudgetedBillMemo: React.FC = () => {
             <h3 className='text-base font-black mb-1.5 text-gray-900'>
               Prapti Foundation
             </h3>
-            <p className='text-sm text-gray-600 leading-7'>
-              Animal Rescue & Social Welfare
-              <br />
-              Foundation Representative
-            </p>
           </div>
         </div>
 
@@ -482,47 +451,80 @@ const BudgetedBillMemo: React.FC = () => {
           </div>
         </div>
 
-        {/* ── Totals ── */}
-        <div className='flex justify-end px-12 pb-8 pt-4'>
-          <div className='w-80 mt-2'>
-            {TOTALS.map((row) =>
-              row.variant === "grand" ? (
-                <div
-                  key={row.label}
-                  className='flex justify-between items-center bg-indigo-950 text-white px-4 py-3.5 mt-3 rounded-md shadow-md'
-                >
-                  <span
-                    className='font-black uppercase tracking-wide'
-                    style={{ fontSize: 12 }}
+        {/* ── Bank Details & Totals Grid ── */}
+        <div className='grid grid-cols-1 md:grid-cols-2 gap-8 px-12 pb-8'>
+          {/* Bank Details Column */}
+
+          <div>
+            <div className='text-sm font-semibold mb-3 uppercase tracking-wide text-gray-800'>
+              Bank Details
+            </div>
+            <div className='space-y-1.5 text-sm text-gray-700 leading-relaxed'>
+              <p>
+                <span className='font-medium text-gray-900'>A/C Name:</span>{" "}
+                Himanku Borah
+              </p>
+              <p>
+                <span className='font-medium text-gray-900'>A/C No:</span> 2039
+                1331 265
+              </p>
+              <p>
+                <span className='font-medium text-gray-900'>IFSC Code:</span>{" "}
+                SBIN0005377
+              </p>
+              <p>
+                <span className='font-medium text-gray-900'>Branch:</span>{" "}
+                Numaligarh Refinery Complex,
+                <br />
+                State Bank of India
+              </p>
+            </div>
+          </div>
+
+          {/* ── Totals ── */}
+          <div className='flex justify-end px-12 pb-8 pt-4'>
+            <div className='w-80 mt-2'>
+              {TOTALS.map((row) =>
+                row.variant === "grand" ? (
+                  <div
+                    key={row.label}
+                    className='flex justify-between items-center bg-indigo-950 text-white px-4 py-3.5 mt-3 rounded-md shadow-md'
                   >
-                    {row.label}
-                  </span>
-                  <span
-                    className='text-indigo-300 font-bold'
-                    style={{
-                      fontFamily: "monospace",
-                      fontSize: 20,
-                      letterSpacing: "-0.02em",
-                    }}
+                    <span
+                      className='font-black uppercase tracking-wide'
+                      style={{ fontSize: 12 }}
+                    >
+                      {row.label}
+                    </span>
+                    <span
+                      className='text-indigo-300 font-bold'
+                      style={{
+                        fontFamily: "monospace",
+                        fontSize: 20,
+                        letterSpacing: "-0.02em",
+                      }}
+                    >
+                      {row.value}
+                    </span>
+                  </div>
+                ) : (
+                  <div
+                    key={row.label}
+                    className='flex justify-between items-center py-2 border-b border-gray-100 text-sm'
                   >
-                    {row.value}
-                  </span>
-                </div>
-              ) : (
-                <div
-                  key={row.label}
-                  className='flex justify-between items-center py-2 border-b border-gray-100 text-sm'
-                >
-                  <span className='text-gray-600 font-medium'>{row.label}</span>
-                  <span
-                    className={`font-semibold ${row.variant === "discount" ? "text-green-700" : "text-gray-900"}`}
-                    style={{ fontFamily: "monospace" }}
-                  >
-                    {row.value}
-                  </span>
-                </div>
-              ),
-            )}
+                    <span className='text-gray-600 font-medium'>
+                      {row.label}
+                    </span>
+                    <span
+                      className={`font-semibold ${row.variant === "discount" ? "text-green-700" : "text-gray-900"}`}
+                      style={{ fontFamily: "monospace" }}
+                    >
+                      {row.value}
+                    </span>
+                  </div>
+                ),
+              )}
+            </div>
           </div>
         </div>
 

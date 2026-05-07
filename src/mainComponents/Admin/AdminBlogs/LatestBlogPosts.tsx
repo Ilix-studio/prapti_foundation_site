@@ -48,7 +48,7 @@ const LatestBlogPosts: React.FC = () => {
                     <img
                       src={post.image || "/placeholder.svg"}
                       alt={post.title}
-                      className='aspect-video object-cover w-full transition-transform group-hover:scale-105'
+                      className='w-full h-auto object-cover'
                     />
                   </div>
                   <div>
