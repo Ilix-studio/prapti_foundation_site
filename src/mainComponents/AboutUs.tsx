@@ -5,7 +5,7 @@ import Footer from "@/mainComponents/Footer";
 import { Button } from "@/components/ui/button";
 import { Heart, Users, Calendar, Dog } from "lucide-react";
 import { Link } from "react-router-dom";
-import aboutusLogo from "./../assets/mainLogo.jpeg";
+
 import OurTeam from "./OurTeam";
 
 const AboutUs: React.FC = () => {
@@ -70,7 +70,7 @@ const AboutUs: React.FC = () => {
             </div>
             <div className='relative rounded-lg overflow-hidden'>
               <img
-                src={aboutusLogo}
+                src='https://res.cloudinary.com/doakqvah3/image/upload/q_auto/f_auto/v1778246386/mainLogo_jkmcdn.jpg'
                 alt="Prapti Foundation's journey"
                 className='w-full h-full object-cover overflow-hidden'
               />

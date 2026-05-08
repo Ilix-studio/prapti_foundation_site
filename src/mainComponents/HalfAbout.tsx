@@ -1,5 +1,3 @@
-import HeroSectionBgImg from "./../assets/prapti-main.webp";
-
 const HalfAbout = () => {
   return (
     <section className='py-12 md:py-24'>
@@ -51,7 +49,7 @@ const HalfAbout = () => {
               {/* Main image container */}
               <div className='relative overflow-hidden rounded-lg'>
                 <img
-                  src={HeroSectionBgImg}
+                  src='https://res.cloudinary.com/doakqvah3/image/upload/q_auto/f_auto/v1778246054/prapti-main_q2ko3e.webp'
                   alt="Prapti Foundation's journey"
                   className='w-full h-full object-cover transition-transform duration-300 hover:scale-105'
                 />

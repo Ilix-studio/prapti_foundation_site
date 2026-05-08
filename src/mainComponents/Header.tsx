@@ -3,7 +3,6 @@ import { motion } from "framer-motion";
 import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link, useLocation } from "react-router-dom";
-import logoImage from "./../assets/boring_logo.png";
 
 export function Header() {
   const [isOpen, setIsOpen] = useState(false);
@@ -44,7 +43,7 @@ export function Header() {
       <div className='container flex items-center justify-between h-16 px-4 md:px-6'>
         <Link to='/' className='flex items-center gap-2'>
           <img
-            src={logoImage}
+            src='https://res.cloudinary.com/doakqvah3/image/upload/q_auto/f_auto/v1778246701/boring_logo_symwa7.png'
             alt='Prapti Foundation Logo'
             className='h-9 w-9 object-contain'
           />

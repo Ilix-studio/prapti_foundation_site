@@ -3,7 +3,6 @@ import { ChevronRight, Eye, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { useState } from "react";
-import HeroSectionBgImg from "./../assets/prapti-main.webp";
 
 export function HeroSection() {
   const [showFullImage, setShowFullImage] = useState(false);
@@ -13,7 +12,7 @@ export function HeroSection() {
       {/* Hero image container with overlay */}
       <div className='absolute inset-0 z-0'>
         <img
-          src={HeroSectionBgImg}
+          src='https://res.cloudinary.com/doakqvah3/image/upload/q_auto/f_auto/v1778246054/prapti-main_q2ko3e.webp'
           alt='Dogs at Prapti Foundation shelter'
           className='w-full h-full object-cover object-center'
         />
@@ -81,7 +80,7 @@ export function HeroSection() {
             onClick={() => setShowFullImage(true)}
           >
             <img
-              src={HeroSectionBgImg}
+              src='https://res.cloudinary.com/doakqvah3/image/upload/q_auto/f_auto/v1778246054/prapti-main_q2ko3e.webp'
               alt='Hero background preview'
               className='w-full h-full object-cover group-hover:scale-110 transition-transform duration-300'
             />
@@ -109,7 +108,7 @@ export function HeroSection() {
             onClick={(e) => e.stopPropagation()}
           >
             <img
-              src={HeroSectionBgImg}
+              src='https://res.cloudinary.com/doakqvah3/image/upload/q_auto/f_auto/v1778246054/prapti-main_q2ko3e.webp'
               alt='Dogs at Prapti Foundation shelter - Full view'
               className='w-full h-full object-contain rounded-lg'
             />
