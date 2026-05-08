@@ -5,7 +5,6 @@ import { Link, Navigate, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import logoImage from "../../assets/boring_logo.png";
 
 import {
   LogOut,
@@ -278,7 +277,7 @@ const NewDashAdmin: React.FC = () => {
         <div className='container flex h-16 items-center justify-between px-4'>
           <div className='flex items-center gap-3'>
             <img
-              src={logoImage}
+              src='https://res.cloudinary.com/doakqvah3/image/upload/q_auto/f_auto/v1778246701/boring_logo_symwa7.png'
               alt='Prapti Foundation Logo'
               className='h-9 w-9 object-contain'
             />
