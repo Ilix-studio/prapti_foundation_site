@@ -326,7 +326,7 @@ const SmallContactSec = () => {
               </div>
               <div className='flex-1 min-h-[300px] md:min-h-[400px] relative'>
                 <iframe
-                  src='https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d230070.3027768717!2d93.77686299999999!3d26.1628!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3744e91a4c23e5b9%3A0x2b64c8b0e4b8f0c9!2sGolaghat%2C%20Assam!5e0!3m2!1sen!2sin!4v1680000000000'
+                  src='https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d4615.984011785822!2d93.9075424!3d26.517995799999994!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x37468f6bf308a15b%3A0xb42979c1c371845!2sNapamua%20gaon!5e1!3m2!1sen!2sin!4v1778249231193!5m2!1sen!2sin'
                   width='100%'
                   height='100%'
                   style={{ border: 0 }}

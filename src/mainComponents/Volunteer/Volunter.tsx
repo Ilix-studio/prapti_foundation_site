@@ -36,7 +36,7 @@ import {
   AlertCircle,
   PawPrint,
 } from "lucide-react";
-import values from "../../assets/values.png";
+
 import { useSubmitVolunteerApplicationMutation } from "@/redux-store/services/volunteerApi";
 import toast from "react-hot-toast";
 
@@ -738,7 +738,7 @@ const VolunteerPage: React.FC = () => {
             </div>
             <div className='relative rounded-lg overflow-hidden'>
               <img
-                src={values}
+                src='https://res.cloudinary.com/doakqvah3/image/upload/q_auto/f_auto/v1778248596/values_qogs6x.png'
                 alt='Volunteers working with dogs'
                 className='w-full h-full object-cover'
               />
