@@ -23,13 +23,13 @@ const teamMembers: TeamMember[] = [
   //   image:
   //     "https://firebasestorage.googleapis.com/v0/b/tsangpool-honda-otp.firebasestorage.app/o/prapti-team-member%2FScreenshot%202025-12-14%20at%2020.06.48.png?alt=media&token=9d5e5d7d-3cd3-45ee-b425-5ecca1cf0945",
   // },
-  // {
-  //   id: 3,
-  //   name: "Nayan Das",
+  {
+    id: 3,
+    name: "Nayan Das",
 
-  //   image:
-  //     "https://res.cloudinary.com/doakqvah3/image/upload/q_auto/f_auto/v1777246162/WhatsApp_Image_2026-04-27_at_4.31.05_AM_nrncih.jpg",
-  // },
+    image:
+      "https://res.cloudinary.com/doakqvah3/image/upload/q_auto/f_auto/v1778239943/WhatsApp_Image_2026-05-08_at_12.30.08_PM_ixwvbo.jpg",
+  },
   {
     id: 4,
     name: "Moheswar Deka",
@@ -37,12 +37,12 @@ const teamMembers: TeamMember[] = [
     image:
       "https://res.cloudinary.com/doakqvah3/image/upload/q_auto/f_auto/v1777246162/WhatsApp_Image_2026-04-27_at_4.31.06_AM_1_hhsd65.jpg",
   },
-  // {
-  //   id: 5,
-  //   name: "Partha Hazarika",
-  //   image:
-  //     "https://res.cloudinary.com/doakqvah3/image/upload/q_auto/f_auto/v1777246163/WhatsApp_Image_2026-04-27_at_4.31.07_AM_by5zmn.jpg",
-  // },
+  {
+    id: 5,
+    name: "Partha Hazarika",
+    image:
+      "https://res.cloudinary.com/doakqvah3/image/upload/q_auto/f_auto/v1778239943/WhatsApp_Image_2026-05-08_at_12.30.08_PM_ixwvbo.jpg",
+  },
   // {
   //   id: 6,
   //   name: "Dr. Jajneswar Bari ",
@@ -52,7 +52,7 @@ const teamMembers: TeamMember[] = [
   // },
   {
     id: 7,
-    name: "Pompy Borah",
+    name: "Pompy Devi",
 
     image:
       "https://res.cloudinary.com/doakqvah3/image/upload/q_auto/f_auto/v1777246163/WhatsApp_Image_2026-04-27_at_4.31.06_AM_fzmjeq.jpg",

@@ -40,29 +40,34 @@ const LatestBlogPosts: React.FC = () => {
         ) : error ? (
           <FallbackBlogs />
         ) : latestPosts.length > 0 ? (
-          <div className='grid gap-8 md:grid-cols-3'>
-            {latestPosts.map((post) => (
-              <Link key={post._id} to={`/blog/${post._id}`} className='group'>
-                <div className='space-y-3'>
-                  <div className='overflow-hidden rounded-lg'>
+          <>
+            <div className='grid gap-8 sm:grid-cols-2 md:grid-cols-3'>
+              {latestPosts.map((post) => (
+                <Link
+                  key={post._id}
+                  to={`/blog/${post._id}`}
+                  className='group flex flex-col'
+                >
+                  <div className='aspect-[4/3] overflow-hidden rounded-lg bg-gray-100'>
                     <img
                       src={post.image || "/placeholder.svg"}
                       alt={post.title}
-                      className='w-full h-auto object-cover'
+                      loading='lazy'
+                      className='w-full h-full object-cover transition-transform duration-300 group-hover:scale-105'
                     />
                   </div>
-                  <div>
-                    <h3 className='font-semibold text-lg group-hover:text-orange-500'>
+                  <div className='mt-3 flex flex-col gap-1'>
+                    <h3 className='font-semibold text-lg line-clamp-2 group-hover:text-orange-500'>
                       {post.title}
                     </h3>
-                    {/* Show only the first line with five dots */}
                     <p className='text-gray-600 text-sm line-clamp-2'>
                       {getContentPreview(post.content)}
                     </p>
                   </div>
-                </div>
-              </Link>
-            ))}
+                </Link>
+              ))}
+            </div>
+
             <div className='flex justify-center mt-12'>
               <Link to='/blog'>
                 <Button
@@ -74,7 +79,7 @@ const LatestBlogPosts: React.FC = () => {
                 </Button>
               </Link>
             </div>
-          </div>
+          </>
         ) : (
           <div className='text-center p-8 bg-gray-50 rounded-lg'>
             No blog posts available at the moment.

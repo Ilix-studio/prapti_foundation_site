@@ -1,6 +1,6 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { useState } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { Loader2, Edit, Trash2, AlertCircle } from "lucide-react";
 import toast from "react-hot-toast";
 import { Button } from "@/components/ui/button";
@@ -11,6 +11,7 @@ import {
 } from "@/redux-store/services/awardApi";
 import { selectIsAdmin } from "@/redux-store/slices/authSlice";
 import { getAwardCategoryName } from "@/types/award.types";
+import type { PhotoImage } from "@/types/photo.types";
 import { BackNavigation } from "@/config/navigation/BackNavigation";
 
 const ViewAward = () => {
@@ -18,9 +19,31 @@ const ViewAward = () => {
   const navigate = useNavigate();
   const isAdmin = useSelector(selectIsAdmin);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [selectedIndex, setSelectedIndex] = useState(0);
 
   const { data: award, isLoading, error } = useGetAwardByIdQuery(id || "");
   const [deleteAward, { isLoading: isDeleting }] = useDeleteAwardPostMutation();
+
+  // Reset selected index if images array shrinks (e.g. after refetch)
+  useEffect(() => {
+    if (award?.images && selectedIndex >= award.images.length) {
+      setSelectedIndex(0);
+    }
+  }, [award?.images, selectedIndex]);
+
+  const handleSelectImage = useCallback((index: number) => {
+    setSelectedIndex(index);
+  }, []);
+
+  const handleKeyNav = useCallback((e: React.KeyboardEvent, total: number) => {
+    if (e.key === "ArrowRight") {
+      e.preventDefault();
+      setSelectedIndex((i) => (i + 1) % total);
+    } else if (e.key === "ArrowLeft") {
+      e.preventDefault();
+      setSelectedIndex((i) => (i - 1 + total) % total);
+    }
+  }, []);
 
   if (isLoading) {
     return (
@@ -49,7 +72,7 @@ const ViewAward = () => {
       navigate("/admin/awardDash");
     } catch (error: any) {
       toast.error(
-        error?.data?.message || "Failed to delete award. Please try again."
+        error?.data?.message || "Failed to delete award. Please try again.",
       );
       console.error("Delete error:", error);
     }
@@ -58,6 +81,11 @@ const ViewAward = () => {
   const handleEdit = () => {
     navigate(`/admin/awards/edit/${award._id}`);
   };
+
+  const activeImage =
+    award.images && award.images.length > 0
+      ? (award.images[selectedIndex] ?? award.images[0])
+      : null;
 
   return (
     <>
@@ -95,13 +123,13 @@ const ViewAward = () => {
 
         <main className='container mx-auto px-4 py-8'>
           <div className='max-w-4xl mx-auto'>
-            <Card className='overflow-hidden'>
-              {award.images && award.images.length > 0 && (
-                <div className='relative h-96 bg-gray-200 overflow-hidden'>
+            <Card className='overflow-hidden '>
+              {activeImage && (
+                <div className='relative h-auto bg-gray-200 overflow-hidden '>
                   <img
-                    src={award.images[0].src}
-                    alt={award.images[0].alt}
-                    className='w-full h-full object-cover'
+                    src={activeImage.src}
+                    alt={activeImage.alt}
+                    className='w-full  h-auto object-cover transition-opacity duration-200'
                   />
                 </div>
               )}
@@ -109,7 +137,7 @@ const ViewAward = () => {
               <CardHeader>
                 <div className='flex items-start justify-between'>
                   <div className='flex-1'>
-                    <CardTitle className='text-3xl mb-2'>
+                    <CardTitle className='text-xl mb-2'>
                       {award.title}
                     </CardTitle>
                     <div className='flex items-center gap-2'>
@@ -125,32 +153,48 @@ const ViewAward = () => {
               </CardHeader>
 
               <CardContent className='space-y-6'>
+                {award.images && award.images.length > 1 && (
+                  <div>
+                    <h3 className='text-l font-semibold mb-3'>Gallery</h3>
+                    <div
+                      role='listbox'
+                      aria-label='Award image gallery'
+                      tabIndex={0}
+                      onKeyDown={(e) => handleKeyNav(e, award.images.length)}
+                      className='grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 gap-2 focus:outline-none'
+                    >
+                      {award.images.map((image: PhotoImage, index: number) => {
+                        const isActive = index === selectedIndex;
+                        return (
+                          <button
+                            type='button'
+                            key={image.cloudinaryPublicId || index}
+                            role='option'
+                            aria-selected={isActive}
+                            aria-label={`View image ${index + 1}`}
+                            onClick={() => handleSelectImage(index)}
+                            className={`relative aspect-square w-full rounded-md overflow-hidden bg-gray-200 transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 ${
+                              isActive ? "ring-2 ring-orange-500" : ""
+                            }`}
+                          >
+                            <img
+                              src={image.src}
+                              alt={image.alt}
+                              loading='lazy'
+                              className='w-full h-full object-cover hover:scale-105 transition-transform'
+                            />
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
                 <div>
-                  <h3 className='text-lg font-semibold mb-3'>Description</h3>
+                  <h3 className='text-l font-semibold mb-3'>Description</h3>
                   <p className='text-gray-700 leading-relaxed whitespace-pre-wrap'>
                     {award.description}
                   </p>
                 </div>
-
-                {award.images && award.images.length > 1 && (
-                  <div>
-                    <h3 className='text-lg font-semibold mb-3'>Gallery</h3>
-                    <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4'>
-                      {award.images.map((image: any, index: number) => (
-                        <div
-                          key={index}
-                          className='relative h-32 bg-gray-200 rounded-lg overflow-hidden'
-                        >
-                          <img
-                            src={image.src}
-                            alt={image.alt}
-                            className='w-full h-full object-cover hover:scale-105 transition-transform'
-                          />
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
 
                 <div className='pt-4 border-t'>
                   <p className='text-xs text-gray-500'>

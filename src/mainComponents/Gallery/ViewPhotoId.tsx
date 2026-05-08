@@ -96,7 +96,7 @@ const ViewPhotoId: React.FC = () => {
       {
         skip: !photo || !categoryInfo?.name,
         refetchOnMountOrArgChange: true,
-      }
+      },
     );
 
   // Reset image index when photo changes
@@ -196,7 +196,7 @@ const ViewPhotoId: React.FC = () => {
       navigate(`/view/photo/${photoId}`);
       window.scrollTo({ top: 0, behavior: "smooth" });
     },
-    [navigate]
+    [navigate],
   );
 
   const handleBrowseCategory = useCallback(() => {
