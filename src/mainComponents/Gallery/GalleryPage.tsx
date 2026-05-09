@@ -66,7 +66,7 @@ const GalleryPage: React.FC = () => {
       { _id: "All", name: "All", type: "photo" as const },
       ...photoCategories,
     ],
-    [photoCategories]
+    [photoCategories],
   );
 
   const videoFilterOptions = useMemo(
@@ -74,13 +74,13 @@ const GalleryPage: React.FC = () => {
       { _id: "All", name: "All", type: "video" as const },
       ...videoCategories,
     ],
-    [videoCategories]
+    [videoCategories],
   );
 
   // Helper to get visible categories with remaining count
   const getVisibleCategories = <T extends { _id: string; name: string }>(
     categories: T[],
-    showAll: boolean
+    showAll: boolean,
   ): { visible: T[]; remaining: number } => {
     if (showAll || categories.length <= MAX_VISIBLE_CATEGORIES) {
       return { visible: categories, remaining: 0 };
@@ -93,19 +93,19 @@ const GalleryPage: React.FC = () => {
 
   const photoFilterData = useMemo(
     () => getVisibleCategories(photoFilterOptions, showAllPhotoCategories),
-    [photoFilterOptions, showAllPhotoCategories]
+    [photoFilterOptions, showAllPhotoCategories],
   );
 
   const videoFilterData = useMemo(
     () => getVisibleCategories(videoFilterOptions, showAllVideoCategories),
-    [videoFilterOptions, showAllVideoCategories]
+    [videoFilterOptions, showAllVideoCategories],
   );
 
   // Auto-expand if selected category is beyond visible range
   useEffect(() => {
     if (selectedCategory && activeTab === "photos") {
       const index = photoFilterOptions.findIndex(
-        (c) => c._id === selectedCategory
+        (c) => c._id === selectedCategory,
       );
       if (index >= MAX_VISIBLE_CATEGORIES) {
         setShowAllPhotoCategories(true);
@@ -113,7 +113,7 @@ const GalleryPage: React.FC = () => {
     }
     if (selectedCategory && activeTab === "videos") {
       const index = videoFilterOptions.findIndex(
-        (c) => c._id === selectedCategory
+        (c) => c._id === selectedCategory,
       );
       if (index >= MAX_VISIBLE_CATEGORIES) {
         setShowAllVideoCategories(true);
@@ -154,7 +154,7 @@ const GalleryPage: React.FC = () => {
     },
     {
       skip: !selectedCategory || activeTab !== "photos",
-    }
+    },
   );
 
   // API hooks for videos
@@ -181,7 +181,7 @@ const GalleryPage: React.FC = () => {
     },
     {
       skip: !selectedCategory || activeTab !== "videos",
-    }
+    },
   );
 
   // Helper function to get photo primary image
@@ -203,7 +203,7 @@ const GalleryPage: React.FC = () => {
   // Helper: Get one item per category (for default view)
   const getUniqueByCategory = <T extends Photo | Video>(
     items: T[],
-    getCategoryFn: (item: T) => string
+    getCategoryFn: (item: T) => string,
   ): T[] => {
     const seen = new Set<string>();
     return items.filter((item) => {
@@ -271,8 +271,8 @@ const GalleryPage: React.FC = () => {
     ? activeTab === "photos" && photos[0]
       ? getPhotoCategoryName(photos[0].category)
       : activeTab === "videos" && videos[0]
-      ? getVideoCategoryName(videos[0].category)
-      : "Category"
+        ? getVideoCategoryName(videos[0].category)
+        : "Category"
     : null;
 
   // Loading state
@@ -385,7 +385,7 @@ const GalleryPage: React.FC = () => {
                     ? photos.map((photo, index) => {
                         const mainImage = getPhotoMainImage(photo);
                         const categoryName = getPhotoCategoryName(
-                          photo.category
+                          photo.category,
                         );
 
                         return (
@@ -398,7 +398,7 @@ const GalleryPage: React.FC = () => {
                               "rounded-xl relative bg-gray-100 overflow-hidden h-60 md:h-80 w-full transition-all duration-300 ease-out cursor-pointer",
                               hovered !== null &&
                                 hovered !== index &&
-                                "blur-sm scale-[0.98]"
+                                "blur-sm scale-[0.98]",
                             )}
                             whileHover={{ scale: 1.02 }}
                             transition={{ duration: 0.2 }}
@@ -420,7 +420,7 @@ const GalleryPage: React.FC = () => {
                             <div className='absolute top-4 left-4'>
                               <span
                                 className={`px-2 py-1 rounded-full text-xs font-medium ${getCategoryColor(
-                                  categoryName
+                                  categoryName,
                                 )}`}
                               >
                                 {categoryName.charAt(0).toUpperCase() +
@@ -431,8 +431,8 @@ const GalleryPage: React.FC = () => {
                             {/* Hover overlay */}
                             <div
                               className={cn(
-                                "absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex items-end p-6 transition-opacity duration-300",
-                                hovered === index ? "opacity-100" : "opacity-0"
+                                "absolute inset-0 bg-linear-to-t from-black/80 via-black/20 to-transparent flex items-end p-6 transition-opacity duration-300",
+                                hovered === index ? "opacity-100" : "opacity-0",
                               )}
                             >
                               <div className='text-white'>
@@ -465,7 +465,7 @@ const GalleryPage: React.FC = () => {
                       })
                     : videos.map((video, index) => {
                         const categoryName = getVideoCategoryName(
-                          video.category
+                          video.category,
                         );
 
                         return (
@@ -478,7 +478,7 @@ const GalleryPage: React.FC = () => {
                               "rounded-xl relative bg-gray-100 overflow-hidden h-60 md:h-80 w-full transition-all duration-300 ease-out cursor-pointer group",
                               hovered !== null &&
                                 hovered !== index + 1000 &&
-                                "blur-sm scale-[0.98]"
+                                "blur-sm scale-[0.98]",
                             )}
                             whileHover={{ scale: 1.02 }}
                             transition={{ duration: 0.2 }}
@@ -512,7 +512,7 @@ const GalleryPage: React.FC = () => {
                             <div className='absolute top-4 left-4'>
                               <span
                                 className={`px-2 py-1 rounded-full text-xs font-medium ${getCategoryColor(
-                                  categoryName
+                                  categoryName,
                                 )}`}
                               >
                                 {categoryName.charAt(0).toUpperCase() +
@@ -523,10 +523,10 @@ const GalleryPage: React.FC = () => {
                             {/* Hover overlay */}
                             <div
                               className={cn(
-                                "absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex items-end p-6 transition-opacity duration-300",
+                                "absolute inset-0 bg-linear-to-t from-black/80 via-black/20 to-transparent flex items-end p-6 transition-opacity duration-300",
                                 hovered === index + 1000
                                   ? "opacity-100"
-                                  : "opacity-0"
+                                  : "opacity-0",
                               )}
                             >
                               <div className='text-white'>
@@ -659,7 +659,7 @@ const GalleryPage: React.FC = () => {
                             "rounded-xl relative bg-gray-100 overflow-hidden h-60 md:h-80 w-full transition-all duration-300 ease-out",
                             hovered !== null &&
                               hovered !== index &&
-                              "blur-sm scale-[0.98]"
+                              "blur-sm scale-[0.98]",
                           )}
                           whileHover={{ scale: 1.02 }}
                           transition={{ duration: 0.2 }}
@@ -684,7 +684,7 @@ const GalleryPage: React.FC = () => {
                           <div className='absolute top-4 left-4 flex items-center gap-2'>
                             <span
                               className={`px-2 py-1 rounded-full text-xs font-medium ${getCategoryColor(
-                                categoryName
+                                categoryName,
                               )}`}
                             >
                               {categoryName.charAt(0).toUpperCase() +
@@ -706,8 +706,8 @@ const GalleryPage: React.FC = () => {
                           {/* Hover overlay */}
                           <div
                             className={cn(
-                              "absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex items-end p-6 transition-opacity duration-300 pointer-events-none",
-                              hovered === index ? "opacity-100" : "opacity-0"
+                              "absolute inset-0 bg-linear-to-t from-black/80 via-black/20 to-transparent flex items-end p-6 transition-opacity duration-300 pointer-events-none",
+                              hovered === index ? "opacity-100" : "opacity-0",
                             )}
                           >
                             <div className='text-white'>
@@ -818,7 +818,7 @@ const GalleryPage: React.FC = () => {
                             "rounded-xl relative bg-gray-100 overflow-hidden h-60 md:h-80 w-full transition-all duration-300 ease-out cursor-pointer group",
                             hovered !== null &&
                               hovered !== index + 1000 &&
-                              "blur-sm scale-[0.98]"
+                              "blur-sm scale-[0.98]",
                           )}
                           whileHover={{ scale: 1.02 }}
                           transition={{ duration: 0.2 }}
@@ -850,7 +850,7 @@ const GalleryPage: React.FC = () => {
                           <div className='absolute top-4 left-4 flex items-center gap-2'>
                             <span
                               className={`px-2 py-1 rounded-full text-xs font-medium ${getCategoryColor(
-                                categoryName
+                                categoryName,
                               )}`}
                             >
                               {categoryName.charAt(0).toUpperCase() +
@@ -872,10 +872,10 @@ const GalleryPage: React.FC = () => {
                           {/* Hover overlay */}
                           <div
                             className={cn(
-                              "absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex items-end p-6 transition-opacity duration-300",
+                              "absolute inset-0 bg-linear-to-t from-black/80 via-black/20 to-transparent flex items-end p-6 transition-opacity duration-300",
                               hovered === index + 1000
                                 ? "opacity-100"
-                                : "opacity-0"
+                                : "opacity-0",
                             )}
                           >
                             <div className='text-white'>

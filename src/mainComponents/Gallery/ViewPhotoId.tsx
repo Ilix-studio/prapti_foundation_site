@@ -247,7 +247,7 @@ const ViewPhotoId: React.FC = () => {
   // Loading state
   if (!id) {
     return (
-      <div className='min-h-screen bg-gradient-to-br from-slate-50 to-white flex items-center justify-center p-4'>
+      <div className='min-h-screen bg-linear-to-br from-slate-50 to-white flex items-center justify-center p-4'>
         <Alert variant='destructive' className='max-w-md'>
           <AlertCircle className='h-4 w-4' />
           <AlertDescription>Photo ID not found</AlertDescription>
@@ -258,7 +258,7 @@ const ViewPhotoId: React.FC = () => {
 
   if (isLoading) {
     return (
-      <div className='min-h-screen bg-gradient-to-br from-slate-50 to-white p-4'>
+      <div className='min-h-screen bg-linear-to-br from-slate-50 to-white p-4'>
         <div className='max-w-4xl mx-auto space-y-6'>
           <div className='flex items-center justify-between'>
             <Skeleton className='h-10 w-20' />
@@ -287,7 +287,7 @@ const ViewPhotoId: React.FC = () => {
   // Error state
   if (error || !photoData?.success || !photo) {
     return (
-      <div className='min-h-screen bg-gradient-to-br from-slate-50 to-white flex items-center justify-center p-4'>
+      <div className='min-h-screen bg-linear-to-br from-slate-50 to-white flex items-center justify-center p-4'>
         <Alert variant='destructive' className='max-w-md'>
           <AlertCircle className='h-4 w-4' />
           <AlertDescription>
@@ -321,9 +321,9 @@ const ViewPhotoId: React.FC = () => {
       : [];
 
   return (
-    <div className='min-h-screen bg-gradient-to-br from-slate-50 to-white'>
+    <div className='min-h-screen bg-linear-to-br from-slate-50 to-white'>
       {/* Header */}
-      <div className='sticky top-0 z-40 w-full border-b bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60'>
+      <div className='sticky top-0 z-40 w-full border-b bg-white/95 backdrop-blur supports-backdrop-filter:bg-white/60'>
         <div className='container flex h-16 items-center justify-between px-4'>
           <Button variant='ghost' onClick={handleBack}>
             <ArrowLeft className='w-4 h-4 mr-2' />
@@ -393,7 +393,7 @@ const ViewPhotoId: React.FC = () => {
                       loading='lazy'
                     />
 
-                    <div className='absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-200' />
+                    <div className='absolute inset-0 bg-linear-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-200' />
 
                     {/* Navigation for multiple images */}
                     {photo.images && photo.images.length > 1 && (
@@ -443,7 +443,7 @@ const ViewPhotoId: React.FC = () => {
                       <button
                         key={index}
                         onClick={() => setCurrentImageIndex(index)}
-                        className={`flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden border-2 transition-all duration-200 ${
+                        className={`shrink-0 w-20 h-20 rounded-lg overflow-hidden border-2 transition-all duration-200 ${
                           index === currentImageIndex
                             ? "border-blue-500 ring-2 ring-blue-200 scale-105"
                             : "border-gray-300 hover:border-gray-400 hover:scale-105"
@@ -471,7 +471,7 @@ const ViewPhotoId: React.FC = () => {
                 >
                   <motion.div
                     variants={childVariants}
-                    className='flex items-center gap-3 p-4 bg-gradient-to-r from-orange-50 to-orange-100 rounded-lg border border-orange-200'
+                    className='flex items-center gap-3 p-4 bg-linear-to-r from-orange-50 to-orange-100 rounded-lg border border-orange-200'
                   >
                     <Calendar className='w-5 h-5 text-orange-600' />
                     <div>
@@ -487,7 +487,7 @@ const ViewPhotoId: React.FC = () => {
                   {photo.location && (
                     <motion.div
                       variants={childVariants}
-                      className='flex items-center gap-3 p-4 bg-gradient-to-r from-green-50 to-green-100 rounded-lg border border-green-200'
+                      className='flex items-center gap-3 p-4 bg-linear-to-r from-green-50 to-green-100 rounded-lg border border-green-200'
                     >
                       <MapPin className='w-5 h-5 text-green-600' />
                       <div>
@@ -503,7 +503,7 @@ const ViewPhotoId: React.FC = () => {
 
                   <motion.div
                     variants={childVariants}
-                    className='flex items-center gap-3 p-4 bg-gradient-to-r from-blue-50 to-blue-100 rounded-lg border border-blue-200'
+                    className='flex items-center gap-3 p-4 bg-linear-to-r from-blue-50 to-blue-100 rounded-lg border border-blue-200'
                   >
                     <div className='w-5 h-5 bg-blue-600 rounded-full text-white flex items-center justify-center text-xs font-bold'>
                       {categoryInfo?.name.charAt(0).toUpperCase()}
@@ -605,7 +605,7 @@ const ViewPhotoId: React.FC = () => {
                               className='w-full h-48 object-cover group-hover:scale-110 transition-transform duration-500'
                               loading='lazy'
                             />
-                            <div className='absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300' />
+                            <div className='absolute inset-0 bg-linear-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300' />
                             <div className='absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300'>
                               <div className='bg-white/90 backdrop-blur-sm rounded-full p-1'>
                                 <ExternalLink className='w-3 h-3 text-gray-700' />
@@ -623,7 +623,7 @@ const ViewPhotoId: React.FC = () => {
                               </span>
                               {relatedPhoto.location && (
                                 <span className='flex items-center gap-1 truncate max-w-24'>
-                                  <MapPin className='w-3 h-3 flex-shrink-0' />
+                                  <MapPin className='w-3 h-3 shrink-0' />
                                   {relatedPhoto.location}
                                 </span>
                               )}

@@ -113,7 +113,7 @@ const ViewVideoId: React.FC = () => {
       {
         skip: !video || !categoryInfo?.name,
         refetchOnMountOrArgChange: true,
-      }
+      },
     );
 
   // Enhanced related videos filtering
@@ -210,7 +210,7 @@ const ViewVideoId: React.FC = () => {
       navigate(`/view/video/${videoId}`);
       window.scrollTo({ top: 0, behavior: "smooth" });
     },
-    [navigate]
+    [navigate],
   );
 
   const handleBrowseCategory = useCallback(() => {
@@ -253,7 +253,7 @@ const ViewVideoId: React.FC = () => {
         setIsMuted(false);
       }
     },
-    [isMuted]
+    [isMuted],
   );
 
   const handleTimeUpdate = useCallback(() => {
@@ -350,7 +350,7 @@ const ViewVideoId: React.FC = () => {
   // Error states
   if (!id) {
     return (
-      <div className='min-h-screen bg-gradient-to-br from-slate-50 to-white flex items-center justify-center p-4'>
+      <div className='min-h-screen bg-linear-to-br from-slate-50 to-white flex items-center justify-center p-4'>
         <Alert variant='destructive' className='max-w-md'>
           <AlertCircle className='h-4 w-4' />
           <AlertDescription>Video ID not found</AlertDescription>
@@ -361,7 +361,7 @@ const ViewVideoId: React.FC = () => {
 
   if (isLoading) {
     return (
-      <div className='min-h-screen bg-gradient-to-br from-slate-50 to-white'>
+      <div className='min-h-screen bg-linear-to-br from-slate-50 to-white'>
         <div className='container mx-auto p-4 pt-8'>
           <Card className='max-w-4xl mx-auto'>
             <CardContent className='p-6 space-y-6'>
@@ -387,7 +387,7 @@ const ViewVideoId: React.FC = () => {
 
   if (error || !videoData?.success || !video) {
     return (
-      <div className='min-h-screen bg-gradient-to-br from-slate-50 to-white flex items-center justify-center p-4'>
+      <div className='min-h-screen bg-linear-to-br from-slate-50 to-white flex items-center justify-center p-4'>
         <Alert variant='destructive' className='max-w-md'>
           <AlertCircle className='h-4 w-4' />
           <AlertDescription>
@@ -408,9 +408,9 @@ const ViewVideoId: React.FC = () => {
   }
 
   return (
-    <div className='min-h-screen bg-gradient-to-br from-slate-50 to-white'>
+    <div className='min-h-screen bg-linear-to-br from-slate-50 to-white'>
       {/* Header */}
-      <div className='sticky top-0 z-40 w-full border-b bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60'>
+      <div className='sticky top-0 z-40 w-full border-b bg-white/95 backdrop-blur supports-backdrop-filter:bg-white/60'>
         <div className='container flex h-16 items-center justify-between px-4'>
           <Button variant='ghost' onClick={handleBack}>
             <ArrowLeft className='w-4 h-4 mr-2' />
@@ -500,7 +500,7 @@ const ViewVideoId: React.FC = () => {
 
                 {/* Video Controls Overlay */}
                 <div
-                  className={`absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 via-black/60 to-transparent p-4 transition-opacity duration-300 ${
+                  className={`absolute bottom-0 left-0 right-0 bg-linear-to-t from-black/90 via-black/60 to-transparent p-4 transition-opacity duration-300 ${
                     showControls ? "opacity-100" : "opacity-0"
                   }`}
                 >
@@ -679,7 +679,7 @@ const ViewVideoId: React.FC = () => {
                               </div>
                             </div>
 
-                            <div className='absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300' />
+                            <div className='absolute inset-0 bg-linear-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300' />
 
                             {/* Video duration badge */}
                             {relatedVideo.duration && (

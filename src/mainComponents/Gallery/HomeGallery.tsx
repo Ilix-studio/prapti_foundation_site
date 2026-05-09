@@ -285,7 +285,7 @@ const HomeGallery = () => {
         {/* Hover overlay */}
         <div
           className={cn(
-            "absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex items-end p-6 transition-opacity duration-300 pointer-events-none",
+            "absolute inset-0 bg-linear-to-t from-black/80 via-black/20 to-transparent flex items-end p-6 transition-opacity duration-300 pointer-events-none",
             isHovered ? "opacity-100" : "opacity-0",
           )}
         >
@@ -362,7 +362,7 @@ const HomeGallery = () => {
         {/* Hover overlay */}
         <div
           className={cn(
-            "absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex items-end p-6 transition-opacity duration-300",
+            "absolute inset-0 bg-linear-to-b from-black/80 via-black/20 to-transparent flex items-end p-6 transition-opacity duration-300",
             isHovered ? "opacity-100" : "opacity-0",
           )}
         >
