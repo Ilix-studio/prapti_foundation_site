@@ -6,15 +6,14 @@ import {
   VolunteerInput,
   VolunteerResponse,
   VolunteersListResponse,
+  VolunteerStatusResponse, // add this to volunteer_types.ts (see below)
 } from "@/types/volunteer.types";
 
-// Create the volunteer API service
 export const volunteerApi = createApi({
   reducerPath: "volunteerApi",
   baseQuery,
   tagTypes: ["Volunteers", "Volunteer"],
   endpoints: (builder) => ({
-    // Submit volunteer application (Public)
     submitVolunteerApplication: builder.mutation<
       VolunteerResponse,
       VolunteerInput
@@ -23,15 +22,12 @@ export const volunteerApi = createApi({
         url: "/volunteers/create",
         method: "POST",
         body: JSON.stringify(data),
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
       }),
       invalidatesTags: [{ type: "Volunteers", id: "LIST" }],
       transformErrorResponse: (response) => handleApiError(response),
     }),
 
-    // Get all volunteer applications (Admin only)
     getVolunteerApplications: builder.query<
       VolunteersListResponse,
       { page?: number; limit?: number } | void
@@ -41,10 +37,7 @@ export const volunteerApi = createApi({
         if (params?.page) searchParams.append("page", params.page.toString());
         if (params?.limit)
           searchParams.append("limit", params.limit.toString());
-
-        return `/volunteers/info${
-          searchParams.toString() ? `?${searchParams.toString()}` : ""
-        }`;
+        return `/volunteers/info${searchParams.toString() ? `?${searchParams.toString()}` : ""}`;
       },
       providesTags: (result) =>
         result?.data
@@ -59,34 +52,79 @@ export const volunteerApi = createApi({
       transformErrorResponse: (response) => handleApiError(response),
     }),
 
-    // Get volunteer application by ID (Admin only)
     getVolunteerApplicationById: builder.query<VolunteerDetailResponse, string>(
       {
         query: (id) => `/volunteers/${id}`,
         providesTags: (_, __, id) => [{ type: "Volunteer", id }],
         transformErrorResponse: (response) => handleApiError(response),
-      }
+      },
     ),
 
-    // Delete volunteer application (Admin only)
     deleteVolunteerApplication: builder.mutation<
       DeleteVolunteerResponse,
       string
     >({
-      query: (id) => ({
-        url: `/volunteers/${id}`,
-        method: "DELETE",
-      }),
+      query: (id) => ({ url: `/volunteers/${id}`, method: "DELETE" }),
       invalidatesTags: [{ type: "Volunteers", id: "LIST" }],
+      transformErrorResponse: (response) => handleApiError(response),
+    }),
+
+    // PATCH /api/volunteers/:id/approve
+    approveVolunteerApplication: builder.mutation<
+      VolunteerStatusResponse,
+      string
+    >({
+      query: (id) => ({
+        url: `/volunteers/${id}/approve`,
+        method: "PATCH",
+      }),
+      invalidatesTags: (_, __, id) => [
+        { type: "Volunteer", id },
+        { type: "Volunteers", id: "LIST" },
+      ],
+      transformErrorResponse: (response) => handleApiError(response),
+    }),
+
+    // PATCH /api/volunteers/:id/reject
+    rejectVolunteerApplication: builder.mutation<
+      VolunteerStatusResponse,
+      { id: string; reason?: string }
+    >({
+      query: ({ id, reason }) => ({
+        url: `/volunteers/${id}/reject`,
+        method: "PATCH",
+        body: JSON.stringify({ reason }),
+        headers: { "Content-Type": "application/json" },
+      }),
+      invalidatesTags: (_, __, { id }) => [
+        { type: "Volunteer", id },
+        { type: "Volunteers", id: "LIST" },
+      ],
+      transformErrorResponse: (response) => handleApiError(response),
+    }),
+    markVolunteerAsRead: builder.mutation<
+      { success: boolean; data: { _id: string; isRead: boolean } },
+      string
+    >({
+      query: (id) => ({
+        url: `/volunteers/${id}/read`,
+        method: "PATCH",
+      }),
+      invalidatesTags: (_, __, id) => [
+        { type: "Volunteer", id },
+        { type: "Volunteers", id: "LIST" },
+      ],
       transformErrorResponse: (response) => handleApiError(response),
     }),
   }),
 });
 
-// Export hooks for using the API endpoints
 export const {
   useSubmitVolunteerApplicationMutation,
   useGetVolunteerApplicationsQuery,
   useGetVolunteerApplicationByIdQuery,
   useDeleteVolunteerApplicationMutation,
+  useApproveVolunteerApplicationMutation,
+  useRejectVolunteerApplicationMutation,
+  useMarkVolunteerAsReadMutation,
 } = volunteerApi;

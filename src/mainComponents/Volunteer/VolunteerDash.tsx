@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import {
   useGetVolunteerApplicationsQuery,
   useDeleteVolunteerApplicationMutation,
+  useMarkVolunteerAsReadMutation,
 } from "../../redux-store/services/volunteerApi";
 import * as XLSX from "xlsx";
 import {
@@ -11,10 +12,12 @@ import {
   Users,
   AlertCircle,
   Loader2,
-  Calendar,
   MapPin,
   Download,
   Search,
+  Bell,
+  Clock,
+  CheckCircle2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -28,6 +31,7 @@ import {
 } from "@/components/ui/select";
 
 import { BackNavigation } from "@/config/navigation/BackNavigation";
+import { Badge } from "@/components/ui/badge";
 
 const VolunteerDash = () => {
   const navigate = useNavigate();
@@ -35,17 +39,34 @@ const VolunteerDash = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [showDeleteConfirm, setShowDeleteConfirm] = useState<string | null>(
-    null
+    null,
   );
+  const [markAsRead] = useMarkVolunteerAsReadMutation();
   const [isDeletingVolunteer, setIsDeletingVolunteer] = useState(false);
   const [deletingVolunteerId, setDeletingVolunteerId] = useState<string | null>(
-    null
+    null,
   );
   const [volunteerDeleteError, setVolunteerDeleteError] = useState<
     string | null
   >(null);
 
   const itemsPerPage = 10;
+
+  // Status configuration for volunteer applications
+  const statusConfig = {
+    pending: {
+      label: "Pending",
+      className: "bg-yellow-100 text-yellow-800",
+    },
+    approved: {
+      label: "Approved",
+      className: "bg-green-100 text-green-800",
+    },
+    rejected: {
+      label: "Rejected",
+      className: "bg-red-100 text-red-800",
+    },
+  };
 
   // API hooks
   const {
@@ -61,7 +82,14 @@ const VolunteerDash = () => {
   const [deleteVolunteerApplication] = useDeleteVolunteerApplicationMutation();
 
   // Handler functions
-  const handleVolunteerById = (id: string) => {
+  const handleVolunteerById = async (id: string, isRead: boolean) => {
+    if (!isRead) {
+      try {
+        await markAsRead(id).unwrap();
+      } catch {
+        // non-critical — navigate regardless
+      }
+    }
     navigate(`/admin/volunteer/${id}`);
   };
 
@@ -86,7 +114,7 @@ const VolunteerDash = () => {
       refetchVolunteers();
     } catch (error: any) {
       setVolunteerDeleteError(
-        error?.data?.message || "Failed to delete volunteer application"
+        error?.data?.message || "Failed to delete volunteer application",
       );
     } finally {
       setIsDeletingVolunteer(false);
@@ -192,15 +220,11 @@ const VolunteerDash = () => {
   // Statistics for dashboard cards
   const stats = {
     total: totalItems,
-    recent:
-      volunteerData?.data?.filter((v) => {
-        const submittedDate = new Date(v.submittedAt);
-        const weekAgo = new Date();
-        weekAgo.setDate(weekAgo.getDate() - 7);
-        return submittedDate >= weekAgo;
-      }).length || 0,
-    pending: totalItems, // Assuming all are pending for now
-    approved: 0, // TODO: Implement status tracking
+    unread: volunteerData?.data?.filter((v) => !v.isRead).length || 0,
+    pending:
+      volunteerData?.data?.filter((v) => v.status === "pending").length || 0,
+    approved:
+      volunteerData?.data?.filter((v) => v.status === "approved").length || 0,
   };
 
   return (
@@ -229,7 +253,7 @@ const VolunteerDash = () => {
           </div>
         </div>
 
-        {/* Statistics Cards */}
+        {/* Stats */}
         <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6'>
           <Card>
             <CardContent className='p-6'>
@@ -253,13 +277,13 @@ const VolunteerDash = () => {
             <CardContent className='p-6'>
               <div className='flex items-center justify-between'>
                 <div>
-                  <p className='text-sm font-medium text-gray-600'>This Week</p>
+                  <p className='text-sm font-medium text-gray-600'>Unread</p>
                   <p className='text-2xl font-bold text-gray-900'>
-                    {stats.recent}
+                    {stats.unread}
                   </p>
                 </div>
-                <div className='h-12 w-12 bg-green-100 rounded-lg flex items-center justify-center'>
-                  <Calendar className='h-6 w-6 text-green-600' />
+                <div className='h-12 w-12 bg-orange-100 rounded-lg flex items-center justify-center'>
+                  <Bell className='h-6 w-6 text-orange-600' />
                 </div>
               </div>
             </CardContent>
@@ -276,8 +300,8 @@ const VolunteerDash = () => {
                     {stats.pending}
                   </p>
                 </div>
-                <div className='h-12 w-12 bg-orange-100 rounded-lg flex items-center justify-center'>
-                  <AlertCircle className='h-6 w-6 text-orange-600' />
+                <div className='h-12 w-12 bg-yellow-100 rounded-lg flex items-center justify-center'>
+                  <Clock className='h-6 w-6 text-yellow-600' />
                 </div>
               </div>
             </CardContent>
@@ -292,8 +316,8 @@ const VolunteerDash = () => {
                     {stats.approved}
                   </p>
                 </div>
-                <div className='h-12 w-12 bg-purple-100 rounded-lg flex items-center justify-center'>
-                  <Users className='h-6 w-6 text-purple-600' />
+                <div className='h-12 w-12 bg-green-100 rounded-lg flex items-center justify-center'>
+                  <CheckCircle2 className='h-6 w-6 text-green-600' />
                 </div>
               </div>
             </CardContent>
@@ -343,7 +367,7 @@ const VolunteerDash = () => {
         {/* Error Alert */}
         {volunteerDeleteError && (
           <div className='p-4 rounded-lg bg-red-50 border border-red-200 text-red-600 flex items-center gap-3'>
-            <AlertCircle className='h-5 w-5 flex-shrink-0' />
+            <AlertCircle className='h-5 w-5 ' />
             <span>{volunteerDeleteError}</span>
           </div>
         )}
@@ -423,26 +447,7 @@ const VolunteerDash = () => {
                             {volunteer.state} - {volunteer.pincode}
                           </div>
                         </td>
-                        {/* <td className='px-6 py-4'>
-                          <div className='flex flex-wrap gap-1 max-w-48'>
-                            {volunteer.interests
-                              .slice(0, 2)
-                              .map((interest, index) => (
-                                <Badge
-                                  key={index}
-                                  variant='secondary'
-                                  className='text-xs bg-orange-100 text-orange-700 hover:bg-orange-200'
-                                >
-                                  {interest}
-                                </Badge>
-                              ))}
-                            {volunteer.interests.length > 2 && (
-                              <Badge variant='outline' className='text-xs'>
-                                +{volunteer.interests.length - 2} more
-                              </Badge>
-                            )}
-                          </div>
-                        </td> */}
+
                         <td className='px-6 py-4 whitespace-nowrap'>
                           <div className='text-sm text-gray-900'>
                             {new Date(volunteer.submittedAt).toLocaleDateString(
@@ -451,7 +456,7 @@ const VolunteerDash = () => {
                                 year: "numeric",
                                 month: "short",
                                 day: "numeric",
-                              }
+                              },
                             )}
                           </div>
                           <div className='text-sm text-gray-500'>
@@ -460,7 +465,7 @@ const VolunteerDash = () => {
                               {
                                 hour: "2-digit",
                                 minute: "2-digit",
-                              }
+                              },
                             )}
                           </div>
                         </td>
@@ -508,7 +513,10 @@ const VolunteerDash = () => {
                                 size='sm'
                                 className='text-blue-600 hover:text-blue-800 hover:bg-blue-50'
                                 onClick={() =>
-                                  handleVolunteerById(volunteer._id)
+                                  handleVolunteerById(
+                                    volunteer._id,
+                                    volunteer.isRead,
+                                  )
                                 }
                               >
                                 <Eye className='h-4 w-4' />
@@ -524,6 +532,53 @@ const VolunteerDash = () => {
                                 <Trash2 className='h-4 w-4' />
                               </Button>
                             </div>
+                          )}
+                        </td>
+                        {/* Status */}
+                        <td className='px-6 py-4 whitespace-nowrap'>
+                          <Badge
+                            className={`border text-xs font-medium ${statusConfig[volunteer.status as keyof typeof statusConfig]?.className || "bg-gray-100 text-gray-800"}`}
+                          >
+                            {statusConfig[
+                              volunteer.status as keyof typeof statusConfig
+                            ]?.label || "Unknown"}
+                          </Badge>
+
+                          {volunteer.status === "approved" &&
+                            volunteer.approvedAt && (
+                              <p className='text-xs text-gray-400 mt-1'>
+                                {new Date(
+                                  volunteer.approvedAt,
+                                ).toLocaleDateString("en-US", {
+                                  month: "short",
+                                  day: "numeric",
+                                  year: "numeric",
+                                })}
+                              </p>
+                            )}
+
+                          {volunteer.status === "rejected" && (
+                            <>
+                              {volunteer.rejectedAt && (
+                                <p className='text-xs text-gray-400 mt-1'>
+                                  {new Date(
+                                    volunteer.rejectedAt,
+                                  ).toLocaleDateString("en-US", {
+                                    month: "short",
+                                    day: "numeric",
+                                    year: "numeric",
+                                  })}
+                                </p>
+                              )}
+                              {volunteer.rejectionReason && (
+                                <p
+                                  className='text-xs text-red-400 mt-0.5 max-w-[140px] truncate'
+                                  title={volunteer.rejectionReason}
+                                >
+                                  {volunteer.rejectionReason}
+                                </p>
+                              )}
+                            </>
                           )}
                         </td>
                       </tr>
