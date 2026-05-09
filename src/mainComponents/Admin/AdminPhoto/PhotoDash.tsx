@@ -46,7 +46,7 @@ const PhotoCardSkeleton: React.FC<{ viewMode: "grid" | "list" }> = ({
   if (viewMode === "grid") {
     return (
       <Card className='overflow-hidden'>
-        <Skeleton className='aspect-[4/3] w-full' />
+        <Skeleton className='aspect-4/3 w-full' />
         <CardContent className='p-4 space-y-2'>
           <Skeleton className='h-5 w-3/4' />
           <Skeleton className='h-4 w-1/2' />
@@ -59,7 +59,7 @@ const PhotoCardSkeleton: React.FC<{ viewMode: "grid" | "list" }> = ({
   return (
     <Card>
       <div className='flex p-4 gap-4'>
-        <Skeleton className='w-24 h-24 rounded flex-shrink-0' />
+        <Skeleton className='w-24 h-24 rounded shrink-0' />
         <div className='flex-1 space-y-2'>
           <Skeleton className='h-5 w-3/4' />
           <Skeleton className='h-4 w-1/2' />
@@ -158,7 +158,7 @@ const PhotoDash: React.FC = () => {
 
   if (!isAdmin) {
     return (
-      <div className='min-h-screen bg-gradient-to-br from-slate-50 to-white p-4'>
+      <div className='min-h-screen bg-linear-to-br from-slate-50 to-white p-4'>
         <BackNavigation />
         <Alert className='max-w-md mx-auto mt-8'>
           <AlertCircle className='h-4 w-4' />
@@ -171,7 +171,7 @@ const PhotoDash: React.FC = () => {
   // Handle error state
   if (photosError) {
     return (
-      <div className='min-h-screen bg-gradient-to-br from-slate-50 to-white p-4'>
+      <div className='min-h-screen bg-linear-to-br from-slate-50 to-white p-4'>
         <BackNavigation />
         <Alert className='max-w-md mx-auto mt-8' variant='destructive'>
           <AlertCircle className='h-4 w-4' />
@@ -216,7 +216,7 @@ const PhotoDash: React.FC = () => {
   const handleEditPhoto = (photo: PhotoCardData) => {
     // Find the original Photo object to edit
     const originalPhoto = photosData?.data.photos.find(
-      (p) => p._id === photo._id
+      (p) => p._id === photo._id,
     );
     if (originalPhoto) {
       setEditingPhoto(originalPhoto);
@@ -424,7 +424,7 @@ const PhotoDash: React.FC = () => {
                         value={editingPhoto.title}
                         onChange={(e) =>
                           setEditingPhoto((prev) =>
-                            prev ? { ...prev, title: e.target.value } : null
+                            prev ? { ...prev, title: e.target.value } : null,
                           )
                         }
                         required
@@ -441,10 +441,10 @@ const PhotoDash: React.FC = () => {
                                   ...prev,
                                   category:
                                     categories.find(
-                                      (cat) => cat._id === value
+                                      (cat) => cat._id === value,
                                     ) || value,
                                 }
-                              : null
+                              : null,
                           )
                         }
                       >
@@ -469,7 +469,7 @@ const PhotoDash: React.FC = () => {
                           setEditingPhoto((prev) =>
                             prev
                               ? { ...prev, date: new Date(e.target.value) }
-                              : null
+                              : null,
                           )
                         }
                       />
@@ -480,7 +480,7 @@ const PhotoDash: React.FC = () => {
                         value={editingPhoto.location || ""}
                         onChange={(e) =>
                           setEditingPhoto((prev) =>
-                            prev ? { ...prev, location: e.target.value } : null
+                            prev ? { ...prev, location: e.target.value } : null,
                           )
                         }
                       />
@@ -495,7 +495,9 @@ const PhotoDash: React.FC = () => {
                       value={editingPhoto.description || ""}
                       onChange={(e) =>
                         setEditingPhoto((prev) =>
-                          prev ? { ...prev, description: e.target.value } : null
+                          prev
+                            ? { ...prev, description: e.target.value }
+                            : null,
                         )
                       }
                     />

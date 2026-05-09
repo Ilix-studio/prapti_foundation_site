@@ -74,7 +74,7 @@ const EditPhoto = () => {
   const [currentImages, setCurrentImages] = useState<PhotoImage[]>([]);
   const [newImages, setNewImages] = useState<FilePreview[]>([]);
   const [removedImageIndices, setRemovedImageIndices] = useState<Set<number>>(
-    new Set()
+    new Set(),
   );
 
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -178,7 +178,7 @@ const EditPhoto = () => {
         ...prev,
         images: `Maximum 20 images allowed. You can add ${Math.max(
           0,
-          remainingSlots
+          remainingSlots,
         )} more.`,
       }));
       return;
@@ -246,7 +246,7 @@ const EditPhoto = () => {
 
   const handleNewImageAltChange = (index: number, altText: string) => {
     setNewImages((prev) =>
-      prev.map((img, i) => (i === index ? { ...img, altText } : img))
+      prev.map((img, i) => (i === index ? { ...img, altText } : img)),
     );
     setHasChanges(true);
   };
@@ -268,7 +268,7 @@ const EditPhoto = () => {
 
     // Check if all images are removed
     const remainingImages = currentImages.filter(
-      (_, index) => !removedImageIndices.has(index)
+      (_, index) => !removedImageIndices.has(index),
     );
 
     if (remainingImages.length === 0 && newImages.length === 0) {
@@ -303,7 +303,7 @@ const EditPhoto = () => {
 
       // Step 2: Delete removed images (in reverse order to maintain correct indices)
       const indicesToDelete = Array.from(removedImageIndices).sort(
-        (a, b) => b - a
+        (a, b) => b - a,
       );
       for (const imageIndex of indicesToDelete) {
         await updatePhotoWithFile({
@@ -347,7 +347,7 @@ const EditPhoto = () => {
   const handleCancel = () => {
     if (hasChanges) {
       const confirmed = window.confirm(
-        "You have unsaved changes. Are you sure you want to leave?"
+        "You have unsaved changes. Are you sure you want to leave?",
       );
       if (!confirmed) return;
     }
@@ -360,7 +360,7 @@ const EditPhoto = () => {
   // Loading state
   if (loadingPhoto) {
     return (
-      <div className='min-h-screen bg-gradient-to-br from-slate-50 to-white'>
+      <div className='min-h-screen bg-linear-to-br from-slate-50 to-white'>
         <BackNavigation />
         <div className='container py-6 px-4 sm:px-6 max-w-4xl mx-auto'>
           <Skeleton className='h-8 w-64 mb-6' />
@@ -393,7 +393,7 @@ const EditPhoto = () => {
   // Error state
   if (photoError || !photo) {
     return (
-      <div className='min-h-screen bg-gradient-to-br from-slate-50 to-white'>
+      <div className='min-h-screen bg-linear-to-br from-slate-50 to-white'>
         <BackNavigation />
         <div className='container py-6 px-4 sm:px-6 max-w-4xl mx-auto'>
           <Alert variant='destructive' className='max-w-md mx-auto mt-8'>
@@ -420,7 +420,7 @@ const EditPhoto = () => {
     <>
       <BackNavigation />
 
-      <div className='min-h-screen bg-gradient-to-br from-slate-50 to-white'>
+      <div className='min-h-screen bg-linear-to-br from-slate-50 to-white'>
         <div className='container py-6 px-4 sm:px-6 max-w-4xl mx-auto'>
           {/* Header */}
           <motion.div

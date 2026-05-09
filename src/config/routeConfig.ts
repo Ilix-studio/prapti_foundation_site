@@ -15,112 +15,115 @@ const ViewVideoId = lazy(() => import("@/mainComponents/Gallery/ViewVideoId"));
 
 const AdoptionForm = lazy(() => import("@/mainComponents/Adopt/AdoptionForm"));
 const ReportPage = lazy(
-  () => import("@/mainComponents/ReportAbout/ReportPage")
+  () => import("@/mainComponents/ReportAbout/ReportPage"),
 );
 const SupportUs = lazy(() => import("@/mainComponents/SupportUs/SupportUs"));
 const SeeBlogs = lazy(
-  () => import("@/mainComponents/Admin/AdminBlogs/SmallBlogUI/SeeBlogs")
+  () => import("@/mainComponents/Admin/AdminBlogs/SmallBlogUI/SeeBlogs"),
 );
 
 const ViewMessage = lazy(
-  () => import("@/mainComponents/Admin/AdminMessage/ViewMessage")
+  () => import("@/mainComponents/Admin/AdminMessage/ViewMessage"),
 );
 
 const BlogPostPage = lazy(
-  () => import("@/mainComponents/Admin/AdminBlogs/SmallBlogUI/BlogPost")
+  () => import("@/mainComponents/Admin/AdminBlogs/SmallBlogUI/BlogPost"),
 );
 const VolunteerPage = lazy(() => import("@/mainComponents/Volunteer/Volunter"));
 const VolunteerDetail = lazy(
-  () => import("@/mainComponents/Volunteer/VolunteerDetail")
+  () => import("@/mainComponents/Volunteer/VolunteerDetail"),
 );
 const AddBlogPost = lazy(
-  () => import("@/mainComponents/Admin/AdminBlogs/AddBlogForm")
+  () => import("@/mainComponents/Admin/AdminBlogs/AddBlogForm"),
 );
 const EditBlogPost = lazy(
-  () => import("@/mainComponents/Admin/AdminBlogs/EditBlogPost")
+  () => import("@/mainComponents/Admin/AdminBlogs/EditBlogPost"),
 );
 const VolunteerDash = lazy(
-  () => import("@/mainComponents/Volunteer/VolunteerDash")
+  () => import("@/mainComponents/Volunteer/VolunteerDash"),
 );
 const BlogsDash = lazy(
-  () => import("@/mainComponents/Admin/AdminBlogs/SmallBlogUI/BlogsDash")
+  () => import("@/mainComponents/Admin/AdminBlogs/SmallBlogUI/BlogsDash"),
 );
 const WriteTestimonial = lazy(
-  () => import("@/mainComponents/Testimonials/WriteTestimonial")
+  () => import("@/mainComponents/Testimonials/WriteTestimonial"),
 );
 
 import NotFound from "../mainComponents/NotFound";
 import AdminSeeBlog from "@/mainComponents/Admin/AdminBlogs/SmallBlogUI/AdminSeeBlog";
 import BudgetedBillMemo from "@/mainComponents/BudgetedBillMemo";
+import CopyAwardDash from "@/mainComponents/Admin/copy/CopyAwardDash";
+import ViewAllCopyAwards from "@/mainComponents/Admin/copy/ViewAllCopyAwards";
+import ViewCopyAward from "@/mainComponents/Admin/copy/ViewCopyAward";
 
 // Admin components (lazy loaded)
 const NewDashAdmin = lazy(() => import("../mainComponents/Admin/NewDashAdmin"));
 const PhotoDash = lazy(
-  () => import("../mainComponents/Admin/AdminPhoto/PhotoDash")
+  () => import("../mainComponents/Admin/AdminPhoto/PhotoDash"),
 );
 const AddPhoto = lazy(
-  () => import("../mainComponents/Admin/AdminPhoto/AddPhoto")
+  () => import("../mainComponents/Admin/AdminPhoto/AddPhoto"),
 );
 const PhotoViewPage = lazy(
-  () => import("../mainComponents/Admin/AdminPhoto/PhotoCardWrapper")
+  () => import("../mainComponents/Admin/AdminPhoto/PhotoCardWrapper"),
 );
 const EditPhoto = lazy(
-  () => import("../mainComponents/Admin/AdminPhoto/EditPhoto")
+  () => import("../mainComponents/Admin/AdminPhoto/EditPhoto"),
 );
 const VideoDash = lazy(
-  () => import("../mainComponents/Admin/AdminVideo/VideoDash")
+  () => import("../mainComponents/Admin/AdminVideo/VideoDash"),
 );
 const AddVideo = lazy(
-  () => import("../mainComponents/Admin/AdminVideo/AddVideo")
+  () => import("../mainComponents/Admin/AdminVideo/AddVideo"),
 );
 const PlayVideo = lazy(
-  () => import("../mainComponents/Admin/AdminVideo/PlayVideo")
+  () => import("../mainComponents/Admin/AdminVideo/PlayVideo"),
 );
 const EditVideo = lazy(
-  () => import("../mainComponents/Admin/AdminVideo/EditVideo")
+  () => import("../mainComponents/Admin/AdminVideo/EditVideo"),
 );
 
 const CategoryManager = lazy(
-  () => import("../mainComponents/Admin/AdminCategory/CategoryManager")
+  () => import("../mainComponents/Admin/AdminCategory/CategoryManager"),
 );
 const TotalImpactDashboard = lazy(
-  () => import("@/mainComponents/Admin/AdminImpact/Impact")
+  () => import("@/mainComponents/Admin/AdminImpact/Impact"),
 );
 const TestimonialDash = lazy(
-  () => import("@/mainComponents/Testimonials/TestimonialDash")
+  () => import("@/mainComponents/Testimonials/TestimonialDash"),
 );
 const ViewAllMessage = lazy(
-  () => import("@/mainComponents/Admin/AdminMessage/ViewAllMessage")
+  () => import("@/mainComponents/Admin/AdminMessage/ViewAllMessage"),
 );
 //
 const ViewAllAwards = lazy(
-  () => import("@/mainComponents/Awards/ViewAllAwards")
+  () => import("@/mainComponents/Awards/ViewAllAwards"),
 );
 const AddAwards = lazy(
-  () => import("@/mainComponents/Admin/AdminAwards/AddAwards")
+  () => import("@/mainComponents/Admin/AdminAwards/AddAwards"),
 );
 const ViewAward = lazy(
-  () => import("@/mainComponents/Admin/AdminAwards/ViewAward")
+  () => import("@/mainComponents/Admin/AdminAwards/ViewAward"),
 );
 const AwardDash = lazy(
-  () => import("@/mainComponents/Admin/AdminAwards/AwardDash")
+  () => import("@/mainComponents/Admin/AdminAwards/AwardDash"),
 );
 const EditAward = lazy(
-  () => import("@/mainComponents/Admin/AdminAwards/EditAward")
+  () => import("@/mainComponents/Admin/AdminAwards/EditAward"),
 );
 //
 const ViewAllRescue = lazy(
-  () => import("@/mainComponents/Rescue/ViewAllRescue")
+  () => import("@/mainComponents/Rescue/ViewAllRescue"),
 );
 const ViewRescue = lazy(() => import("@/mainComponents/Rescue/ViewRescue"));
 const EditRescue = lazy(
-  () => import("@/mainComponents/Admin/AdminRescue/EditRescue")
+  () => import("@/mainComponents/Admin/AdminRescue/EditRescue"),
 );
 const AddRescue = lazy(
-  () => import("@/mainComponents/Admin/AdminRescue/AddRescue")
+  () => import("@/mainComponents/Admin/AdminRescue/AddRescue"),
 );
 const RescueDash = lazy(
-  () => import("@/mainComponents/Admin/AdminRescue/RescueDash")
+  () => import("@/mainComponents/Admin/AdminRescue/RescueDash"),
 );
 
 // Route configuration
@@ -159,7 +162,11 @@ export const publicRoutes = [
   },
   {
     path: "/see-bill-memo",
-    component: BudgetedBillMemo, },
+    component: BudgetedBillMemo,
+  },
+
+  { path: "/copy-awards", component: ViewAllCopyAwards },
+  { path: "/copy-awards/:id", component: ViewCopyAward },
 ];
 
 export const adminRoutesDash = [
@@ -175,6 +182,8 @@ export const adminRoutesDash = [
   //
   { path: "/admin/awardDash", component: AwardDash },
   { path: "/admin/rescueDash", component: RescueDash },
+  // Copy Award Dashboard
+  { path: "/admin/copyAwardDash", component: CopyAwardDash },
 ];
 
 // NEW: Admin specific routes with dashboard mapping

@@ -185,7 +185,7 @@ export const BackNavigation = () => {
               <Button
                 onClick={handleSafeGoBack}
                 variant='ghost'
-                className='group flex items-center gap-3 px-4 py-2 hover:bg-gradient-to-r hover:from-[#FF9933]/10 hover:to-[#138808]/10 rounded-xl transition-all duration-300'
+                className='group flex items-center gap-3 px-4 py-2 hover:bg-linear-to-r hover:from-[#FF9933]/10 hover:to-[#138808]/10 rounded-xl transition-all duration-300'
               >
                 <div className='relative'>
                   <ChevronLeft className='w-5 h-5 group-hover:-translate-x-1 transition-transform duration-300' />
@@ -224,7 +224,7 @@ export const BackNavigation = () => {
                     flex items-center gap-2 transition-all duration-200
                     ${
                       button.variant === "default"
-                        ? "bg-gradient-to-r from-[#FF9933] to-[#138808] hover:from-[#FF9933]/90 hover:to-[#138808]/90 text-white shadow-lg"
+                        ? "bg-linear-to-r from-[#FF9933] to-[#138808] hover:from-[#FF9933]/90 hover:to-[#138808]/90 text-white shadow-lg"
                         : button.variant === "destructive"
                           ? "hover:bg-red-50 hover:border-red-200 text-red-600 hover:text-red-700"
                           : "hover:bg-[#FF9933]/5 hover:border-[#FF9933]/30"
@@ -250,7 +250,7 @@ export const BackNavigation = () => {
                     flex items-center gap-2 transition-all duration-200
                     ${
                       button.variant === "default"
-                        ? "bg-gradient-to-r from-[#FF9933] to-[#138808] hover:from-[#FF9933]/90 hover:to-[#138808]/90 text-white shadow-lg"
+                        ? "bg-linear-to-r from-[#FF9933] to-[#138808] hover:from-[#FF9933]/90 hover:to-[#138808]/90 text-white shadow-lg"
                         : button.variant === "destructive"
                           ? "hover:bg-red-50 hover:border-red-200 text-red-600 hover:text-red-700"
                           : "hover:bg-[#FF9933]/5 hover:border-[#FF9933]/30"

@@ -35,7 +35,7 @@ const PhotoViewPage: React.FC = () => {
   // Handle missing ID
   if (!id) {
     return (
-      <div className='min-h-screen bg-gradient-to-br from-slate-50 to-white p-4'>
+      <div className='min-h-screen bg-linear-to-br from-slate-50 to-white p-4'>
         <BackNavigation />
         <Alert variant='destructive' className='max-w-md mx-auto mt-8'>
           <AlertCircle className='h-4 w-4' />
@@ -48,7 +48,7 @@ const PhotoViewPage: React.FC = () => {
   // Handle admin access
   if (!isAdmin) {
     return (
-      <div className='min-h-screen bg-gradient-to-br from-slate-50 to-white p-4'>
+      <div className='min-h-screen bg-linear-to-br from-slate-50 to-white p-4'>
         <BackNavigation />
         <Alert className='max-w-md mx-auto mt-8'>
           <AlertCircle className='h-4 w-4' />
@@ -63,7 +63,7 @@ const PhotoViewPage: React.FC = () => {
   // Handle loading state
   if (isLoading) {
     return (
-      <div className='min-h-screen bg-gradient-to-br from-slate-50 to-white p-4'>
+      <div className='min-h-screen bg-linear-to-br from-slate-50 to-white p-4'>
         <BackNavigation />
         <div className='flex items-center justify-center min-h-[400px]'>
           <div className='flex flex-col items-center gap-4'>
@@ -91,7 +91,7 @@ const PhotoViewPage: React.FC = () => {
     }
 
     return (
-      <div className='min-h-screen bg-gradient-to-br from-slate-50 to-white p-4'>
+      <div className='min-h-screen bg-linear-to-br from-slate-50 to-white p-4'>
         <BackNavigation />
         <Alert variant='destructive' className='max-w-md mx-auto mt-8'>
           <AlertCircle className='h-4 w-4' />
@@ -112,7 +112,7 @@ const PhotoViewPage: React.FC = () => {
   // Handle case where photo is not found
   if (!photoResponse?.data) {
     return (
-      <div className='min-h-screen bg-gradient-to-br from-slate-50 to-white p-4'>
+      <div className='min-h-screen bg-linear-to-br from-slate-50 to-white p-4'>
         <BackNavigation />
         <Alert variant='destructive' className='max-w-md mx-auto mt-8'>
           <AlertCircle className='h-4 w-4' />
@@ -129,7 +129,7 @@ const PhotoViewPage: React.FC = () => {
   const handleDelete = async (photoId: string) => {
     if (
       !confirm(
-        "Are you sure you want to delete this photo? This action cannot be undone."
+        "Are you sure you want to delete this photo? This action cannot be undone.",
       )
     ) {
       return;
@@ -155,7 +155,7 @@ const PhotoViewPage: React.FC = () => {
     <>
       <BackNavigation />
 
-      <div className='min-h-screen bg-gradient-to-br from-slate-50 to-white p-4'>
+      <div className='min-h-screen bg-linear-to-br from-slate-50 to-white p-4'>
         <div className='flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6'>
           <h1 className='text-3xl font-bold text-slate-800'>View Photo</h1>
 

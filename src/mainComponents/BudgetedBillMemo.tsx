@@ -144,7 +144,7 @@ const SectionTitle: React.FC<{ children: React.ReactNode }> = ({
     className='flex items-center gap-2 border-b-2 border-indigo-600 uppercase font-bold text-indigo-600 tracking-widest'
     style={{ fontSize: 10, paddingTop: 24, paddingBottom: 12 }}
   >
-    <span className='w-1.5 h-1.5 rounded-full bg-indigo-600 flex-shrink-0' />
+    <span className='w-1.5 h-1.5 rounded-full bg-indigo-600 shrink-0' />
     {children}
   </div>
 );
@@ -353,7 +353,7 @@ const BudgetedBillMemo: React.FC = () => {
           <div className='flex flex-col sm:flex-row sm:justify-between sm:items-start relative z-10 gap-4 sm:gap-0'>
             {/* Brand */}
             <div className='flex items-center gap-2 sm:gap-3'>
-              <div className='w-10 h-10 sm:w-12 sm:h-12 bg-indigo-600 rounded-lg flex items-center justify-center text-white text-xl sm:text-2xl font-bold flex-shrink-0'>
+              <div className='w-10 h-10 sm:w-12 sm:h-12 bg-indigo-600 rounded-lg flex items-center justify-center text-white text-xl sm:text-2xl font-bold shrink-0'>
                 PF
               </div>
               <div>
