@@ -1,4 +1,7 @@
 // Define types for volunteer data
+
+export type VolunteerStatus = "pending" | "approved" | "rejected";
+
 export interface Volunteer {
   _id: string;
   firstName: string;
@@ -13,6 +16,11 @@ export interface Volunteer {
   interests: string[];
   experience?: string;
   reason: string;
+  isRead: boolean;
+  status: VolunteerStatus;
+  rejectionReason?: string;
+  approvedAt?: string;
+  rejectedAt?: string;
   submittedAt: string;
   createdAt: string;
   updatedAt: string;
@@ -64,4 +72,14 @@ export interface VolunteerDetailResponse {
 export interface DeleteVolunteerResponse {
   success: boolean;
   message: string;
+}
+export interface VolunteerStatusResponse {
+  success: boolean;
+  message: string;
+  data: {
+    id: string;
+    status: VolunteerStatus;
+    approvedAt?: string;
+    rejectedAt?: string;
+  };
 }

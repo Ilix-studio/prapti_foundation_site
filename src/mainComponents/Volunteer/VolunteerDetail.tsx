@@ -1,7 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Mail,
@@ -13,14 +15,80 @@ import {
   Loader2,
   AlertCircle,
   Hash,
+  CheckCircle,
+  XCircle,
 } from "lucide-react";
-import { useGetVolunteerApplicationByIdQuery } from "@/redux-store/services/volunteerApi";
-
+import {
+  useGetVolunteerApplicationByIdQuery,
+  useApproveVolunteerApplicationMutation,
+  useRejectVolunteerApplicationMutation,
+} from "@/redux-store/services/volunteerApi";
 import { BackNavigation } from "@/config/navigation/BackNavigation";
+import { VolunteerStatus } from "@/types/volunteer.types";
+
+// ─── Helpers ─────────────────────────────────────────────────────────────────
+
+const STATUS_BADGE: Record<
+  VolunteerStatus,
+  { label: string; className: string }
+> = {
+  pending: {
+    label: "Pending",
+    className: "bg-orange-100 text-orange-700 border-orange-200",
+  },
+  approved: {
+    label: "Approved",
+    className: "bg-green-100 text-green-700 border-green-200",
+  },
+  rejected: {
+    label: "Rejected",
+    className: "bg-red-100 text-red-700 border-red-200",
+  },
+};
+
+// ─── Component ────────────────────────────────────────────────────────────────
 
 const VolunteerDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
+
   const { data, isLoading, error } = useGetVolunteerApplicationByIdQuery(id!);
+  const [approveVolunteer, { isLoading: isApproving }] =
+    useApproveVolunteerApplicationMutation();
+  const [rejectVolunteer, { isLoading: isRejecting }] =
+    useRejectVolunteerApplicationMutation();
+
+  const [showRejectInput, setShowRejectInput] = useState(false);
+  const [rejectReason, setRejectReason] = useState("");
+  const [actionError, setActionError] = useState<string | null>(null);
+
+  const handleApprove = async () => {
+    setActionError(null);
+    try {
+      await approveVolunteer(id!).unwrap();
+    } catch (err: any) {
+      setActionError(err?.data?.message || "Failed to approve volunteer");
+    }
+  };
+
+  const handleRejectConfirm = async () => {
+    setActionError(null);
+    try {
+      await rejectVolunteer({
+        id: id!,
+        reason: rejectReason.trim() || undefined,
+      }).unwrap();
+      setShowRejectInput(false);
+      setRejectReason("");
+    } catch (err: any) {
+      setActionError(err?.data?.message || "Failed to reject volunteer");
+    }
+  };
+
+  const handleRejectCancel = () => {
+    setShowRejectInput(false);
+    setRejectReason("");
+    setActionError(null);
+  };
 
   if (isLoading) {
     return (
@@ -55,12 +123,13 @@ const VolunteerDetail: React.FC = () => {
   }
 
   const volunteer = data.data;
+  const statusCfg = STATUS_BADGE[volunteer.status ?? "pending"];
 
   return (
     <>
       <BackNavigation />
       <div className='container mx-auto p-6 space-y-6'>
-        {/* Header Section */}
+        {/* Header */}
         <div className='flex items-center space-x-3'>
           <Hash className='h-8 w-8 text-orange-500' />
           <div>
@@ -232,7 +301,8 @@ const VolunteerDetail: React.FC = () => {
           </div>
 
           {/* Sidebar */}
-          <div className='lg:col-span-4'>
+          <div className='lg:col-span-4 space-y-4'>
+            {/* Application Summary */}
             <Card className='shadow-sm border-0 bg-white sticky top-8'>
               <CardHeader>
                 <CardTitle className='flex items-center gap-3 text-lg text-gray-900'>
@@ -255,7 +325,7 @@ const VolunteerDetail: React.FC = () => {
                           year: "numeric",
                           month: "long",
                           day: "numeric",
-                        }
+                        },
                       )}
                     </p>
                     <p className='text-sm text-gray-600'>
@@ -264,7 +334,7 @@ const VolunteerDetail: React.FC = () => {
                         {
                           hour: "2-digit",
                           minute: "2-digit",
-                        }
+                        },
                       )}
                     </p>
                   </div>
@@ -285,6 +355,138 @@ const VolunteerDetail: React.FC = () => {
                     </p>
                   </div>
                 </div>
+              </CardContent>
+            </Card>
+
+            {/* Status & Actions Card */}
+            <Card className='shadow-sm border-0 bg-white'>
+              <CardHeader>
+                <CardTitle className='text-lg text-gray-900'>
+                  Application Status
+                </CardTitle>
+              </CardHeader>
+              <CardContent className='space-y-4'>
+                {/* Current status */}
+                <div className='flex items-center gap-2'>
+                  <span className='text-sm text-gray-500'>Current:</span>
+                  <Badge
+                    className={`border text-xs font-medium ${statusCfg.className}`}
+                  >
+                    {statusCfg.label}
+                  </Badge>
+                </div>
+
+                {/* Approved timestamp */}
+                {volunteer.status === "approved" && volunteer.approvedAt && (
+                  <p className='text-xs text-gray-500'>
+                    Approved on{" "}
+                    {new Date(volunteer.approvedAt).toLocaleDateString(
+                      "en-US",
+                      {
+                        year: "numeric",
+                        month: "short",
+                        day: "numeric",
+                      },
+                    )}
+                  </p>
+                )}
+
+                {/* Rejected timestamp + reason */}
+                {volunteer.status === "rejected" && (
+                  <div className='space-y-1'>
+                    {volunteer.rejectedAt && (
+                      <p className='text-xs text-gray-500'>
+                        Rejected on{" "}
+                        {new Date(volunteer.rejectedAt).toLocaleDateString(
+                          "en-US",
+                          {
+                            year: "numeric",
+                            month: "short",
+                            day: "numeric",
+                          },
+                        )}
+                      </p>
+                    )}
+                    {volunteer.rejectionReason && (
+                      <p className='text-xs text-red-500 italic'>
+                        Reason: {volunteer.rejectionReason}
+                      </p>
+                    )}
+                  </div>
+                )}
+
+                {/* Error */}
+                {actionError && (
+                  <div className='flex items-center gap-2 p-3 bg-red-50 border border-red-200 rounded-lg'>
+                    <AlertCircle className='h-4 w-4 text-red-500 ' />
+                    <p className='text-xs text-red-600'>{actionError}</p>
+                  </div>
+                )}
+
+                {/* Approve button — hidden when already approved */}
+                {volunteer.status !== "approved" && (
+                  <Button
+                    className='w-full bg-green-600 hover:bg-green-700 text-white'
+                    onClick={handleApprove}
+                    disabled={isApproving || isRejecting}
+                  >
+                    {isApproving ? (
+                      <Loader2 className='h-4 w-4 animate-spin mr-2' />
+                    ) : (
+                      <CheckCircle className='h-4 w-4 mr-2' />
+                    )}
+                    Approve & Notify
+                  </Button>
+                )}
+
+                {/* Reject button — hidden when already rejected */}
+                {volunteer.status !== "rejected" && !showRejectInput && (
+                  <Button
+                    variant='outline'
+                    className='w-full text-red-600 border-red-300 hover:bg-red-50'
+                    onClick={() => setShowRejectInput(true)}
+                    disabled={isApproving}
+                  >
+                    <XCircle className='h-4 w-4 mr-2' />
+                    Reject
+                  </Button>
+                )}
+
+                {/* Reject input */}
+                {showRejectInput && (
+                  <div className='space-y-2'>
+                    <Input
+                      placeholder='Rejection reason (optional)'
+                      value={rejectReason}
+                      onChange={(e) => setRejectReason(e.target.value)}
+                      maxLength={500}
+                      className='text-sm'
+                    />
+                    <div className='flex gap-2'>
+                      <Button
+                        variant='outline'
+                        size='sm'
+                        className='flex-1 text-red-600 border-red-300 hover:bg-red-50'
+                        onClick={handleRejectConfirm}
+                        disabled={isRejecting}
+                      >
+                        {isRejecting && (
+                          <Loader2 className='h-4 w-4 animate-spin mr-1' />
+                        )}
+                        Confirm
+                      </Button>
+                      <Button
+                        variant='outline'
+                        size='sm'
+                        className='flex-1'
+                        onClick={handleRejectCancel}
+                        disabled={isRejecting}
+                      >
+                        Cancel
+                      </Button>
+                    </div>
+                  </div>
+                )}
               </CardContent>
             </Card>
           </div>
