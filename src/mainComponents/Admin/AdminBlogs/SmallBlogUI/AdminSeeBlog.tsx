@@ -52,7 +52,7 @@ const AdminSeeBlog: React.FC = () => {
   // Loading state
   if (isLoading) {
     return (
-      <div className='min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 flex items-center justify-center'>
+      <div className='min-h-screen bg-linear-to-br from-slate-50 via-white to-blue-50 flex items-center justify-center'>
         <div className='flex flex-col items-center gap-4'>
           <Loader2 className='w-8 h-8 animate-spin text-[#FF9933]' />
           <p className='text-sm text-gray-600'>Loading blog post...</p>
@@ -64,7 +64,7 @@ const AdminSeeBlog: React.FC = () => {
   // Error state
   if (error || !blogPost) {
     return (
-      <div className='min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 flex items-center justify-center'>
+      <div className='min-h-screen bg-linear-to-br from-slate-50 via-white to-blue-50 flex items-center justify-center'>
         <div className='text-center'>
           <h2 className='text-2xl font-bold text-gray-800 mb-4'>
             Blog Post Not Found
@@ -88,7 +88,7 @@ const AdminSeeBlog: React.FC = () => {
     <>
       <BackNavigation />
 
-      <div className='min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50'>
+      <div className='min-h-screen bg-linear-to-br from-slate-50 via-white to-blue-50'>
         <div className='bg-white'>
           <div className='max-w-4xl mx-auto px-6 py-4'>
             <div className='flex items-center justify-between'>
@@ -161,7 +161,7 @@ const AdminSeeBlog: React.FC = () => {
                           year: "numeric",
                           month: "long",
                           day: "numeric",
-                        }
+                        },
                       )}
                     </span>
                   </div>
