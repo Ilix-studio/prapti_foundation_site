@@ -107,7 +107,7 @@ export const volunteerApi = createApi({
       string
     >({
       query: (id) => ({
-        url: `/volunteers/${id}/read`,
+        url: `/volunteers/${id}/mark-read`,
         method: "PATCH",
       }),
       invalidatesTags: (_, __, id) => [
