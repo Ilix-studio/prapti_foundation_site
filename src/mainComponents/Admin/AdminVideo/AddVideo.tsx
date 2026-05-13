@@ -105,7 +105,7 @@ const AddVideo = () => {
     } catch (error: any) {
       console.error("Create category error:", error);
       toast.error(
-        error?.data?.message || error?.message || "Failed to create category"
+        error?.data?.message || error?.message || "Failed to create category",
       );
     }
   };
@@ -134,7 +134,7 @@ const AddVideo = () => {
   };
 
   const handleThumbnailFileChange = (
-    e: React.ChangeEvent<HTMLInputElement>
+    e: React.ChangeEvent<HTMLInputElement>,
   ) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -197,7 +197,7 @@ const AddVideo = () => {
     } catch (error: any) {
       console.error("Upload failed:", error);
       toast.error(
-        error.data?.message || "Failed to upload video. Please try again."
+        error.data?.message || "Failed to upload video. Please try again.",
       );
       setErrors({
         submit:
@@ -216,7 +216,7 @@ const AddVideo = () => {
   // Show loading state while categories are loading
   if (categoriesLoading) {
     return (
-      <div className='min-h-screen bg-gradient-to-br from-slate-50 to-white flex items-center justify-center'>
+      <div className='min-h-screen bg-linear-to-br from-slate-50 to-white flex items-center justify-center'>
         <div className='flex items-center gap-2'>
           <Loader2 className='w-6 h-6 animate-spin' />
           <span>Loading categories...</span>
@@ -228,7 +228,7 @@ const AddVideo = () => {
   // Show error state if categories failed to load
   if (categoriesError) {
     return (
-      <div className='min-h-screen bg-gradient-to-br from-slate-50 to-white flex items-center justify-center'>
+      <div className='min-h-screen bg-linear-to-br from-slate-50 to-white flex items-center justify-center'>
         <div className='text-center'>
           <p className='text-red-600 mb-4'>Failed to load categories</p>
           <button

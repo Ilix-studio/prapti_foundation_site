@@ -5,7 +5,6 @@ import { User } from "lucide-react";
 interface TeamMember {
   id: number;
   name: string;
-
   image?: string;
 }
 
@@ -16,19 +15,13 @@ const teamMembers: TeamMember[] = [
     image:
       "https://res.cloudinary.com/doakqvah3/image/upload/q_auto/f_auto/v1777246163/WhatsApp_Image_2026-04-27_at_4.31.07_AM_1_zhoa3l.jpg",
   },
-  // {
-  //   id: 2,
-  //   name: "Abhishek Boney Sinha",
 
-  //   image:
-  //     "https://firebasestorage.googleapis.com/v0/b/tsangpool-honda-otp.firebasestorage.app/o/prapti-team-member%2FScreenshot%202025-12-14%20at%2020.06.48.png?alt=media&token=9d5e5d7d-3cd3-45ee-b425-5ecca1cf0945",
-  // },
   {
     id: 3,
     name: "Nayan Das",
 
     image:
-      "https://res.cloudinary.com/doakqvah3/image/upload/q_auto/f_auto/v1778239943/WhatsApp_Image_2026-05-08_at_12.30.08_PM_ixwvbo.jpg",
+      "https://res.cloudinary.com/doakqvah3/image/upload/q_auto/f_auto/v1778239943/WhatsApp_Image_2026-05-08_at_12.18.46_PM_rbf8wf.jpg",
   },
   {
     id: 4,
@@ -43,13 +36,7 @@ const teamMembers: TeamMember[] = [
     image:
       "https://res.cloudinary.com/doakqvah3/image/upload/q_auto/f_auto/v1778239943/WhatsApp_Image_2026-05-08_at_12.30.08_PM_ixwvbo.jpg",
   },
-  // {
-  //   id: 6,
-  //   name: "Dr. Jajneswar Bari ",
 
-  //   image:
-  //     "https://firebasestorage.googleapis.com/v0/b/tsangpool-honda-otp.firebasestorage.app/o/prapti-team-member%2FWhatsApp%20Image%202025-12-12%20at%202.30.32%20PM.png?alt=media&token=56a507e4-a428-4252-8046-0fa508e25cae",
-  // },
   {
     id: 7,
     name: "Pompy Devi",
@@ -57,13 +44,6 @@ const teamMembers: TeamMember[] = [
     image:
       "https://res.cloudinary.com/doakqvah3/image/upload/q_auto/f_auto/v1777246163/WhatsApp_Image_2026-04-27_at_4.31.06_AM_fzmjeq.jpg",
   },
-  // {
-  //   id: 8,
-  //   name: "John Doe",
-  //   role: "xx",
-  //   experience: "xx",
-  //   image: "",
-  // },
 ];
 
 const OurTeam: React.FC = () => {
@@ -89,7 +69,7 @@ const OurTeam: React.FC = () => {
               key={member.id}
               className='bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow'
             >
-              <div className='aspect-square bg-gradient-to-br from-orange-100 to-orange-200 flex items-center justify-center'>
+              <div className='aspect-square bg-linear-to-br from-orange-100 to-orange-200 flex items-center justify-center'>
                 {member.image ? (
                   <img
                     src={member.image}

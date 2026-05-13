@@ -60,7 +60,7 @@ const VideoCard = ({
           <CardContent className='p-4'>
             <div className='flex items-center gap-4'>
               {/* Thumbnail */}
-              <div className='relative w-32 h-20 flex-shrink-0'>
+              <div className='relative w-32 h-20'>
                 <img
                   src={video.thumbnail}
                   alt={video.title}

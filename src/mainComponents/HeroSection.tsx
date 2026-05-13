@@ -16,7 +16,7 @@ export function HeroSection() {
           alt='Dogs at Prapti Foundation shelter'
           className='w-full h-full object-cover object-center'
         />
-        <div className='absolute inset-0 bg-gradient-to-r from-black/70 to-black/30'></div>
+        <div className='absolute inset-0 bg-linear-to-r from-black/70 to-black/30'></div>
       </div>
 
       <div className='container relative z-10 px-4 md:px-6 py-12 md:py-20'>
