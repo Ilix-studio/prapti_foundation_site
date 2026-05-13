@@ -169,25 +169,25 @@ const PreSupport = () => {
                 </h3>
                 <ul className='space-y-2'>
                   <li className='flex items-start gap-2'>
-                    <Check className='h-5 w-5 text-orange-500 flex-shrink-0 mt-0.5' />
+                    <Check className='h-5 w-5 text-orange-500 shrink-0 mt-0.5' />
                     <span>₹500 provides a week of food for one dog</span>
                   </li>
                   <li className='flex items-start gap-2'>
-                    <Check className='h-5 w-5 text-orange-500 flex-shrink-0 mt-0.5' />
+                    <Check className='h-5 w-5 text-orange-500 shrink-0 mt-0.5' />
                     <span>₹1,000 covers basic vaccinations</span>
                   </li>
                   <li className='flex items-start gap-2'>
-                    <Check className='h-5 w-5 text-orange-500 flex-shrink-0 mt-0.5' />
+                    <Check className='h-5 w-5 text-orange-500 shrink-0 mt-0.5' />
                     <span>₹2,500 helps provide emergency medical care</span>
                   </li>
                   <li className='flex items-start gap-2'>
-                    <Check className='h-5 w-5 text-orange-500 flex-shrink-0 mt-0.5' />
+                    <Check className='h-5 w-5 text-orange-500 shrink-0 mt-0.5' />
                     <span>
                       ₹5,000 sponsors a dog's complete care for a month
                     </span>
                   </li>
                   <li className='flex items-start gap-2'>
-                    <Check className='h-5 w-5 text-orange-500 flex-shrink-0 mt-0.5' />
+                    <Check className='h-5 w-5 text-orange-500 shrink-0 mt-0.5' />
                     <span>₹10,000 helps us improve shelter facilities</span>
                   </li>
                 </ul>
@@ -238,7 +238,7 @@ const PreSupport = () => {
                               >
                                 ₹{amount}
                               </Button>
-                            )
+                            ),
                           )}
                         </div>
 
@@ -452,7 +452,7 @@ const PreSupport = () => {
                               >
                                 ₹{amount}
                               </Button>
-                            )
+                            ),
                           )}
                         </div>
 

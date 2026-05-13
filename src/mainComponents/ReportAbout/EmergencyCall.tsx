@@ -8,7 +8,7 @@ export function EmergencyCall() {
       <div className='container px-4 md:px-6'>
         <div className='flex flex-col md:flex-row items-center justify-between gap-6'>
           <div className='flex items-center gap-4'>
-            <div className='p-2 rounded-full bg-red-100 flex-shrink-0'>
+            <div className='p-2 rounded-full bg-red-100 shrink-0'>
               <AlertTriangle className='h-6 w-6 text-red-500' />
             </div>
             <div>

@@ -51,7 +51,7 @@ const PlayVideo: React.FC = () => {
 
   if (!id) {
     return (
-      <div className='min-h-screen bg-gradient-to-br from-slate-50 to-white flex items-center justify-center p-4'>
+      <div className='min-h-screen bg-linear-to-br from-slate-50 to-white flex items-center justify-center p-4'>
         <Alert variant='destructive' className='max-w-md'>
           <AlertCircle className='h-4 w-4' />
           <AlertDescription>Video ID not found</AlertDescription>
@@ -62,7 +62,7 @@ const PlayVideo: React.FC = () => {
 
   if (isLoading) {
     return (
-      <div className='min-h-screen bg-gradient-to-br from-slate-50 to-white p-4'>
+      <div className='min-h-screen bg-linear-to-br from-slate-50 to-white p-4'>
         <div className='max-w-6xl mx-auto space-y-6'>
           <div className='flex items-center justify-between'>
             <Skeleton className='h-10 w-20' />
@@ -91,7 +91,7 @@ const PlayVideo: React.FC = () => {
 
   if (error || !videoData?.success) {
     return (
-      <div className='min-h-screen bg-gradient-to-br from-slate-50 to-white flex items-center justify-center p-4'>
+      <div className='min-h-screen bg-linear-to-br from-slate-50 to-white flex items-center justify-center p-4'>
         <Alert variant='destructive' className='max-w-md'>
           <AlertCircle className='h-4 w-4' />
           <AlertDescription>
@@ -106,9 +106,9 @@ const PlayVideo: React.FC = () => {
   const categoryName = getVideoCategoryName(video.category);
 
   return (
-    <div className='min-h-screen bg-gradient-to-br from-slate-50 to-white'>
+    <div className='min-h-screen bg-linear-to-br from-slate-50 to-white'>
       {/* Header */}
-      <div className='sticky top-0 z-40 w-full border-b bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60'>
+      <div className='sticky top-0 z-40 w-full border-b bg-white/95 backdrop-blur'>
         <div className='container flex h-16 items-center justify-between px-4'>
           <Button variant='ghost' onClick={handleBack}>
             <ArrowLeft className='w-4 h-4 mr-2' />

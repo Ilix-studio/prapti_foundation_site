@@ -7,6 +7,7 @@ import { Heart, Users, Calendar, Dog } from "lucide-react";
 import { Link } from "react-router-dom";
 
 import OurTeam from "./OurTeam";
+import AboutFounder from "./AboutFounder";
 
 const AboutUs: React.FC = () => {
   return (
@@ -78,6 +79,7 @@ const AboutUs: React.FC = () => {
           </div>
         </div>
       </section>
+      <AboutFounder />
       <OurTeam />
 
       {/* Our Impact Section */}

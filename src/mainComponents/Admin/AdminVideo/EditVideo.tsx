@@ -183,7 +183,7 @@ const EditVideo = () => {
         const seconds = duration % 60;
         handleInputChange(
           "duration",
-          `${minutes}:${seconds.toString().padStart(2, "0")}`
+          `${minutes}:${seconds.toString().padStart(2, "0")}`,
         );
       };
       video.src = url;
@@ -191,7 +191,7 @@ const EditVideo = () => {
   };
 
   const handleThumbnailFileChange = (
-    e: React.ChangeEvent<HTMLInputElement>
+    e: React.ChangeEvent<HTMLInputElement>,
   ) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -205,7 +205,7 @@ const EditVideo = () => {
   const handleRemoveVideo = () => {
     if (
       confirm(
-        "Are you sure you want to remove the current video? You'll need to upload a new one."
+        "Are you sure you want to remove the current video? You'll need to upload a new one.",
       )
     ) {
       setVideoRemoved(true);
@@ -325,7 +325,7 @@ const EditVideo = () => {
   const handleCancel = () => {
     if (hasChanges) {
       const confirmed = window.confirm(
-        "You have unsaved changes. Are you sure you want to leave?"
+        "You have unsaved changes. Are you sure you want to leave?",
       );
       if (!confirmed) return;
     }
@@ -341,7 +341,7 @@ const EditVideo = () => {
   // Loading state
   if (loadingVideo) {
     return (
-      <div className='min-h-screen bg-gradient-to-br from-slate-50 to-white'>
+      <div className='min-h-screen bg-linear-to-br from-slate-50 to-white'>
         <BackNavigation />
         <div className='container py-6 px-4 sm:px-6 max-w-4xl mx-auto'>
           <Skeleton className='h-8 w-64 mb-6' />
@@ -375,7 +375,7 @@ const EditVideo = () => {
   // Error state
   if (videoError || !video) {
     return (
-      <div className='min-h-screen bg-gradient-to-br from-slate-50 to-white'>
+      <div className='min-h-screen bg-linear-to-br from-slate-50 to-white'>
         <BackNavigation />
         <div className='container py-6 px-4 sm:px-6 max-w-4xl mx-auto'>
           <Alert variant='destructive' className='max-w-md mx-auto mt-8'>
@@ -402,7 +402,7 @@ const EditVideo = () => {
     <>
       <BackNavigation />
 
-      <div className='min-h-screen bg-gradient-to-br from-slate-50 to-white'>
+      <div className='min-h-screen bg-linear-to-br from-slate-50 to-white'>
         <div className='container py-6 px-4 sm:px-6 max-w-4xl mx-auto'>
           {/* Header */}
           <motion.div
