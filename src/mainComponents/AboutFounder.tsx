@@ -43,7 +43,7 @@ const AboutFounder: React.FC = () => {
               <LazyImage
                 src={FOUNDER.image}
                 alt={`Portrait of ${FOUNDER.name}`}
-                wrapperClassName='relative aspect-square md:aspect-auto md:h-full bg-linear-to-br from-orange-100 to-orange-200 flex items-center justify-center overflow-hidden'
+                wrapperClassName='relative aspect-square md:aspect-auto md:h-full bg-linear-to-br from-orange-100 to-orange-200 flex items-center justify-center overflow-hidden rounded-r-lg border-r '
               />
             </div>
 

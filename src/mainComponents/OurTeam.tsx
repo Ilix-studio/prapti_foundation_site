@@ -17,32 +17,50 @@ const teamMembers: TeamMember[] = [
   },
 
   {
-    id: 3,
+    id: 2,
     name: "Nayan Das",
 
     image:
       "https://res.cloudinary.com/doakqvah3/image/upload/q_auto/f_auto/v1778239943/WhatsApp_Image_2026-05-08_at_12.18.46_PM_rbf8wf.jpg",
   },
   {
-    id: 4,
+    id: 3,
     name: "Moheswar Deka",
 
     image:
       "https://res.cloudinary.com/doakqvah3/image/upload/q_auto/f_auto/v1777246162/WhatsApp_Image_2026-04-27_at_4.31.06_AM_1_hhsd65.jpg",
   },
   {
-    id: 5,
+    id: 4,
     name: "Partha Hazarika",
     image:
       "https://res.cloudinary.com/doakqvah3/image/upload/q_auto/f_auto/v1778239943/WhatsApp_Image_2026-05-08_at_12.30.08_PM_ixwvbo.jpg",
   },
 
   {
-    id: 7,
+    id: 5,
     name: "Pompy Devi",
 
     image:
       "https://res.cloudinary.com/doakqvah3/image/upload/q_auto/f_auto/v1777246163/WhatsApp_Image_2026-04-27_at_4.31.06_AM_fzmjeq.jpg",
+  },
+  {
+    id: 6,
+    name: "Madhurjya Gogoi",
+    image:
+      "https://res.cloudinary.com/doakqvah3/image/upload/q_auto/f_auto/v1778847439/WhatsApp_Image_2026-05-13_at_10.38.51_PM_azt1fb.jpg",
+  },
+  {
+    id: 7,
+    name: "Pratyasha Phukan",
+    image:
+      "https://res.cloudinary.com/doakqvah3/image/upload/q_auto/f_auto/v1778847440/WhatsApp_Image_2026-05-13_at_12.48.31_PM_zyklmq.jpg",
+  },
+  {
+    id: 8,
+    name: "Kamal",
+    image:
+      "https://res.cloudinary.com/doakqvah3/image/upload/q_auto/f_auto/v1778847440/WhatsApp_Image_2026-05-13_at_12.48.28_PM_hmrin2.jpg",
   },
 ];
 
