@@ -23,7 +23,7 @@ const Testimonials: React.FC<TestimonialsProps> = ({ onAddTestimonial }) => {
 
   if (isLoading) {
     return (
-      <section className='py-16 bg-gradient-to-b from-slate-50 to-white dark:from-slate-900 dark:to-slate-800'>
+      <section className='py-16 bg-linear-to-b from-slate-50 to-white dark:from-slate-900 dark:to-slate-800'>
         <div className='container mx-auto px-4'>
           <div className='text-center mb-12'>
             <h2 className='text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4'>
@@ -50,7 +50,7 @@ const Testimonials: React.FC<TestimonialsProps> = ({ onAddTestimonial }) => {
 
   if (testimonials.length === 0) {
     return (
-      <section className='py-16 bg-gradient-to-b from-slate-50 to-white dark:from-slate-900 dark:to-slate-800'>
+      <section className='py-16 bg-linear-to-b from-slate-50 to-white dark:from-slate-900 dark:to-slate-800'>
         <div className='container mx-auto px-4'>
           <div className='text-center'>
             <h2 className='text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4'>
@@ -76,7 +76,7 @@ const Testimonials: React.FC<TestimonialsProps> = ({ onAddTestimonial }) => {
   }
 
   return (
-    <section className='py-16 bg-gradient-to-b from-slate-50 to-white dark:from-slate-900 dark:to-slate-800'>
+    <section className='py-16 bg-linear-to-b from-slate-50 to-white dark:from-slate-900 dark:to-slate-800'>
       <div className='container mx-auto px-4'>
         {/* Infinite Moving Cards */}
         <div className='mb-12'>

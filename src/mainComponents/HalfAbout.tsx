@@ -49,7 +49,7 @@ const HalfAbout = () => {
               {/* Main image container */}
               <div className='relative overflow-hidden rounded-lg'>
                 <img
-                  src='https://res.cloudinary.com/doakqvah3/image/upload/q_auto/f_auto/v1778246054/prapti-main_q2ko3e.webp'
+                  src='https://res.cloudinary.com/doakqvah3/image/upload/q_auto/f_auto/v1778851063/Screenshot_2026-05-15_at_18.45.30_f1p2yb.png'
                   alt="Prapti Foundation's journey"
                   className='w-full h-full object-cover transition-transform duration-300 hover:scale-105'
                 />

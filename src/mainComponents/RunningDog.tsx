@@ -210,7 +210,7 @@ const RunningDog: React.FC = () => {
         </button>
 
         {/* Ground/grass effect with more detail */}
-        <div className='absolute bottom-0 w-full h-8 bg-gradient-to-r from-green-400 via-green-500 to-green-400'>
+        <div className='absolute bottom-0 w-full h-8 bg-linear-to-r from-green-400 via-green-500 to-green-400'>
           {/* Grass blades */}
           <div className='absolute bottom-0 left-4 w-1 h-3 bg-green-600 transform rotate-12'></div>
           <div className='absolute bottom-0 left-8 w-1 h-4 bg-green-700 transform -rotate-6'></div>
@@ -242,7 +242,7 @@ const RunningDog: React.FC = () => {
 
         {/* Running Dog */}
         <div
-          className={`absolute bottom-8 transition-all duration-[6000ms] ease-linear ${
+          className={`absolute bottom-8 transition-all  ease-linear ${
             isRunning ? "right-[calc(100%-80px)]" : "right-4"
           }`}
         >
