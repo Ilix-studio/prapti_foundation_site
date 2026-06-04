@@ -1,6 +1,5 @@
-// src/redux-store/services/totalImpactApi.ts
-import { createApi } from "@reduxjs/toolkit/query/react";
-import { baseQuery, handleApiError } from "../../constants/apiConfig";
+import { apiSlice } from "./apiSlice";
+import { handleApiError } from "../../constants/apiConfig";
 import {
   CreateTotalImpactRequest,
   ImpactStatsResponse,
@@ -9,12 +8,8 @@ import {
   UpdateTotalImpactRequest,
 } from "@/types/Impact.types";
 
-export const totalImpactApi = createApi({
-  reducerPath: "totalImpactApi",
-  baseQuery,
-  tagTypes: ["TotalImpact", "ImpactStats"],
+const totalImpactApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    // Get all total impact records
     getAllTotalImpact: builder.query<
       TotalImpactListResponse,
       { page?: number; limit?: number; isActive?: boolean }
@@ -24,49 +19,32 @@ export const totalImpactApi = createApi({
           page: page.toString(),
           limit: limit.toString(),
         });
-        if (isActive !== undefined) {
+        if (isActive !== undefined)
           params.append("isActive", isActive.toString());
-        }
         return `/impact?${params}`;
       },
       providesTags: ["TotalImpact"],
-      transformErrorResponse: (response: any) => {
-        console.error("Get all total impact error:", response);
-        return handleApiError(response);
-      },
+      transformErrorResponse: (response: any) => handleApiError(response),
     }),
 
-    // Get single total impact record by ID
     getTotalImpactById: builder.query<TotalImpactResponse, string>({
       query: (id) => `/impact/${id}`,
       providesTags: (_result, _error, id) => [{ type: "TotalImpact", id }],
-      transformErrorResponse: (response: any) => {
-        console.error("Get total impact by ID error:", response);
-        return handleApiError(response);
-      },
+      transformErrorResponse: (response: any) => handleApiError(response),
     }),
 
-    // Get latest total impact record
     getLatestTotalImpact: builder.query<TotalImpactResponse, void>({
       query: () => "/impact/latest",
       providesTags: ["TotalImpact"],
-      transformErrorResponse: (response: any) => {
-        console.error("Get latest total impact error:", response);
-        return handleApiError(response);
-      },
+      transformErrorResponse: (response: any) => handleApiError(response),
     }),
 
-    // Get impact statistics
     getImpactStatistics: builder.query<ImpactStatsResponse, void>({
       query: () => "/impact/stats",
       providesTags: ["ImpactStats"],
-      transformErrorResponse: (response: any) => {
-        console.error("Get impact statistics error:", response);
-        return handleApiError(response);
-      },
+      transformErrorResponse: (response: any) => handleApiError(response),
     }),
 
-    // Create new total impact record
     createTotalImpact: builder.mutation<
       TotalImpactResponse,
       CreateTotalImpactRequest
@@ -77,13 +55,9 @@ export const totalImpactApi = createApi({
         body: data,
       }),
       invalidatesTags: ["TotalImpact", "ImpactStats"],
-      transformErrorResponse: (response: any) => {
-        console.error("Create total impact error:", response);
-        return handleApiError(response);
-      },
+      transformErrorResponse: (response: any) => handleApiError(response),
     }),
 
-    // Update total impact record
     updateTotalImpact: builder.mutation<
       TotalImpactResponse,
       { id: string; data: UpdateTotalImpactRequest }
@@ -98,13 +72,9 @@ export const totalImpactApi = createApi({
         "TotalImpact",
         "ImpactStats",
       ],
-      transformErrorResponse: (response: any) => {
-        console.error("Update total impact error:", response);
-        return handleApiError(response);
-      },
+      transformErrorResponse: (response: any) => handleApiError(response),
     }),
 
-    // Delete total impact record
     deleteTotalImpact: builder.mutation<TotalImpactResponse, string>({
       query: (id) => ({
         url: `/impact/${id}`,
@@ -115,10 +85,7 @@ export const totalImpactApi = createApi({
         "TotalImpact",
         "ImpactStats",
       ],
-      transformErrorResponse: (response: any) => {
-        console.error("Delete total impact error:", response);
-        return handleApiError(response);
-      },
+      transformErrorResponse: (response: any) => handleApiError(response),
     }),
   }),
 });

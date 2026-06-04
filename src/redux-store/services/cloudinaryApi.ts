@@ -1,8 +1,6 @@
-// src/redux-store/services/cloudinaryApi.ts
-import { createApi } from "@reduxjs/toolkit/query/react";
-import { baseQuery, handleApiError } from "../../constants/apiConfig";
+import { apiSlice } from "./apiSlice";
+import { handleApiError } from "../../constants/apiConfig";
 
-// Define the response type for the signature
 export interface CloudinarySignatureResponse {
   timestamp: number;
   signature: string;
@@ -11,18 +9,13 @@ export interface CloudinarySignatureResponse {
   folder: string;
 }
 
-// Define the response type for image deletion
 export interface CloudinaryDeleteResponse {
   success: boolean;
   message: string;
 }
 
-// Create the Cloudinary API slice
-export const cloudinaryApi = createApi({
-  reducerPath: "cloudinaryApi",
-  baseQuery,
+const cloudinaryApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    // Get upload signature
     getUploadSignature: builder.mutation<
       CloudinarySignatureResponse,
       { folder?: string }
@@ -35,7 +28,6 @@ export const cloudinaryApi = createApi({
       transformErrorResponse: (response) => handleApiError(response),
     }),
 
-    // Delete image
     deleteImage: builder.mutation<CloudinaryDeleteResponse, string>({
       query: (publicId) => ({
         url: `/cloudinary/${publicId}`,
@@ -46,6 +38,5 @@ export const cloudinaryApi = createApi({
   }),
 });
 
-// Export hooks for using the API endpoints
 export const { useGetUploadSignatureMutation, useDeleteImageMutation } =
   cloudinaryApi;

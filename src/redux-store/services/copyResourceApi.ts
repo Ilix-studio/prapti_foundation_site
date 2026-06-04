@@ -1,5 +1,4 @@
-import { createApi } from "@reduxjs/toolkit/query/react";
-import { baseQuery } from "../../constants/apiConfig";
+import { apiSlice } from "./apiSlice";
 
 export interface CopyImage {
   src: string;
@@ -46,18 +45,15 @@ export interface UpdateCopyAwardBody extends Partial<CreateCopyAwardBody> {
   isActive?: boolean;
 }
 
-export const copyResourceApi = createApi({
-  reducerPath: "copyResourceApi",
-  baseQuery,
-  tagTypes: ["CopyAward", "CopyPhoto"],
+const copyResourceApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    // ----- Copy Photos -----
     getCopyPhotos: builder.query<{ success: boolean; data: CopyPhoto[] }, void>(
       {
         query: () => "/copy-photos",
         providesTags: ["CopyPhoto"],
       },
     ),
+
     uploadCopyPhotos: builder.mutation<
       { success: boolean; data: CopyPhoto },
       FormData
@@ -69,6 +65,7 @@ export const copyResourceApi = createApi({
       }),
       invalidatesTags: ["CopyPhoto"],
     }),
+
     deleteCopyPhoto: builder.mutation<
       { success: boolean; message: string },
       string
@@ -77,13 +74,13 @@ export const copyResourceApi = createApi({
       invalidatesTags: ["CopyPhoto"],
     }),
 
-    // ----- Copy Awards -----
     getCopyAwards: builder.query<{ success: boolean; data: CopyAward[] }, void>(
       {
         query: () => "/copy-awards",
         providesTags: ["CopyAward"],
       },
     ),
+
     getCopyAwardById: builder.query<
       { success: boolean; data: CopyAward },
       string
@@ -91,6 +88,7 @@ export const copyResourceApi = createApi({
       query: (id) => `/copy-awards/${id}`,
       providesTags: (_r, _e, id) => [{ type: "CopyAward", id }],
     }),
+
     createCopyAward: builder.mutation<
       { success: boolean; data: CopyAward },
       CreateCopyAwardBody
@@ -98,6 +96,7 @@ export const copyResourceApi = createApi({
       query: (body) => ({ url: "/copy-awards", method: "POST", body }),
       invalidatesTags: ["CopyAward"],
     }),
+
     updateCopyAward: builder.mutation<
       { success: boolean; data: CopyAward },
       { id: string; body: UpdateCopyAwardBody }
@@ -112,6 +111,7 @@ export const copyResourceApi = createApi({
         "CopyAward",
       ],
     }),
+
     deleteCopyAward: builder.mutation<
       { success: boolean; message: string },
       string

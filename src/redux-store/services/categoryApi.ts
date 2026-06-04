@@ -1,17 +1,12 @@
-import { createApi } from "@reduxjs/toolkit/query/react";
-import { baseQuery } from "../../constants/apiConfig";
+import { apiSlice } from "./apiSlice";
 import {
   Category,
   CategoryCreateData,
   CategoryUpdateData,
 } from "@/types/category.types";
 
-export const categoryApi = createApi({
-  reducerPath: "categoryApi",
-  baseQuery,
-  tagTypes: ["Category"],
+const categoryApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    // Get categories by type (Public)
     getCategoriesByType: builder.query<
       Category[],
       "photo" | "video" | "blogs" | "award" | "rescue"
@@ -28,7 +23,6 @@ export const categoryApi = createApi({
       ],
     }),
 
-    // Get all categories (Admin only)
     getAllCategories: builder.query<Category[], void>({
       query: () => "/categories",
       transformResponse: (response: { success: boolean; data: Category[] }) =>
@@ -42,7 +36,6 @@ export const categoryApi = createApi({
       ],
     }),
 
-    // Create category (Admin only)
     createCategory: builder.mutation<Category, CategoryCreateData>({
       query: (data) => ({
         url: "/categories",
@@ -57,7 +50,6 @@ export const categoryApi = createApi({
       invalidatesTags: ["Category"],
     }),
 
-    // Update category (Admin only)
     updateCategory: builder.mutation<
       Category,
       { id: string; data: CategoryUpdateData }
@@ -78,7 +70,6 @@ export const categoryApi = createApi({
       ],
     }),
 
-    // Delete category (Admin only)
     deleteCategory: builder.mutation<
       { success: boolean; message: string },
       string

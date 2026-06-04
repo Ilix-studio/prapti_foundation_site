@@ -1,25 +1,17 @@
-import { createApi } from "@reduxjs/toolkit/query/react";
-import { baseQuery } from "../../constants/apiConfig";
+import { apiSlice } from "./apiSlice";
 
-export const awardApi = createApi({
-  reducerPath: "awardApi",
-  baseQuery,
-  tagTypes: ["Awards"],
-
+const awardApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    // GET /get
     getAwards: builder.query({
       query: () => "/awards/get",
       providesTags: ["Awards"],
     }),
 
-    // GET /get/:id
     getAwardById: builder.query({
       query: (id: string) => `awards/get/${id}`,
       providesTags: (_r, _e, id) => [{ type: "Awards", id }],
     }),
 
-    // POST /create
     createAwardPost: builder.mutation({
       query: (body) => ({
         url: "/awards/create",
@@ -28,6 +20,7 @@ export const awardApi = createApi({
       }),
       invalidatesTags: ["Awards"],
     }),
+
     uploadAward: builder.mutation<
       { success: boolean; message: string; data: any },
       FormData
@@ -40,7 +33,6 @@ export const awardApi = createApi({
       invalidatesTags: ["Awards"],
     }),
 
-    // POST /upload-multiple
     uploadMultipleAwards: builder.mutation<
       { success: boolean; message: string; data: any },
       FormData
@@ -53,7 +45,6 @@ export const awardApi = createApi({
       invalidatesTags: ["Awards"],
     }),
 
-    // PATCH /update/:id - for JSON body (text fields, delete, updateAlt)
     updateAwardPost: builder.mutation<
       { success: boolean; message: string; data: any },
       {
@@ -77,7 +68,6 @@ export const awardApi = createApi({
       ],
     }),
 
-    // PATCH /update/:id - for FormData (adding new images)
     updateAwardWithImage: builder.mutation<
       { success: boolean; message: string; data: any },
       { id: string; formData: FormData }
@@ -93,7 +83,6 @@ export const awardApi = createApi({
       ],
     }),
 
-    // DELETE /del/:id
     deleteAwardPost: builder.mutation({
       query: (id: string) => ({
         url: `/awards/del/${id}`,

@@ -1,18 +1,15 @@
-import { createApi } from "@reduxjs/toolkit/query/react";
-import { baseQuery, handleApiError } from "../../constants/apiConfig";
+import { apiSlice } from "./apiSlice";
+import { handleApiError } from "../../constants/apiConfig";
 import {
   DeleteVolunteerResponse,
   VolunteerDetailResponse,
   VolunteerInput,
   VolunteerResponse,
   VolunteersListResponse,
-  VolunteerStatusResponse, // add this to volunteer_types.ts (see below)
+  VolunteerStatusResponse,
 } from "@/types/volunteer.types";
 
-export const volunteerApi = createApi({
-  reducerPath: "volunteerApi",
-  baseQuery,
-  tagTypes: ["Volunteers", "Volunteer"],
+const volunteerApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     submitVolunteerApplication: builder.mutation<
       VolunteerResponse,
@@ -69,7 +66,6 @@ export const volunteerApi = createApi({
       transformErrorResponse: (response) => handleApiError(response),
     }),
 
-    // PATCH /api/volunteers/:id/approve
     approveVolunteerApplication: builder.mutation<
       VolunteerStatusResponse,
       string
@@ -85,7 +81,6 @@ export const volunteerApi = createApi({
       transformErrorResponse: (response) => handleApiError(response),
     }),
 
-    // PATCH /api/volunteers/:id/reject
     rejectVolunteerApplication: builder.mutation<
       VolunteerStatusResponse,
       { id: string; reason?: string }
@@ -102,6 +97,7 @@ export const volunteerApi = createApi({
       ],
       transformErrorResponse: (response) => handleApiError(response),
     }),
+
     markVolunteerAsRead: builder.mutation<
       { success: boolean; data: { _id: string; isRead: boolean } },
       string

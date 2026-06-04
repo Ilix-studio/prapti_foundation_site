@@ -1,11 +1,8 @@
-import { createApi } from "@reduxjs/toolkit/query/react";
-import { baseQuery } from "../../constants/apiConfig";
+import { apiSlice } from "./apiSlice";
 import { User, loginSuccess, logout } from "../slices/authSlice";
 import { LoginRequest, LoginResponse } from "@/types/admin.types";
 
-export const adminAuthApi = createApi({
-  reducerPath: "adminAuthApi",
-  baseQuery,
+const adminAuthApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     loginAdmin: builder.mutation<LoginResponse, LoginRequest>({
       query: (credentials) => ({
@@ -25,7 +22,6 @@ export const adminAuthApi = createApi({
             dispatch(loginSuccess({ user: userData, token: data.data.token }));
           }
         } catch (error) {
-          // Handle error if needed
           console.error("Login failed:", error);
         }
       },

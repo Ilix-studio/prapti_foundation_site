@@ -1,4 +1,3 @@
-// src/redux-store/store.ts
 import { configureStore, combineReducers } from "@reduxjs/toolkit";
 import { setupListeners } from "@reduxjs/toolkit/query";
 import {
@@ -14,56 +13,38 @@ import {
 import createIdbStorage from "redux-persist-indexeddb-storage";
 
 import authReducer from "./slices/authSlice";
+import { apiSlice } from "./services/apiSlice";
 
-import { blogApi } from "./services/blogApi";
-import { cloudinaryApi } from "./services/cloudinaryApi";
-import { adminAuthApi } from "./services/adminApi";
-import { volunteerApi } from "./services/volunteerApi";
-import { contactApi } from "./services/contactApi";
-//New
-import { photoApi } from "./services/photoApi";
-import { videoApi } from "./services/videoApi";
-import { visitorApi } from "./services/visitorApi";
-import { categoryApi } from "./services/categoryApi";
-//
-import { totalImpactApi } from "./services/impactApi";
-import { testimonialApi } from "./services/testimonialApi";
-//
-import { awardApi } from "./services/awardApi";
-import { rescueApi } from "./services/rescueApi";
-//
-import { copyResourceApi } from "./services/copyResourceApi";
+// Side-effect registrations: each injectEndpoints call runs at module import time.
+// These imports are required so the endpoints are registered before any hook is called.
+import "./services/adminApi";
+import "./services/awardApi";
+import "./services/blogApi";
+import "./services/categoryApi";
+import "./services/cloudinaryApi";
+import "./services/contactApi";
+import "./services/copyResourceApi";
+import "./services/impactApi";
+import "./services/photoApi";
+import "./services/rescueApi";
+import "./services/testimonialApi";
+import "./services/videoApi";
+import "./services/visitorApi";
+import "./services/volunteerApi";
 
-// Create IndexedDB storage for redux-persist
 const idbStorage = createIdbStorage("prapti-foundation-db");
 
-// Configure persist options for our root reducer
 const persistConfig = {
   key: "root",
   version: 1,
   storage: idbStorage,
-  whitelist: ["auth"], // Only persist auth state to avoid persisting API cache
+  whitelist: ["auth"],
+  blacklist: [apiSlice.reducerPath],
 };
 
 const rootReducer = combineReducers({
   auth: authReducer,
-  [adminAuthApi.reducerPath]: adminAuthApi.reducer,
-  [blogApi.reducerPath]: blogApi.reducer,
-  [cloudinaryApi.reducerPath]: cloudinaryApi.reducer,
-  [volunteerApi.reducerPath]: volunteerApi.reducer,
-  [contactApi.reducerPath]: contactApi.reducer,
-  //
-  [categoryApi.reducerPath]: categoryApi.reducer,
-  [photoApi.reducerPath]: photoApi.reducer,
-  [videoApi.reducerPath]: videoApi.reducer,
-  [visitorApi.reducerPath]: visitorApi.reducer,
-  //
-  [totalImpactApi.reducerPath]: totalImpactApi.reducer,
-  [testimonialApi.reducerPath]: testimonialApi.reducer,
-  [awardApi.reducerPath]: awardApi.reducer,
-  [rescueApi.reducerPath]: rescueApi.reducer,
-  //
-  [copyResourceApi.reducerPath]: copyResourceApi.reducer,
+  [apiSlice.reducerPath]: apiSlice.reducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
@@ -72,33 +53,15 @@ export const store = configureStore({
   reducer: persistedReducer,
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
-      // Redux Persist middleware needs these actions to be ignored
       serializableCheck: {
         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
       },
-    }).concat(
-      adminAuthApi.middleware,
-      blogApi.middleware,
-      cloudinaryApi.middleware,
-      volunteerApi.middleware,
-      contactApi.middleware,
-      categoryApi.middleware,
-      photoApi.middleware,
-      videoApi.middleware,
-      visitorApi.middleware,
-      totalImpactApi.middleware,
-      testimonialApi.middleware,
-      awardApi.middleware,
-      rescueApi.middleware,
-      copyResourceApi.middleware,
-    ),
+    }).concat(apiSlice.middleware),
 });
 
-// Create persistor for use with PersistGate
 export const persistor = persistStore(store);
 
-// Setup listeners for automatic refetching
 setupListeners(store.dispatch);
 
-export type RootState = ReturnType<typeof store.getState>;
+export type RootState = ReturnType<typeof rootReducer>;
 export type AppDispatch = typeof store.dispatch;

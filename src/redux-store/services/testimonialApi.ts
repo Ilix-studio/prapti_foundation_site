@@ -1,6 +1,4 @@
-// src/store/api/testimonialApi.ts
-import { createApi } from "@reduxjs/toolkit/query/react";
-import { baseQuery } from "../../constants/apiConfig";
+import { apiSlice } from "./apiSlice";
 import {
   TestimonialCreateRequest,
   TestimonialQueryParams,
@@ -12,22 +10,16 @@ import {
 
 const buildQueryString = (params: TestimonialQueryParams): string => {
   const searchParams = new URLSearchParams();
-
   Object.entries(params).forEach(([key, value]) => {
     if (value !== undefined && value !== null && value !== "") {
       searchParams.append(key, value.toString());
     }
   });
-
   return searchParams.toString();
 };
 
-export const testimonialApi = createApi({
-  reducerPath: "testimonialApi",
-  baseQuery,
-  tagTypes: ["Testimonials", "Testimonial", "TestimonialStats"],
+const testimonialApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    // Get all testimonials with pagination and filters
     getTestimonials: builder.query<
       TestimonialsResponse,
       TestimonialQueryParams
@@ -48,7 +40,6 @@ export const testimonialApi = createApi({
           : [{ type: "Testimonials", id: "LIST" }],
     }),
 
-    // Get active testimonials only
     getActiveTestimonials: builder.query<
       TestimonialsResponse,
       { limit?: number; sortBy?: string; sortOrder?: "asc" | "desc" }
@@ -60,7 +51,6 @@ export const testimonialApi = createApi({
       providesTags: [{ type: "Testimonials", id: "ACTIVE" }],
     }),
 
-    // Get featured testimonials
     getFeaturedTestimonials: builder.query<
       TestimonialsResponse,
       { limit?: number }
@@ -72,13 +62,11 @@ export const testimonialApi = createApi({
       providesTags: [{ type: "Testimonials", id: "FEATURED" }],
     }),
 
-    // Get testimonial by ID
     getTestimonialById: builder.query<TestimonialResponse, string>({
       query: (id) => `/testimonials/${id}`,
       providesTags: (_, __, id) => [{ type: "Testimonial", id }],
     }),
 
-    // Create testimonial (Public)
     createTestimonial: builder.mutation<
       TestimonialResponse,
       TestimonialCreateRequest
@@ -96,7 +84,6 @@ export const testimonialApi = createApi({
       ],
     }),
 
-    // Update testimonial (Admin only)
     updateTestimonial: builder.mutation<
       TestimonialResponse,
       { id: string; data: TestimonialUpdateRequest }
@@ -115,7 +102,6 @@ export const testimonialApi = createApi({
       ],
     }),
 
-    // Delete testimonial (Admin only)
     deleteTestimonial: builder.mutation<
       { success: boolean; message: string },
       string
@@ -132,7 +118,6 @@ export const testimonialApi = createApi({
       ],
     }),
 
-    // Get testimonial statistics (Admin only)
     getTestimonialStats: builder.query<TestimonialStatsResponse, void>({
       query: () => "/testimonials/admin/stats",
       providesTags: [{ type: "TestimonialStats", id: "STATS" }],
