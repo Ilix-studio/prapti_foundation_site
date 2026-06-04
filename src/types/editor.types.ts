@@ -49,3 +49,19 @@ export interface MutationMessageResponse {
   success: boolean;
   message: string;
 }
+export interface EditorLoginRequest {
+  email: string;
+  password: string;
+}
+
+export interface EditorLoginResponse {
+  success: boolean;
+  message: string;
+  data: {
+    id: string;
+    name: string;
+    email: string;
+    role: typeof ROLES.EDITOR;
+    token: string;
+  };
+}

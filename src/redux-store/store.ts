@@ -31,6 +31,7 @@ import "./services/testimonialApi";
 import "./services/videoApi";
 import "./services/visitorApi";
 import "./services/volunteerApi";
+import "./services/editorApi";
 
 const idbStorage = createIdbStorage("prapti-foundation-db");
 

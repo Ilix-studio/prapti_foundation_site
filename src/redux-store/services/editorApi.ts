@@ -7,7 +7,10 @@ import {
   CreateEditorResponse,
   ToggleEditorStatusResponse,
   MutationMessageResponse,
+  EditorLoginResponse,
+  EditorLoginRequest,
 } from "@/types/editor.types";
+import { loginSuccess, logout, User } from "../slices/authSlice";
 
 const editorApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
@@ -69,6 +72,48 @@ const editorApi = apiSlice.injectEndpoints({
       // No cache impact — credentials are emailed, no editor field changes.
       transformErrorResponse: (response) => handleApiError(response),
     }),
+    loginEditor: builder.mutation<EditorLoginResponse, EditorLoginRequest>({
+      query: (credentials) => ({
+        url: "/editor/login",
+        method: "POST",
+        body: credentials,
+      }),
+      async onQueryStarted(_, { dispatch, queryFulfilled }) {
+        try {
+          const { data } = await queryFulfilled;
+          if (data.success) {
+            const userData: User = {
+              id: data.data.id,
+              name: data.data.name,
+              email: data.data.email,
+              role: data.data.role,
+            };
+            dispatch(loginSuccess({ user: userData, token: data.data.token }));
+          }
+        } catch (error) {
+          console.error("Editor login failed:", error);
+        }
+      },
+      transformErrorResponse: (response) => handleApiError(response),
+    }),
+
+    logoutEditor: builder.mutation<{ success: boolean; message: string }, void>(
+      {
+        query: () => ({
+          url: "/editor/logout",
+          method: "POST",
+        }),
+        async onQueryStarted(_, { dispatch, queryFulfilled }) {
+          try {
+            await queryFulfilled;
+            dispatch(logout());
+          } catch (error) {
+            console.error("Editor logout failed:", error);
+          }
+        },
+        transformErrorResponse: (response) => handleApiError(response),
+      },
+    ),
   }),
 });
 
@@ -78,4 +123,6 @@ export const {
   useToggleEditorStatusMutation,
   useDeleteEditorMutation,
   useResendEditorCredentialsMutation,
+  useLoginEditorMutation,
+  useLogoutEditorMutation,
 } = editorApi;
