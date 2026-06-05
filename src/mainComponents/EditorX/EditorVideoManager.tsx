@@ -177,12 +177,6 @@ const EditorVideoManager: React.FC = () => {
     if (thumbInputRef.current) thumbInputRef.current.value = "";
   };
 
-  const openCreate = () => {
-    resetForm();
-    setSelected(null);
-    setShowForm(true);
-  };
-
   const handleVideoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const f = e.target.files?.[0];
     if (!f) return;
@@ -282,8 +276,9 @@ const EditorVideoManager: React.FC = () => {
               {videoList.length}
             </Badge>
           </div>
+
           <Button
-            onClick={openCreate}
+            onClick={() => navigate("/editor/videos/add")}
             className='bg-[#FF9933] hover:bg-[#FF9933]/90'
           >
             <Plus className='w-4 h-4 mr-2' />

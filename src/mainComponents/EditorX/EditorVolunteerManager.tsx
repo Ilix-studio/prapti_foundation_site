@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from "react";
 import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+
 import * as XLSX from "xlsx";
 import {
   useGetVolunteerApplicationsQuery,
@@ -10,7 +10,7 @@ import {
   useMarkVolunteerAsReadMutation,
   useDeleteVolunteerApplicationMutation,
 } from "@/redux-store/services/volunteerApi";
-import { useLogoutEditorMutation } from "@/redux-store/services/editorApi";
+
 import { Volunteer, VolunteerStatus } from "@/types/volunteer.types";
 import {
   selectAuth,
@@ -47,8 +47,6 @@ import {
   Trash2,
   Loader2,
   AlertCircle,
-  ArrowLeft,
-  LogOut,
   Search,
   Download,
   Bell,
@@ -60,6 +58,7 @@ import {
   Calendar,
 } from "lucide-react";
 import { toast } from "react-hot-toast";
+import TopBar from "./TopBar";
 
 const ITEMS_PER_PAGE = 10;
 
@@ -79,7 +78,6 @@ const formatDate = (value?: string) =>
     : "—";
 
 const EditorVolunteerManager: React.FC = () => {
-  const navigate = useNavigate();
   const { isAuthenticated } = useSelector(selectAuth);
   const isAdmin = useSelector(selectIsAdmin);
   const isEditor = useSelector(selectIsEditor);
@@ -111,17 +109,6 @@ const EditorVolunteerManager: React.FC = () => {
   const [markRead] = useMarkVolunteerAsReadMutation();
   const [deleteApplication, { isLoading: isDeleting }] =
     useDeleteVolunteerApplicationMutation();
-  const [logoutEditor, { isLoading: isLoggingOut }] = useLogoutEditorMutation();
-
-  const handleLogout = async () => {
-    try {
-      await logoutEditor().unwrap();
-    } catch {
-      // best-effort; auth cleared by slice regardless
-    } finally {
-      navigate("/editor/login", { replace: true });
-    }
-  };
 
   const volunteers: Volunteer[] = listResp?.data ?? [];
   const pagination = listResp?.pagination;
@@ -223,41 +210,10 @@ const EditorVolunteerManager: React.FC = () => {
     XLSX.writeFile(workbook, `volunteers-page-${page}.xlsx`);
   };
 
-  const TopBar = (
-    <div className='sticky top-0 z-40 bg-white/90 backdrop-blur-xl border-b border-gray-200/50 shadow-sm'>
-      <div className='container mx-auto px-4 sm:px-6'>
-        <div className='flex items-center justify-between h-16'>
-          <Button
-            variant='ghost'
-            onClick={() => navigate(-1)}
-            className='flex items-center gap-2 hover:bg-[#FF9933]/10'
-          >
-            <ArrowLeft className='w-5 h-5' />
-            <span className='font-medium hidden sm:inline'>Back</span>
-          </Button>
-          <Button
-            onClick={handleLogout}
-            disabled={isLoggingOut}
-            variant='ghost'
-            size='sm'
-            className='text-red-600 hover:text-red-700 hover:bg-red-50'
-          >
-            {isLoggingOut ? (
-              <Loader2 className='w-4 h-4 mr-2 animate-spin' />
-            ) : (
-              <LogOut className='w-4 h-4 mr-2' />
-            )}
-            <span className='hidden sm:inline'>Logout</span>
-          </Button>
-        </div>
-      </div>
-    </div>
-  );
-
   if (!isAuthenticated || (!isEditor && !isAdmin)) {
     return (
       <div className='container mx-auto p-6'>
-        {TopBar}
+        <TopBar />
         <Alert className='max-w-md mx-auto mt-8'>
           <AlertCircle className='h-4 w-4' />
           <AlertDescription>Editor access required.</AlertDescription>
@@ -268,7 +224,7 @@ const EditorVolunteerManager: React.FC = () => {
 
   return (
     <>
-      {TopBar}
+      <TopBar />
       <div className='container mx-auto px-4 py-6'>
         {/* Header */}
         <div className='flex items-center justify-between mb-6 flex-wrap gap-3'>

@@ -17,11 +17,26 @@ const EditorCategoryManager = lazy(
 const EditorPhotoManager = lazy(
   () => import("@/mainComponents/EditorX/EditorPhotoManager"),
 );
+const EditorAddPhoto = lazy(
+  () => import("@/mainComponents/EditorX/PhotoE/EditorAddPhoto"),
+);
+const EditorEditPhoto = lazy(
+  () => import("@/mainComponents/EditorX/PhotoE/EditorEditPhoto"),
+);
+const EditorViewPhoto = lazy(
+  () => import("@/mainComponents/EditorX/PhotoE/EditorViewPhoto"),
+);
 const EditorVideoManager = lazy(
   () => import("@/mainComponents/EditorX/EditorVideoManager"),
 );
-const EditorEditVideo = lazy(
-  () => import("@/mainComponents/EditorX/EditorEditVideo"),
+const EditorAddVideo = lazy(
+  () => import("@/mainComponents/EditorX/VideoE/EditorAddVideo"),
+);
+const EditorEditVideoById = lazy(
+  () => import("@/mainComponents/EditorX/VideoE/EditorEditVideoById"),
+);
+const EditorPlayVideo = lazy(
+  () => import("@/mainComponents/EditorX/VideoE/EditorPlayVideo"),
 );
 const EditorVolunteerManager = lazy(
   () => import("@/mainComponents/EditorX/EditorVolunteerManager"),
@@ -37,8 +52,16 @@ export const editorRoutesDash = [
   { path: "/editor/awards", component: EditorAwardManager },
   { path: "/editor/blogposts", component: EditorBlogManager },
   { path: "/editor/categories", component: EditorCategoryManager },
+  // Photos — static/specific paths before the bare ":id" view route.
   { path: "/editor/photos", component: EditorPhotoManager },
+  { path: "/editor/photos/add", component: EditorAddPhoto },
+  { path: "/editor/photos/edit/:id", component: EditorEditPhoto },
+  { path: "/editor/photos/:id", component: EditorViewPhoto },
+  //
   { path: "/editor/videos", component: EditorVideoManager },
-  { path: "/editor/videos/edit/:id", component: EditorEditVideo },
+  { path: "/editor/videos/add", component: EditorAddVideo },
+  { path: "/editor/videos/edit/:id", component: EditorEditVideoById },
+  { path: "/editor/videos/:id", component: EditorPlayVideo },
+  //
   { path: "/editor/volunteers", component: EditorVolunteerManager },
 ];

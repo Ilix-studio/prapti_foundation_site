@@ -23,7 +23,7 @@ const TopBar = () => {
         <div className='flex items-center justify-between h-16'>
           <Button
             variant='ghost'
-            onClick={() => navigate(-1)}
+            onClick={() => navigate("/editor/dashboard")}
             className='flex items-center gap-2 hover:bg-[#FF9933]/10'
           >
             <ArrowLeft className='w-5 h-5' />
