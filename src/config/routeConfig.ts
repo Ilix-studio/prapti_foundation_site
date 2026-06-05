@@ -125,6 +125,9 @@ const AddRescue = lazy(
 const RescueDash = lazy(
   () => import("@/mainComponents/Admin/AdminRescue/RescueDash"),
 );
+const EditorManager = lazy(
+  () => import("@/mainComponents/Admin/EditorManager"),
+);
 
 // Route configuration
 export const immediateRoute = [{ path: "/", component: Home }];
@@ -184,6 +187,8 @@ export const adminRoutesDash = [
   { path: "/admin/rescueDash", component: RescueDash },
   // Copy Award Dashboard
   { path: "/admin/copyAwardDash", component: CopyAwardDash },
+  //
+  { path: "/admin/editors", component: EditorManager },
 ];
 
 // NEW: Admin specific routes with dashboard mapping

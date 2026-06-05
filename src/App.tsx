@@ -16,10 +16,12 @@ import {
 import {
   createAdminRoute,
   createAdSpecificRoute,
+  createEditorRoute,
   createImmediateRoute,
   createImmediateRouteTwo,
   createPublicRoute,
 } from "./config/routeHelpers";
+import { editorPublicRoutes, editorRoutesDash } from "./config/editorConfig";
 
 function App() {
   const location = useLocation();
@@ -115,6 +117,8 @@ function App() {
         {adSpecificRoutes.map(({ path, component }) =>
           createAdSpecificRoute(path, component),
         )}
+        {editorPublicRoutes.map((r) => createPublicRoute(r.path, r.component))}
+        {editorRoutesDash.map((r) => createEditorRoute(r.path, r.component))}
 
         {/* Step 4: Fallback route */}
         {createImmediateRoute(fallbackRoute.path, fallbackRoute.component)}

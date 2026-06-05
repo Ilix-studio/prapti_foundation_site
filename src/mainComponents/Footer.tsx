@@ -4,7 +4,6 @@ import { motion, AnimatePresence, Variants } from "framer-motion";
 import {
   Facebook,
   Instagram,
-  Twitter,
   Mail,
   Phone,
   MapPin,
@@ -13,6 +12,7 @@ import {
   Users,
   TrendingUp,
   Calendar,
+  Twitter,
 } from "lucide-react";
 
 // Import Visitor API hooks
@@ -252,6 +252,13 @@ const Footer = () => {
               >
                 <Twitter size={18} />
               </a>
+              <Link
+                to='/editor/login'
+                aria-label='Editor'
+                className='text-gray-500 hover:text-orange-500 transition-colors'
+              >
+                <p>.</p>
+              </Link>
             </div>
           </motion.div>
 

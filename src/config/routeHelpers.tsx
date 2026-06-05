@@ -4,6 +4,7 @@ import { Suspense } from "react";
 import { Route } from "react-router-dom";
 import { Loader2 } from "lucide-react";
 import ProtectedRoute from "./ProtectedRoute";
+import EditorRoute from "@/mainComponents/EditorX/EditorRoute";
 
 // Loading component
 export const LoadingSpinner = () => (
@@ -83,6 +84,22 @@ export const createAdSpecificRoute = (
           <Component />
         </Suspense>
       </ProtectedRoute>
+    }
+  />
+);
+export const createEditorRoute = (
+  path: string,
+  Component: React.ComponentType,
+) => (
+  <Route
+    key={path}
+    path={path}
+    element={
+      <EditorRoute>
+        <Suspense fallback={<LoadingSpinner />}>
+          <Component />
+        </Suspense>
+      </EditorRoute>
     }
   />
 );

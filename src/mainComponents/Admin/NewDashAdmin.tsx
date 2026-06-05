@@ -47,6 +47,7 @@ import { useGetAllTotalImpactQuery } from "@/redux-store/services/impactApi";
 import { useGetTestimonialsQuery } from "@/redux-store/services/testimonialApi";
 import { useGetAwardsQuery } from "@/redux-store/services/awardApi";
 import { useGetRescuePostsQuery } from "@/redux-store/services/rescueApi";
+import { IconChessKnight } from "@tabler/icons-react";
 
 const NewDashAdmin: React.FC = () => {
   const dispatch = useDispatch();
@@ -224,6 +225,15 @@ const NewDashAdmin: React.FC = () => {
       loading: false,
       error: false,
       action: () => navigate("/admin/categories"),
+    },
+    {
+      title: "Editor Manager",
+      icon: IconChessKnight,
+      color: "text-black-800",
+      bgColor: "bg-red-50",
+      loading: false,
+      error: false,
+      action: () => navigate("/admin/editors"),
     },
   ];
 
