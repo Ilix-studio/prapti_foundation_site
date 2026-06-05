@@ -40,7 +40,7 @@ const NAV_ITEMS: NavItem[] = [
     title: "Blogs",
     description: "Create and edit blog posts",
     icon: FileText,
-    route: "/editor/blogs",
+    route: "/editor/blogposts",
     color: "border-l-blue-500",
   },
   {
