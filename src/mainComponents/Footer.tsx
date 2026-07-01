@@ -366,10 +366,10 @@ const Footer = () => {
               <div className='flex items-center gap-2'>
                 <Mail className='h-4 w-4 text-orange-500 flex-shrink-0' />
                 <a
-                  href='mailto:info@praptifoundation.org'
+                  href='mailto:thakurpraptisprc@gmail.com'
                   className='text-sm text-gray-600 dark:text-gray-400 hover:text-orange-500 transition-colors'
                 >
-                  info@praptifoundation.org
+                  Email us
                 </a>
               </div>
             </div>
