@@ -98,7 +98,7 @@ export const useRouteNavigation = (
 
       return finalHistory;
     });
-  }, [location.pathname, location.state, currentIndex, maxHistorySize]);
+  }, [location.pathname, location.state]);
 
   // Navigation methods with authentication awareness
   const goBack = useCallback(

@@ -67,13 +67,7 @@ export const BackNavigation = () => {
       setShowAccessWarning(false);
       setAccessWarningMessage("");
     }
-  }, [
-    location.pathname,
-    isAuthenticated,
-    isAdmin,
-    navigate,
-    navigationContext,
-  ]);
+  }, [location.pathname, isAuthenticated, isAdmin, navigate]);
 
   // Handle logout with route awareness
   const handleLogout = () => {
